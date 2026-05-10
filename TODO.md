@@ -1,6 +1,25 @@
 # Cyprus Brainrots Game — TODO
 
-Last reviewed: 2026-03-31 (session 10)
+Last reviewed: 2026-05-10 (session 11)
+
+## Session 11 Closeout (2026-05-10)
+
+### Done this session
+- [x] Boboshiros/Bomboshiris super switched to explosion-style (`selfexplode`) behavior
+- [x] Hero Marks roster expanded so all intended Epic/Mythic/Legendary options are available
+- [x] Hero Marks pricing normalized by rarity: Epic=200, Mythic=500, Legendary=1000
+- [x] Tier-lock progression restored to one pick per tier cycle: Epic → Mythic → Legendary
+- [x] Character showcase moved out of bottom menu layout and centered independently
+- [x] Showcase visibility synced with menu lifecycle (`hideAllUI()` / `showAllUI()`)
+- [x] Daily Wins tracker moved into showcase panel
+- [x] How to Play moved into showcase panel (shown first)
+- [x] Leaderboard moved to top-right under History
+- [x] Daily / History / Leaderboard button widths unified for cleaner alignment
+- [x] Ranked Showdown card temporarily hidden from mode selector until mode is fixed
+
+### Remaining / Next session
+- [ ] Ranked Showdown implementation fix (mode currently hidden from selector)
+- [ ] Mobile top-area polish pass on real devices (spacing/tap targets/safe-area checks)
 
 ---
 

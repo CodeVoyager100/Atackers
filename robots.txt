@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://codevoyager100.github.io/Atackers/sitemap.xml
