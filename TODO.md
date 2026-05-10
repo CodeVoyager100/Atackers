@@ -20,6 +20,8 @@ Last reviewed: 2026-05-10 (session 11)
 ### Remaining / Next session
 - [ ] Ranked Showdown implementation fix (mode currently hidden from selector)
 - [ ] Mobile top-area polish pass on real devices (spacing/tap targets/safe-area checks)
+- [ ] Google Search Console setup: add URL-prefix property, submit sitemap, request indexing for home URL
+- [x] Google Analytics 4 (GA4) setup: property + web stream created, gtag snippet installed in head (`G-T403T6D16C`)
 
 ---
 
