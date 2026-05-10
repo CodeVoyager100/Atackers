@@ -102,6 +102,9 @@
             font-size: 14px;
             font-weight: bold;
             padding: 7px 13px;
+            width: 136px;
+            text-align: center;
+            box-sizing: border-box;
             border-radius: 8px;
             cursor: pointer;
             user-select: none;
@@ -167,6 +170,9 @@
             font-size: 13px;
             font-weight: bold;
             padding: 5px 11px;
+            width: 136px;
+            text-align: center;
+            box-sizing: border-box;
             border-radius: 8px;
             cursor: pointer;
             user-select: none;
@@ -175,36 +181,31 @@
 
         /* ── Tips / Leaderboard quick buttons ── */
         #tutorial-btn {
-            position: absolute;
-            top: 10px;
-            left: 50%;
-            transform: translateX(-50%);
-            z-index: 12;
+            position: relative;
+            z-index: 1;
             background: rgba(0,0,0,0.78);
             border: 1px solid #66ccff;
             color: #9fe9ff;
-            font-size: 16px;
+            font-size: 14px;
             font-weight: bold;
-            padding: 10px 18px;
+            padding: 7px 12px;
             border-radius: 8px;
             cursor: pointer;
             user-select: none;
+            pointer-events: auto;
         }
         #tutorial-btn:hover { background: rgba(0,40,80,0.92); }
 
         #daily-wins-tracker {
-            position: absolute;
-            top: 56px;
-            left: 50%;
-            transform: translateX(-50%);
-            z-index: 12;
-            width: min(92vw, 360px);
+            position: relative;
+            width: min(100%, 340px);
             background: rgba(0,0,0,0.78);
             border: 1px solid #4cc9f0;
             border-radius: 10px;
             padding: 8px 10px;
             text-align: center;
             pointer-events: none;
+            margin-top: 4px;
         }
 
         #daily-wins-label {
@@ -277,8 +278,8 @@
 
         #leaderboard-btn {
             position: absolute;
-            top: 134px;
-            left: 10px;
+            top: 90px;
+            right: 10px;
             z-index: 12;
             background: rgba(0,0,0,0.78);
             border: 1px solid #ffcc66;
@@ -286,6 +287,9 @@
             font-size: 13px;
             font-weight: bold;
             padding: 6px 11px;
+            width: 136px;
+            text-align: center;
+            box-sizing: border-box;
             border-radius: 8px;
             cursor: pointer;
             user-select: none;
@@ -360,10 +364,10 @@
             display: flex;
             flex-wrap: wrap;
             justify-content: center;
-            gap: 10px;
+            gap: 14px;
             z-index: 10;
             background: rgba(0,0,0,0.7);
-            padding: 10px;
+            padding: 16px 18px;
             border-radius: 10px;
             max-width: min(96vw, 920px);
         }
@@ -472,6 +476,7 @@
                 right: 8px;
                 font-size: 12px;
                 padding: 5px 9px;
+                width: 118px;
             }
 
             #history-btn {
@@ -479,19 +484,16 @@
                 right: 8px;
                 font-size: 11px;
                 padding: 4px 8px;
+                width: 118px;
             }
 
             #tutorial-btn {
-                top: 8px;
-                left: 50%;
-                transform: translateX(-50%);
-                font-size: 13px;
-                padding: 7px 12px;
+                font-size: 12px;
+                padding: 6px 10px;
             }
 
             #daily-wins-tracker {
-                top: 44px;
-                width: min(92vw, 300px);
+                width: min(100%, 300px);
                 padding: 6px 8px;
             }
 
@@ -517,10 +519,11 @@
             }
 
             #leaderboard-btn {
-                top: 106px;
-                left: 8px;
+                top: 68px;
+                right: 8px;
                 font-size: 11px;
                 padding: 4px 8px;
+                width: 118px;
             }
 
             #account-chip {
@@ -547,7 +550,7 @@
                 width: min(90vw, 520px);
                 min-width: 0 !important;
                 padding: 10px 12px !important;
-                top: 16%;
+                top: 50%;
                 pointer-events: none;
             }
         }
@@ -948,15 +951,6 @@
     <!-- Match History button -->
     <button id="history-btn" onclick="openMatchHistory()">📊 History</button>
 
-    <!-- Tutorial button -->
-    <button id="tutorial-btn" onclick="openTutorial()">📖 How to Play</button>
-
-    <div id="daily-wins-tracker">
-        <div id="daily-wins-label">🎁 Daily Wins: 0/8</div>
-        <div id="daily-wins-fx"></div>
-        <div id="daily-wins-slots"></div>
-    </div>
-
     <!-- Leaderboard button -->
     <button id="leaderboard-btn" onclick="openLeaderboard()">🏆 Leaderboard</button>
 
@@ -1004,7 +998,7 @@
 
     <div id="credits-panel" class="modal-panel" style="width:700px;">
         <h2 style="color:#4ae8d8;">🎖️ Hero Marks Progression</h2>
-        <p style="text-align:center; color:#aaa; margin-top:-10px; font-size:13px;">Earn Hero Marks by playing &nbsp;|&nbsp; Unlock one player per tier &nbsp;|&nbsp; Must unlock Epic before Mythic, Mythic before Legendary</p>
+        <p style="text-align:center; color:#aaa; margin-top:-10px; font-size:13px;">Earn Hero Marks by playing &nbsp;|&nbsp; Unlock any Hero Marks player you can afford &nbsp;|&nbsp; No tier lock</p>
         <div id="credits-progress-bar" style="margin:10px auto 18px; max-width:420px;"></div>
         <div id="credits-tier-list"></div>
         <button class="btn modal-close" id="close-credits-panel" style="margin-top:12px;">Close</button>
@@ -1087,31 +1081,34 @@
                 <p>Stand in capture circles. Capture all zones to win!</p>
                 <div style="background: rgba(255, 204, 0, 0.2); padding: 5px 10px; border-radius: 20px; font-size: 12px; font-weight: bold;">6 Players (3v3) · 1-2 Zones</div>
             </div>
-            <div class="mode-card" data-mode="ranked">
-                <h3>🏅 Ranked Showdown</h3>
-                <p>Competitive ladder. Win to gain RP, lose to drop.</p>
-                <div style="background: rgba(74, 232, 216, 0.2); padding: 5px 10px; border-radius: 20px; font-size: 12px; font-weight: bold;">8 Players · Seasonal</div>
-            </div>
+            <!-- TODO(next): Re-enable Ranked Showdown card after ranked flow is fully implemented/fixed. -->
         </div>
         <button class="btn modal-close" id="close-modes-btn">Close</button>
     </div>
 
     <div class="menu">
-        <!-- Character showcase -->
-        <div id="char-showcase" style="display:flex; align-items:center; gap:18px; background:rgba(255,255,255,0.04); border:1px solid #333; border-radius:16px; padding:14px 20px; min-width:320px; position:fixed; left:50%; top:16%; transform:translate(-50%, -50%); z-index:12; pointer-events:none;">
-            <div id="char-showcase-img-wrap" style="width:96px; height:96px; flex-shrink:0; border-radius:12px; overflow:hidden; border:2px solid #555; background:#111;">
-                    <img id="char-showcase-img" src="" style="width:100%; height:100%; object-fit:cover; animation: showcasePulse 2s ease-in-out infinite;" />
-            </div>
-            <div style="text-align:left;">
-                    <div id="char-showcase-name" style="font-size:22px; font-weight:bold; color:#fff;"></div>
-                    <div id="char-showcase-rarity" style="font-size:14px; font-weight:bold; margin:3px 0;"></div>
-                    <div id="char-showcase-stats" style="font-size:13px; color:#aaa; line-height:1.55;"></div>
-            </div>
-        </div>
         <button class="btn" id="game-mode-btn">🎮 Game Modes</button>
         <button class="btn" id="start-btn">⚔️ Battle!</button>
         <button class="btn" id="credits-btn" style="background:#1a3a3a; border:1px solid #4ae8d8; color:#4ae8d8;">🎖️ Hero Marks</button>
         <button class="btn" id="switch-player-btn"> Players</button>
+    </div>
+
+    <!-- Character showcase - centered independently on screen -->
+    <div id="char-showcase" style="display:flex; flex-direction:column; align-items:center; gap:10px; background:rgba(255,255,255,0.04); border:1px solid #333; border-radius:16px; padding:12px 18px; min-width:320px; position:fixed; left:50%; top:50%; transform:translate(-50%, -50%); z-index:12; pointer-events:none;">
+        <button id="tutorial-btn" onclick="openTutorial()">📖 How to Play</button>
+        <div id="char-showcase-img-wrap" style="width:96px; height:96px; flex-shrink:0; border-radius:12px; overflow:hidden; border:2px solid #555; background:#111;">
+            <img id="char-showcase-img" src="" style="width:100%; height:100%; object-fit:cover; animation: showcasePulse 2s ease-in-out infinite;" />
+        </div>
+        <div style="text-align:center;">
+            <div id="char-showcase-name" style="font-size:22px; font-weight:bold; color:#fff;"></div>
+            <div id="char-showcase-rarity" style="font-size:14px; font-weight:bold; margin:3px 0;"></div>
+            <div id="char-showcase-stats" style="font-size:13px; color:#aaa; line-height:1.55;"></div>
+        </div>
+        <div id="daily-wins-tracker">
+            <div id="daily-wins-label">🎁 Daily Wins: 0/8</div>
+            <div id="daily-wins-fx"></div>
+            <div id="daily-wins-slots"></div>
+        </div>
     </div>
 
     <canvas id="gameCanvas"></canvas>
@@ -1244,6 +1241,7 @@
         let mapEventCooldown = 480;
         let accountAuthMode = 'login';
         let currentAccount = null;
+        let guestProfile = null;
         const PROFILE_AVATAR_ICONS = ['😀', '😎', '🤖', '🔥', '⚡', '🛡️', '👑', '🐍', '🦾', '🎯', '🚀', '⭐','🐖','💘'];
         const TITLE_REWARDS = [
             { key: 'Rookie', unlockMedals: 0 },
@@ -1369,7 +1367,7 @@
         }
 
         function getEquippedTitle(profile) {
-            return profile?.title || 'Rookie';
+            return profile?.username || 'Guest';
         }
 
         function isTitleUnlocked(titleKey) {
@@ -1395,7 +1393,7 @@
         }
 
         function getCurrentProfile() {
-            return currentAccount?.profile || null;
+            return currentAccount?.profile || guestProfile || null;
         }
 
         function updateAccountChip() {
@@ -1415,6 +1413,10 @@
         function saveCurrentAccountProfile() {
             const profile = getCurrentProfile();
             if (!profile) return;
+            if (!currentAccount) {
+                localStorage.setItem('nexusGuestProfile', JSON.stringify(profile));
+                return;
+            }
             const key = normalizeUsername(profile.username);
             const store = getAccountsStore();
             if (!store[key]) return;
@@ -1507,55 +1509,32 @@
         }
 
         function initAccountSystem() {
-            const loginTab = document.getElementById('account-tab-login');
-            const registerTab = document.getElementById('account-tab-register');
-            const submitBtn = document.getElementById('account-submit-btn');
+            const savedGuest = JSON.parse(localStorage.getItem('nexusGuestProfile') || 'null');
+            guestProfile = {
+                username: (savedGuest?.username || localStorage.getItem('profileName') || 'Guest').toString().trim() || 'Guest',
+                avatarIcon: savedGuest?.avatarIcon || localStorage.getItem('profileAvatar') || '😀',
+                title: (savedGuest?.username || localStorage.getItem('profileName') || 'Guest').toString().trim() || 'Guest',
+                selectedTitle: null,
+                killEffect: savedGuest?.killEffect || localStorage.getItem('selectedKillEffect') || 'classic',
+                createdAt: savedGuest?.createdAt || Date.now(),
+                lastLoginAt: Date.now(),
+                profileVersion: 1
+            };
+
+            currentAccount = { profile: guestProfile };
+            localStorage.setItem('nexusCurrentAccount', '__guest__');
+            localStorage.setItem('nexusGuestProfile', JSON.stringify(guestProfile));
+
+            const authOverlay = document.getElementById('account-auth-overlay');
+            if (authOverlay) authOverlay.style.display = 'none';
+
             const logoutBtn = document.getElementById('account-logout-btn');
 
-            loginTab.addEventListener('click', () => setAccountAuthMode('login'));
-            registerTab.addEventListener('click', () => setAccountAuthMode('register'));
-
-            function doAccountSubmit() {
-                const username = document.getElementById('account-username').value.trim();
-                const password = document.getElementById('account-password').value.trim();
-
-                if (accountAuthMode === 'register') {
-                    const r = registerAccount(username, password);
-                    if (!r.ok) return setAccountAuthMessage(r.message);
-                    setCurrentAccount(r.key);
-                    setAccountAuthMessage('Account created!', true);
-                    hideAccountOverlay();
-                    return;
-                }
-
-                const r = loginAccount(username, password);
-                if (!r.ok) return setAccountAuthMessage(r.message);
-                setCurrentAccount(r.key);
-                setAccountAuthMessage('Logged in!', true);
-                hideAccountOverlay();
-            }
-
-            submitBtn.addEventListener('click', doAccountSubmit);
-
-            // Allow pressing Enter in either input field to submit
-            ['account-username', 'account-password'].forEach(id => {
-                document.getElementById(id).addEventListener('keydown', e => {
-                    if (e.key === 'Enter') doAccountSubmit();
-                });
-            });
-
             if (logoutBtn) {
-                logoutBtn.addEventListener('click', () => {
-                    setCurrentAccount(null);
-                    showAccountOverlay();
-                });
+                logoutBtn.style.display = 'none';
             }
 
-            setAccountAuthMode('login');
-            const remembered = localStorage.getItem('nexusCurrentAccount');
-            if (remembered) setCurrentAccount(remembered);
-            else updateAccountChip();
-            if (!currentAccount) showAccountOverlay();
+            updateAccountChip();
         }
 
         function getMaxWinStreakPlayerFromHistory() {
@@ -1740,10 +1719,6 @@
 
         function initProfilePanel() {
             document.getElementById('account-chip-name').addEventListener('click', () => {
-                if (!currentAccount) {
-                    showAccountOverlay();
-                    return;
-                }
                 renderProfilePanel();
                 document.getElementById('profile-panel').style.display = 'block';
             });
@@ -1753,10 +1728,11 @@
             });
 
             document.getElementById('profile-logout-btn').addEventListener('click', () => {
-                setCurrentAccount(null);
                 document.getElementById('profile-panel').style.display = 'none';
-                showAccountOverlay();
             });
+
+            const profileLogoutBtn = document.getElementById('profile-logout-btn');
+            if (profileLogoutBtn) profileLogoutBtn.style.display = 'none';
         }
 
         const NEXUS_MEDAL_MILESTONES = [25, 50, 100];
@@ -2184,8 +2160,8 @@
                 creditCost: 200,
                 rarity: 'epic',
                 attackType: 'triple',        // wide 3-shot fan
-                superType: 'berserk',        // 2× damage + 2× fire rate for 5 s
-                superName: '😡 Berserk'
+                superType: 'selfexplode',    // explosion around self
+                superName: '💣 Bobom Blast'
             },
             kafekauboy: {
                 id: 'kafekauboy',
@@ -2314,6 +2290,7 @@
                 size: 50,
                 laserRange: 340,
                 price: 0,
+                creditCost: 500,
                 rarity: 'mythic',
                 attackType: 'venomshot',     // venom projectiles that apply poison ticks
                 superType: 'snakeswarm',     // summon 3 snake minions
@@ -2331,6 +2308,7 @@
                 size: 54,
                 laserRange: 380,
                 price: 0,
+                creditCost: 200,
                 rarity: 'epic',
                 attackType: 'bombshot',      // throws explosive bombs
                 superType: 'pompquake',      // knockback shockwave around target point
@@ -2347,7 +2325,7 @@
                 laserDamage: 2,
                 size: 50,
                 laserRange: 360,
-                creditCost: 420,
+                creditCost: 200,
                 rarity: 'epic',
                 attackType: 'shadowshot',
                 superType: 'shadowburst',
@@ -2364,7 +2342,7 @@
                 laserDamage: 2,
                 size: 52,
                 laserRange: 355,
-                creditCost: 460,
+                creditCost: 200,
                 rarity: 'epic',
                 attackType: 'thiefshot',
                 superType: 'pickpocket',
@@ -2381,7 +2359,7 @@
                 laserDamage: 3,
                 size: 54,
                 laserRange: 370,
-                creditCost: 520,
+                creditCost: 500,
                 rarity: 'mythic',
                 attackType: 'bananaburst',
                 superType: 'bananastorm',
@@ -2421,6 +2399,13 @@
         // Rarities above rare are unlocked with credits (pick ONE per tier)
         const creditRarities = ['epic', 'mythic', 'legendary'];
         const creditRarityThresholds = { epic: 200, mythic: 500, legendary: 1000 };
+
+        // Keep Hero Marks pricing consistent for every player in the same rarity.
+        Object.values(playersData).forEach(p => {
+            if (!p.creditCost) return;
+            const normalized = creditRarityThresholds[p.rarity];
+            if (normalized) p.creditCost = normalized;
+        });
 
         function hasUnlockedRarity(rarity) {
             return Object.values(playersData).some(p => p.rarity === rarity && unlockedNexus.includes(p.id));
@@ -6352,6 +6337,12 @@
                     p.superBuffType = 'berserk';
                     break;
                 }
+                case 'selfexplode': {
+                    const radius = 170;
+                    dealAoeDamage(cx, cy, radius, p.laserDamage * 5.5, p);
+                    superEffects.push({ type: 'screamflash', x: cx, y: cy, radius, timer: 28, shooter: p });
+                    break;
+                }
                 case 'coffeerush': {
                     p.superActive = true;
                     p.superTimer = 240; // 4 s
@@ -7092,15 +7083,15 @@
 
             // Scale rewards by game mode (3v3 is harder = more reward)
             const is3v3 = currentGameMode === '3v3' || currentGameMode === 'ballGoal' || currentGameMode === 'bounty' || currentGameMode === 'elimination' || currentGameMode === 'kingTown';
-            const winCoins  = is3v3 ? 150 : 100;
-            const loseCoins = is3v3 ? 50  : 25;
-            const winMedals  = is3v3 ? 12  : 8;
-            const loseMedals = is3v3 ? -4  : -2;
-            const winSparks  = is3v3 ? 30  : 20;
-            const loseSparks = is3v3 ? 12  : 8;
+            const winCoins  = is3v3 ? 80 : 55;
+            const loseCoins = is3v3 ? 25 : 12;
+            const winMedals  = is3v3 ? 8 : 5;
+            const loseMedals = is3v3 ? -3 : -1;
+            const winSparks  = is3v3 ? 18 : 12;
+            const loseSparks = is3v3 ? 7 : 4;
 
-            const winCredits = is3v3 ? 30 : 20;
-            const loseCredits = is3v3 ? 15 : 10;
+            const winCredits = is3v3 ? 14 : 9;
+            const loseCredits = is3v3 ? 6 : 4;
 
             if (isVictory) {
                 title.textContent = 'Victory!';
@@ -8006,6 +7997,7 @@
         function hideAllUI() {
             document.querySelector('.guide').style.display = 'none';
             document.querySelector('.menu').style.display = 'none';
+            document.getElementById('char-showcase').style.display = 'none';
             document.getElementById('account-chip').style.display = 'none';
             document.getElementById('joystick-container').style.display = 'none';
             document.getElementById('shoot-joystick-container').style.display = 'none';
@@ -8025,6 +8017,7 @@
         function showAllUI() {
             document.querySelector('.guide').style.display = 'none';
             document.querySelector('.menu').style.display = 'flex';
+            document.getElementById('char-showcase').style.display = 'flex';
             document.getElementById('account-chip').style.display = 'flex';
             document.getElementById('daily-btn').style.display = 'block';
             document.getElementById('history-btn').style.display = 'block';
@@ -8044,10 +8037,6 @@
         }
 
         function startGame() {
-            if (!currentAccount) {
-                showAccountOverlay();
-                return;
-            }
             hideAllUI();
             setupGameMode(currentGameMode);
             gameStarted = true;
@@ -8344,22 +8333,11 @@
         }
 
         function tryAutoUnlockCreditTier() {
-            const nextTier = creditsNextTier();
-            if (!nextTier) return false;
-            const pending = Object.values(playersData).find(p => p.rarity === nextTier && p.creditCost && !unlockedNexus.includes(p.id));
-            if (!pending) return false;
-            if (playerCredits < pending.creditCost) return false;
-
-            playerCredits -= pending.creditCost;
-            unlockedNexus.push(pending.id);
-            saveProgress();
-            showCoins();
-            showLootboxPopup(`🎖️ Auto Unlock: ${pending.name} (${rarityLabels[pending.rarity]}) for ${pending.creditCost} Hero Marks`);
-            return true;
+            // Auto unlock removed — tier picking is manual
+            return false;
         }
 
         function renderCreditsPanel() {
-            tryAutoUnlockCreditTier();
             const nextTier = creditsNextTier();
 
             // Progress bar
@@ -8367,7 +8345,7 @@
             if (nextTier) {
                 const sample = Object.values(playersData).find(p => p.rarity === nextTier && p.creditCost);
                 const cost = sample ? sample.creditCost : 0;
-                const pct  = cost > 0 ? Math.min(100, Math.round(playerCredits / cost * 100)) : 100;
+                const pct = cost > 0 ? Math.min(100, Math.round(playerCredits / cost * 100)) : 100;
                 barEl.innerHTML = `
                     <div style="color:#4ae8d8; font-size:13px; margin-bottom:4px; text-align:center;">
                         🎖️ <strong>${playerCredits}</strong> Hero Marks &nbsp;→&nbsp;
@@ -8536,7 +8514,6 @@
             const pd = playersData[playerId];
             if (!pd || !pd.creditCost) return;
             if (unlockedNexus.includes(playerId)) return;
-            if (creditsNextTier() !== pd.rarity) return;     // not your turn in cycle
             if (playerCredits < pd.creditCost) return;       // can't afford
             playerCredits -= pd.creditCost;
             localStorage.setItem('playerCredits', playerCredits);
@@ -8944,7 +8921,7 @@
             rarityEl.textContent = rl;
             rarityEl.style.color = rc;
             document.getElementById('char-showcase-stats').innerHTML =
-                `❤️ ${Math.round(pd.hp * bonus * COMBAT_STAT_SCALE)}  &nbsp;⚔️ ${Math.round(pd.laserDamage * bonus * COMBAT_STAT_SCALE)}  &nbsp;💨 ${pd.speed}  &nbsp;🎯 ${pd.laserRange}`;
+                `❤️ ${Math.round(pd.hp * bonus * COMBAT_STAT_SCALE)}<br>⚔️ ${Math.round(pd.laserDamage * bonus * COMBAT_STAT_SCALE)} &nbsp;💨 ${pd.speed} &nbsp;🎯 ${pd.laserRange}`;
         }
 
         function initGame() {
