@@ -192,6 +192,89 @@
         }
         #tutorial-btn:hover { background: rgba(0,40,80,0.92); }
 
+        #daily-wins-tracker {
+            position: absolute;
+            top: 56px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 12;
+            width: min(92vw, 360px);
+            background: rgba(0,0,0,0.78);
+            border: 1px solid #4cc9f0;
+            border-radius: 10px;
+            padding: 8px 10px;
+            text-align: center;
+            pointer-events: none;
+        }
+
+        #daily-wins-label {
+            color: #9fe9ff;
+            font-size: 12px;
+            font-weight: bold;
+            margin-bottom: 6px;
+        }
+
+        #daily-wins-fx {
+            position: absolute;
+            left: 50%;
+            top: -16px;
+            transform: translateX(-50%);
+            font-size: 13px;
+            font-weight: bold;
+            color: #ffe27a;
+            text-shadow: 0 0 10px rgba(255, 180, 0, 0.55);
+            opacity: 0;
+            pointer-events: none;
+            white-space: nowrap;
+        }
+
+        #daily-wins-fx.show {
+            animation: dailyRewardPop 0.95s ease forwards;
+        }
+
+        @keyframes dailyRewardPop {
+            0% { opacity: 0; transform: translate(-50%, 8px) scale(0.9); }
+            20% { opacity: 1; transform: translate(-50%, 0px) scale(1.04); }
+            100% { opacity: 0; transform: translate(-50%, -22px) scale(1); }
+        }
+
+        #daily-wins-slots {
+            display: flex;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .daily-win-slot {
+            width: 78px;
+            min-height: 46px;
+            border-radius: 8px;
+            border: 1px solid #35566a;
+            background: rgba(16, 26, 34, 0.9);
+            color: #7395ac;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 2px;
+            font-size: 15px;
+            font-weight: bold;
+            line-height: 1;
+            padding: 3px 2px;
+        }
+
+        .daily-win-slot small {
+            font-size: 10px;
+            color: #9ab8cc;
+            font-weight: bold;
+        }
+
+        .daily-win-slot.done {
+            border-color: #ffcc00;
+            background: rgba(255, 204, 0, 0.2);
+            color: #ffdd66;
+            box-shadow: 0 0 8px rgba(255, 204, 0, 0.35);
+        }
+
         #leaderboard-btn {
             position: absolute;
             top: 134px;
@@ -406,6 +489,33 @@
                 padding: 7px 12px;
             }
 
+            #daily-wins-tracker {
+                top: 44px;
+                width: min(92vw, 300px);
+                padding: 6px 8px;
+            }
+
+            #daily-wins-label {
+                font-size: 11px;
+                margin-bottom: 4px;
+            }
+
+            #daily-wins-fx {
+                font-size: 11px;
+                top: -14px;
+            }
+
+            .daily-win-slot {
+                width: 64px;
+                min-height: 42px;
+                font-size: 13px;
+                gap: 1px;
+            }
+
+            .daily-win-slot small {
+                font-size: 9px;
+            }
+
             #leaderboard-btn {
                 top: 106px;
                 left: 8px;
@@ -434,10 +544,11 @@
             }
 
             #char-showcase {
-                width: min(86vw, 460px);
+                width: min(90vw, 520px);
                 min-width: 0 !important;
-                padding: 8px 10px !important;
-                top: 50%;
+                padding: 10px 12px !important;
+                top: 16%;
+                pointer-events: none;
             }
         }
 
@@ -707,12 +818,12 @@
             📦 Shoot crates to break them — collect the drop!<br>
             🎒 Press F (or the item button) to use your first item<br>
             ⚔️ Press "Battle!" to start<br>
-            🎖️ Earn Credits &amp; unlock players in the Bazaar
+            🎖️ Earn Hero Marks &amp; unlock players in the Bazaar
         </p>
     </div>
 
     <div id="lootbox-popup">
-        <h2 style="color:#FFF; text-shadow:2px 2px 4px #000;">✅ Success!</h2>
+        <h2 style="color:#FFF; text-shadow:2px 2px 4px #000;">Reward</h2>
         <div id="lootbox-content" style="font-size:24px; margin:20px 0;"></div>
         <button id="lootbox-ok" style="background:#FFF; border:none; padding:10px 20px; border-radius:10px; font-weight:bold;">OK</button>
     </div>
@@ -745,7 +856,7 @@
         </div>
     </div>
 
-    <div id="coins-display" style="display:none;">💰 Coins: 0<br>🏅 Medals: 0<br>🎖️ Credits: 0</div>
+    <div id="coins-display" style="display:none;">💰 Coins: 0<br>🏅 Medals: 0<br>🎖️ Hero Marks: 0</div>
 
     <div id="account-chip" style="position:absolute; top:10px; left:10px; z-index:11; background:rgba(0,0,0,0.82); border:1px solid #44ccff; border-radius:12px; padding:10px 16px; display:flex; flex-direction:column; gap:5px; min-width:170px;">
         <span id="account-chip-name" style="font-size:20px; font-weight:bold; color:#9fe9ff; cursor:pointer; text-decoration:underline; text-underline-offset:3px; user-select:none;">Guest</span>
@@ -798,6 +909,28 @@
                 <div style="font-size:12px; color:#9ab0c9; margin-bottom:6px;">Kill Feed Color</div>
                 <div id="profile-killfeed-colors" style="display:flex; flex-wrap:wrap; gap:6px;"></div>
             </div>
+            <div style="background:rgba(255,255,255,0.04); border:1px solid #2e3a4a; border-radius:10px; padding:10px;">
+                <div style="font-size:12px; color:#9ab0c9; margin-bottom:6px;">Pompakis Bomb Variant</div>
+                <select id="profile-bomb-variant" style="width:100%; background:#121a2a; color:#fff; border:1px solid #36465f; border-radius:8px; padding:8px;">
+                    <option value="classic">Classic Bomb</option>
+                    <option value="sticky">Sticky Bomb</option>
+                    <option value="impact">Impact Bomb</option>
+                </select>
+            </div>
+            <div style="background:rgba(255,255,255,0.04); border:1px solid #2e3a4a; border-radius:10px; padding:10px;">
+                <div style="font-size:12px; color:#9ab0c9; margin-bottom:6px;">Cosmetic Title + Kill FX</div>
+                <div id="profile-ranked-info" style="font-size:13px; color:#8de3ff; margin-bottom:6px;"></div>
+                <select id="profile-title" style="width:100%; background:#121a2a; color:#fff; border:1px solid #36465f; border-radius:8px; padding:8px; margin-bottom:6px;"></select>
+                <select id="profile-kill-effect" style="width:100%; background:#121a2a; color:#fff; border:1px solid #36465f; border-radius:8px; padding:8px;"></select>
+            </div>
+            <div style="background:rgba(255,255,255,0.04); border:1px solid #2e3a4a; border-radius:10px; padding:10px;">
+                <div style="font-size:12px; color:#9ab0c9; margin-bottom:6px;">Clan</div>
+                <div id="profile-clan-info" style="font-size:13px; color:#d8e7ff; margin-bottom:8px;"></div>
+                <div style="display:flex; gap:6px;">
+                    <button id="profile-clan-create" class="btn" style="flex:1; padding:6px 8px; font-size:12px; background:#24445a; color:#9fe9ff;">Create/Join</button>
+                    <button id="profile-clan-leave" class="btn" style="flex:1; padding:6px 8px; font-size:12px; background:#442424; color:#ffaaaa;">Leave</button>
+                </div>
+            </div>
         </div>
         <div style="margin-top:14px; background:rgba(255,255,255,0.03); border:1px solid #2e3a4a; border-radius:10px; padding:10px;">
             <h3 style="margin:0 0 8px; color:#9fdfff; font-size:16px;">🏅 Medals Per Players You Have</h3>
@@ -817,6 +950,12 @@
 
     <!-- Tutorial button -->
     <button id="tutorial-btn" onclick="openTutorial()">📖 How to Play</button>
+
+    <div id="daily-wins-tracker">
+        <div id="daily-wins-label">🎁 Daily Wins: 0/8</div>
+        <div id="daily-wins-fx"></div>
+        <div id="daily-wins-slots"></div>
+    </div>
 
     <!-- Leaderboard button -->
     <button id="leaderboard-btn" onclick="openLeaderboard()">🏆 Leaderboard</button>
@@ -864,8 +1003,8 @@
     </div>
 
     <div id="credits-panel" class="modal-panel" style="width:700px;">
-        <h2 style="color:#4ae8d8;">🎖️ Credits Progression</h2>
-        <p style="text-align:center; color:#aaa; margin-top:-10px; font-size:13px;">Earn credits by playing &nbsp;|&nbsp; Unlock one player per tier &nbsp;|&nbsp; Must unlock Epic before Mythic, Mythic before Legendary</p>
+        <h2 style="color:#4ae8d8;">🎖️ Hero Marks Progression</h2>
+        <p style="text-align:center; color:#aaa; margin-top:-10px; font-size:13px;">Earn Hero Marks by playing &nbsp;|&nbsp; Unlock one player per tier &nbsp;|&nbsp; Must unlock Epic before Mythic, Mythic before Legendary</p>
         <div id="credits-progress-bar" style="margin:10px auto 18px; max-width:420px;"></div>
         <div id="credits-tier-list"></div>
         <button class="btn modal-close" id="close-credits-panel" style="margin-top:12px;">Close</button>
@@ -948,25 +1087,30 @@
                 <p>Stand in capture circles. Capture all zones to win!</p>
                 <div style="background: rgba(255, 204, 0, 0.2); padding: 5px 10px; border-radius: 20px; font-size: 12px; font-weight: bold;">6 Players (3v3) · 1-2 Zones</div>
             </div>
+            <div class="mode-card" data-mode="ranked">
+                <h3>🏅 Ranked Showdown</h3>
+                <p>Competitive ladder. Win to gain RP, lose to drop.</p>
+                <div style="background: rgba(74, 232, 216, 0.2); padding: 5px 10px; border-radius: 20px; font-size: 12px; font-weight: bold;">8 Players · Seasonal</div>
+            </div>
         </div>
         <button class="btn modal-close" id="close-modes-btn">Close</button>
     </div>
 
     <div class="menu">
         <!-- Character showcase -->
-        <div id="char-showcase" style="display:flex; align-items:center; gap:14px; background:rgba(255,255,255,0.04); border:1px solid #333; border-radius:14px; padding:10px 16px; min-width:220px; position:fixed; left:50%; top:50%; transform:translate(-50%, -50%); z-index:12;">
-            <div id="char-showcase-img-wrap" style="width:72px; height:72px; flex-shrink:0; border-radius:10px; overflow:hidden; border:2px solid #555; background:#111;">
-                <img id="char-showcase-img" src="" style="width:100%; height:100%; object-fit:cover; animation: showcasePulse 2s ease-in-out infinite;" />
+        <div id="char-showcase" style="display:flex; align-items:center; gap:18px; background:rgba(255,255,255,0.04); border:1px solid #333; border-radius:16px; padding:14px 20px; min-width:320px; position:fixed; left:50%; top:16%; transform:translate(-50%, -50%); z-index:12; pointer-events:none;">
+            <div id="char-showcase-img-wrap" style="width:96px; height:96px; flex-shrink:0; border-radius:12px; overflow:hidden; border:2px solid #555; background:#111;">
+                    <img id="char-showcase-img" src="" style="width:100%; height:100%; object-fit:cover; animation: showcasePulse 2s ease-in-out infinite;" />
             </div>
             <div style="text-align:left;">
-                <div id="char-showcase-name" style="font-size:16px; font-weight:bold; color:#fff;"></div>
-                <div id="char-showcase-rarity" style="font-size:12px; font-weight:bold; margin:2px 0;"></div>
-                <div id="char-showcase-stats" style="font-size:11px; color:#aaa; line-height:1.5;"></div>
+                    <div id="char-showcase-name" style="font-size:22px; font-weight:bold; color:#fff;"></div>
+                    <div id="char-showcase-rarity" style="font-size:14px; font-weight:bold; margin:3px 0;"></div>
+                    <div id="char-showcase-stats" style="font-size:13px; color:#aaa; line-height:1.55;"></div>
             </div>
         </div>
         <button class="btn" id="game-mode-btn">🎮 Game Modes</button>
         <button class="btn" id="start-btn">⚔️ Battle!</button>
-        <button class="btn" id="credits-btn" style="background:#1a3a3a; border:1px solid #4ae8d8; color:#4ae8d8;">🎖️ Credits</button>
+        <button class="btn" id="credits-btn" style="background:#1a3a3a; border:1px solid #4ae8d8; color:#4ae8d8;">🎖️ Hero Marks</button>
         <button class="btn" id="switch-player-btn"> Players</button>
     </div>
 
@@ -1085,9 +1229,158 @@
         let unlockedGadgets = JSON.parse(localStorage.getItem('unlockedGadgets') ?? '["default"]');
         let playerMedalsByNexus = JSON.parse(localStorage.getItem('playerMedalsByNexus') ?? '{}');
         let claimedNexusMedalMilestones = JSON.parse(localStorage.getItem('claimedNexusMedalMilestones') ?? '{}');
+        let rankedPoints = parseInt(localStorage.getItem('rankedPoints') ?? '1000');
+        let rankedSeasonId = localStorage.getItem('rankedSeasonId') ?? '';
+        let clanState = JSON.parse(localStorage.getItem('clanState') ?? '{"name":"","points":0,"wins":0}');
+        let pompakisBombVariant = localStorage.getItem('pompakisBombVariant') ?? 'classic';
+        let selectedKillEffect = localStorage.getItem('selectedKillEffect') ?? 'classic';
+        const DAILY_WINS_MAX = 8;
+        let dailyWinsState = { day: '', wins: 0 };
+        let pendingStarDrops = 0;
+        let killCamTimer = 0;
+        let killCamText = '';
+        let killCamSeenTs = 0;
+        let activeMapEvent = null;
+        let mapEventCooldown = 480;
         let accountAuthMode = 'login';
         let currentAccount = null;
         const PROFILE_AVATAR_ICONS = ['😀', '😎', '🤖', '🔥', '⚡', '🛡️', '👑', '🐍', '🦾', '🎯', '🚀', '⭐','🐖','💘'];
+        const TITLE_REWARDS = [
+            { key: 'Rookie', unlockMedals: 0 },
+            { key: 'Contender', unlockMedals: 60 },
+            { key: 'Warlord', unlockMedals: 150 },
+            { key: 'Legend', unlockMedals: 320 }
+        ];
+        const KILL_EFFECTS = {
+            classic: { name: 'Classic ⚡', icon: '⚡', unlockMedals: 0 },
+            fire: { name: 'Fire 🔥', icon: '🔥', unlockMedals: 90 },
+            neon: { name: 'Neon ✨', icon: '✨', unlockMedals: 200 }
+        };
+        const POMPAKIS_BOMB_VARIANTS = {
+            classic: { name: 'Classic Bomb', speed: 6.2, life: 130, damageMult: 1.9, aoeRadius: 70 },
+            sticky: { name: 'Sticky Bomb', speed: 4.9, life: 165, damageMult: 2.1, aoeRadius: 80 },
+            impact: { name: 'Impact Bomb', speed: 8.1, life: 95, damageMult: 1.6, aoeRadius: 54 }
+        };
+        const DAILY_WIN_REWARDS = [
+            { type: 'chest', icon: '📦', short: 'Chest', text: 'Chest Drop' },
+            { type: 'credits', amount: 15, icon: '🎖️', short: '+15', text: '+15 Hero Marks' },
+            { type: 'resources', coins: 70, sparks: 12, icon: '⚡', short: '+Res', text: '+70 Coins +12 Sparks' },
+            { type: 'chest', icon: '📦', short: 'Chest', text: 'Chest Drop' },
+            { type: 'credits', amount: 20, icon: '🎖️', short: '+20', text: '+20 Hero Marks' },
+            { type: 'resources', coins: 90, sparks: 18, icon: '💰', short: '+Res', text: '+90 Coins +18 Sparks' },
+            { type: 'chest', icon: '📦', short: 'Chest', text: 'Chest Drop' },
+            { type: 'resources', coins: 120, sparks: 25, icon: '💎', short: 'Big', text: '+120 Coins +25 Sparks' }
+        ];
+
+        function playDailyWinRewardFx(reward) {
+            const fx = document.getElementById('daily-wins-fx');
+            if (!fx || !reward) return;
+            fx.classList.remove('show');
+            fx.textContent = `+ ${reward.text}`;
+            // Restart animation reliably
+            void fx.offsetWidth;
+            fx.classList.add('show');
+        }
+
+        function getCurrentSeasonId() {
+            const d = new Date();
+            return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}`;
+        }
+
+        function ensureRankedSeason() {
+            const season = getCurrentSeasonId();
+            if (rankedSeasonId === season) return;
+            rankedSeasonId = season;
+            rankedPoints = 1000;
+            localStorage.setItem('rankedSeasonId', rankedSeasonId);
+            localStorage.setItem('rankedPoints', String(rankedPoints));
+        }
+
+        function saveMetaProgress() {
+            localStorage.setItem('rankedPoints', String(rankedPoints));
+            localStorage.setItem('rankedSeasonId', rankedSeasonId);
+            localStorage.setItem('clanState', JSON.stringify(clanState));
+            localStorage.setItem('pompakisBombVariant', pompakisBombVariant);
+            localStorage.setItem('selectedKillEffect', selectedKillEffect);
+        }
+
+        function loadDailyWinsState() {
+            const today = getDailyKey();
+            const saved = JSON.parse(localStorage.getItem('dailyWinsState') || 'null');
+            if (saved && saved.day === today) {
+                return { day: today, wins: Math.max(0, Math.min(DAILY_WINS_MAX, toSafeInt(saved.wins))) };
+            }
+            const fresh = { day: today, wins: 0 };
+            localStorage.setItem('dailyWinsState', JSON.stringify(fresh));
+            return fresh;
+        }
+
+        function saveDailyWinsState() {
+            localStorage.setItem('dailyWinsState', JSON.stringify(dailyWinsState));
+        }
+
+        function ensureDailyWinsState() {
+            const today = getDailyKey();
+            if (!dailyWinsState || dailyWinsState.day !== today) {
+                dailyWinsState = { day: today, wins: 0 };
+                saveDailyWinsState();
+            }
+        }
+
+        function renderDailyWinsWidget() {
+            ensureDailyWinsState();
+            const labelEl = document.getElementById('daily-wins-label');
+            const slotsEl = document.getElementById('daily-wins-slots');
+            if (!labelEl || !slotsEl) return;
+
+            const wins = dailyWinsState.wins;
+            const pageStart = wins >= 4 ? 4 : 0;
+            const pageDone = Math.max(0, Math.min(4, wins - pageStart));
+            labelEl.textContent = `🎁 Daily Wins: ${wins}/${DAILY_WINS_MAX} ${pageStart === 0 ? '(1-4)' : '(5-8)'}`;
+
+            let html = '';
+            for (let i = 0; i < 4; i++) {
+                const done = i < pageDone;
+                const reward = DAILY_WIN_REWARDS[pageStart + i] || DAILY_WIN_REWARDS[0];
+                html += `<div class="daily-win-slot${done ? ' done' : ''}" title="${reward.text}"><span>${reward.icon}</span><small>${reward.short}</small></div>`;
+            }
+            slotsEl.innerHTML = html;
+        }
+
+        function awardDailyWinReward() {
+            ensureDailyWinsState();
+            if (dailyWinsState.wins >= DAILY_WINS_MAX) return null;
+            const reward = DAILY_WIN_REWARDS[dailyWinsState.wins] || DAILY_WIN_REWARDS[0];
+            dailyWinsState.wins++;
+            if (reward.type === 'chest') {
+                pendingStarDrops++;
+            } else if (reward.type === 'credits') {
+                playerCredits += Math.max(0, toSafeInt(reward.amount));
+            } else if (reward.type === 'resources') {
+                playerCoins += Math.max(0, toSafeInt(reward.coins));
+                energySparks += Math.max(0, toSafeInt(reward.sparks));
+            }
+            saveDailyWinsState();
+            saveProgress();
+            showCoins();
+            renderDailyWinsWidget();
+            playDailyWinRewardFx(reward);
+            return reward;
+        }
+
+        function getEquippedTitle(profile) {
+            return profile?.title || 'Rookie';
+        }
+
+        function isTitleUnlocked(titleKey) {
+            const info = TITLE_REWARDS.find(t => t.key === titleKey);
+            return !!info && playerMedals >= info.unlockMedals;
+        }
+
+        function isKillEffectUnlocked(effectKey) {
+            const info = KILL_EFFECTS[effectKey];
+            return !!info && playerMedals >= info.unlockMedals;
+        }
 
         function normalizeUsername(value) {
             return (value || '').trim().toLowerCase();
@@ -1110,7 +1403,8 @@
             const chipStats = document.getElementById('account-chip-stats');
             const profile = getCurrentProfile();
             const avatar = profile?.avatarIcon || '👤';
-            chipName.textContent = profile ? `${avatar} ${profile.username}` : 'Guest';
+            const title = getEquippedTitle(profile);
+            chipName.textContent = profile ? `${avatar} [${title}] ${profile.username}` : 'Guest';
             if (chipStats) {
                 chipStats.innerHTML = profile
                     ? `💰 ${playerCoins}&nbsp;&nbsp;🏅 ${playerMedals}<br>⚡ ${energySparks}&nbsp;&nbsp;🎖️ ${playerCredits}`
@@ -1192,6 +1486,8 @@
                     favoriteNexus: 'default',
                     avatarIcon: '😀',
                     avatarColor: '#44ccff',
+                    title: 'Rookie',
+                    killEffect: 'classic',
                     createdAt: Date.now(),
                     lastLoginAt: Date.now(),
                     profileVersion: 1
@@ -1352,6 +1648,78 @@
                 colorWrap.appendChild(b);
             });
 
+            const rankedInfo = document.getElementById('profile-ranked-info');
+            ensureRankedSeason();
+            rankedInfo.textContent = `Season ${rankedSeasonId} • RP ${rankedPoints}`;
+
+            const bombSelect = document.getElementById('profile-bomb-variant');
+            bombSelect.value = pompakisBombVariant;
+            bombSelect.onchange = () => {
+                pompakisBombVariant = bombSelect.value;
+                saveMetaProgress();
+                showLootboxPopup(`Pompakis equipped: ${POMPAKIS_BOMB_VARIANTS[pompakisBombVariant]?.name || 'Classic Bomb'}`);
+            };
+
+            const titleSelect = document.getElementById('profile-title');
+            titleSelect.innerHTML = '';
+            TITLE_REWARDS.forEach(t => {
+                const opt = document.createElement('option');
+                const unlocked = isTitleUnlocked(t.key);
+                opt.value = t.key;
+                opt.textContent = unlocked ? `${t.key}` : `${t.key} (unlock at ${t.unlockMedals} medals)`;
+                opt.disabled = !unlocked;
+                titleSelect.appendChild(opt);
+            });
+            const equippedTitle = getEquippedTitle(profile);
+            titleSelect.value = isTitleUnlocked(equippedTitle) ? equippedTitle : 'Rookie';
+            titleSelect.onchange = () => {
+                profile.title = titleSelect.value;
+                saveCurrentAccountProfile();
+                updateAccountChip();
+            };
+
+            const fxSelect = document.getElementById('profile-kill-effect');
+            fxSelect.innerHTML = '';
+            Object.entries(KILL_EFFECTS).forEach(([key, cfg]) => {
+                const opt = document.createElement('option');
+                const unlocked = isKillEffectUnlocked(key);
+                opt.value = key;
+                opt.textContent = unlocked ? cfg.name : `${cfg.name} (unlock at ${cfg.unlockMedals} medals)`;
+                opt.disabled = !unlocked;
+                fxSelect.appendChild(opt);
+            });
+            selectedKillEffect = profile.killEffect && isKillEffectUnlocked(profile.killEffect) ? profile.killEffect : 'classic';
+            fxSelect.value = selectedKillEffect;
+            fxSelect.onchange = () => {
+                selectedKillEffect = fxSelect.value;
+                profile.killEffect = selectedKillEffect;
+                saveCurrentAccountProfile();
+                saveMetaProgress();
+            };
+
+            const clanInfo = document.getElementById('profile-clan-info');
+            clanInfo.textContent = clanState.name
+                ? `${clanState.name} • ${clanState.points || 0} pts • ${clanState.wins || 0} wins`
+                : 'No clan joined';
+            document.getElementById('profile-clan-create').onclick = () => {
+                const name = (window.prompt('Enter clan name (3-18 chars):', clanState.name || '') || '').trim();
+                if (!name) return;
+                if (name.length < 3 || name.length > 18) {
+                    showLootboxPopup('Clan name must be 3-18 characters.');
+                    return;
+                }
+                clanState.name = name;
+                clanState.points = clanState.points || 0;
+                clanState.wins = clanState.wins || 0;
+                saveMetaProgress();
+                renderProfilePanel();
+            };
+            document.getElementById('profile-clan-leave').onclick = () => {
+                clanState = { name: '', points: 0, wins: 0 };
+                saveMetaProgress();
+                renderProfilePanel();
+            };
+
             const medalsEntries = Object.values(playersData)
                 .filter(pd => unlockedNexus.includes(pd.id))
                 .map(pd => ({ id: pd.id, name: pd.name, medals: getNexusMedals(pd.id) }))
@@ -1443,7 +1811,7 @@
                 } else if (milestone === 100) {
                     playerCredits += 10;
                     energySparks += 500;
-                    messages.push(`🏅 ${playerName} Medal ${milestone}: +10 credits and +500 sparks!`);
+                    messages.push(`🏅 ${playerName} Medal ${milestone}: +10 Hero Marks and +500 sparks!`);
                 }
 
                 markNexusMedalMilestoneClaimed(playerId, milestone);
@@ -1602,6 +1970,9 @@
             kapnas:           { name: '💨 Smoke Puff',    icon: '💨', cooldown: 480 },
             fidas:            { name: '🐍 Venom Nest',    icon: '🐍', cooldown: 600 },
             pompakis:         { name: '🫧 Bubble Guard',  icon: '🫧', cooldown: 540 },
+            shaado:           { name: '🌑 Shade Blink',   icon: '🌑', cooldown: 560 },
+            thifer:           { name: '👜 Swipe Dash',    icon: '👜', cooldown: 560 },
+            gobanana:         { name: '🍌 Banana Ring',   icon: '🍌', cooldown: 520 },
         };
 
         const TIMOR_GADGET_KEYS = ['timor', 'timor_mine', 'timor_rocket'];
@@ -1961,10 +2332,61 @@
                 laserRange: 380,
                 price: 0,
                 rarity: 'epic',
-                attackType: 'pumpburst',     // short fan burst of bubbles
+                attackType: 'bombshot',      // throws explosive bombs
                 superType: 'pompquake',      // knockback shockwave around target point
                 superName: '🫧 Pomp Quake',
                 superNeedsAim: true
+            },
+            shaado: {
+                id: 'shaado',
+                name: 'Shaado',
+                img: 'images/shado.png',
+                color: '#6d28d9',
+                hp: 32,
+                speed: 5.8,
+                laserDamage: 2,
+                size: 50,
+                laserRange: 360,
+                creditCost: 420,
+                rarity: 'epic',
+                attackType: 'shadowshot',
+                superType: 'shadowburst',
+                superName: '🌑 Shadow Burst',
+                superNeedsAim: true
+            },
+            thifer: {
+                id: 'thifer',
+                name: 'Thifer',
+                img: 'images/thiefer.png',
+                color: '#eab308',
+                hp: 36,
+                speed: 5.1,
+                laserDamage: 2,
+                size: 52,
+                laserRange: 355,
+                creditCost: 460,
+                rarity: 'epic',
+                attackType: 'thiefshot',
+                superType: 'pickpocket',
+                superName: '👜 Pickpocket Rush',
+                superNeedsAim: false
+            },
+            gobanana: {
+                id: 'gobanana',
+                name: 'Gobanana',
+                img: 'images/gobanan.png',
+                color: '#f59e0b',
+                hp: 40,
+                speed: 4.9,
+                laserDamage: 3,
+                size: 54,
+                laserRange: 370,
+                creditCost: 520,
+                rarity: 'mythic',
+                attackType: 'bananaburst',
+                superType: 'bananastorm',
+                superName: '🍌 Banana Storm',
+                superNeedsAim: false
             },
             kapnas: {
                 id: 'kapnas',
@@ -2223,12 +2645,24 @@
                     const y = Math.max(0, Math.min(MAP_HEIGHT - 44, (s.y || 0) - 22));
                     crateBoxes.push({ x, y, size: 44, hp: 4, maxHp: 4, spawnX: x, spawnY: y });
                 }
+                const fixedPackCount = currentGameMode === 'ballGoal' ? 4 : 6;
+                for (let i = 0; i < fixedPackCount; i++) {
+                    const pos = getSpawnPosition(26);
+                    healthPacks.push({ x: pos.x, y: pos.y, size: 26, healAmount: Math.round(8 * COMBAT_STAT_SCALE) });
+                }
                 return;
             }
             // Spawn 10 destructible crates instead of plain health packs
             for (let i = 0; i < 10; i++) {
                 const pos = getSpawnPosition(44);
                 crateBoxes.push({ x: pos.x, y: pos.y, size: 44, hp: 4, maxHp: 4 });
+            }
+
+            // Also spawn classic direct heal packs across the map
+            const packCount = currentGameMode === 'ballGoal' ? 4 : 6;
+            for (let i = 0; i < packCount; i++) {
+                const pos = getSpawnPosition(26);
+                healthPacks.push({ x: pos.x, y: pos.y, size: 26, healAmount: Math.round(8 * COMBAT_STAT_SCALE) });
             }
         }
 
@@ -2475,6 +2909,30 @@
 
         // Health pack collision — kept for backward compat but does nothing now (replaced by crate system)
         function checkHealthPackCollision(entity) {
+            for (let i = healthPacks.length - 1; i >= 0; i--) {
+                const pack = healthPacks[i];
+                if (entity.x < pack.x + pack.size && entity.x + entity.size > pack.x &&
+                    entity.y < pack.y + pack.size && entity.y + entity.size > pack.y) {
+                    const amount = pack.healAmount || Math.round(8 * COMBAT_STAT_SCALE);
+                    const beforeHp = entity.currentHp;
+                    entity.currentHp = Math.min(entity.maxHp, entity.currentHp + amount);
+                    const healed = Math.max(0, entity.currentHp - beforeHp);
+                    if (healed > 0) {
+                        entity.healingReceived = (entity.healingReceived || 0) + healed;
+                        spawnHealPickupEffect(entity.x + entity.size / 2, entity.y + entity.size / 2, 1);
+                        if (entity.isHuman) {
+                            healMessage = { text: `+${healed} HP`, timer: 90 };
+                        }
+                    }
+
+                    healthPacks.splice(i, 1);
+                    setTimeout(() => {
+                        if (!gameStarted) return;
+                        const pos = getSpawnPosition(26);
+                        healthPacks.push({ x: pos.x, y: pos.y, size: 26, healAmount: Math.round(8 * COMBAT_STAT_SCALE) });
+                    }, 14000);
+                }
+            }
             checkPickupCollision(entity);
         }
 
@@ -2556,6 +3014,21 @@
             } else if (aType === 'venomshot') {
                 lasers.push(makeLaser(0, 0, nx * 11, ny * 11, 95, player.laserDamage, { poisonTicks: 3 }));
                 player.shootCooldown = 17;
+            } else if (aType === 'shadowshot') {
+                lasers.push(makeLaser(0, 0, nx * 12.6, ny * 12.6, 88, Math.max(1, Math.round(player.laserDamage * 1.1)), { poisonTicks: 2 }));
+                player.shootCooldown = 14;
+            } else if (aType === 'thiefshot') {
+                lasers.push(makeLaser(0, 0, nx * 9.5, ny * 9.5, 92, Math.max(1, Math.round(player.laserDamage * 1.2)), { boomerang: true, returnTimer: 34, origVx: nx * 9.5, origVy: ny * 9.5, coinSteal: 3 }));
+                player.shootCooldown = 20;
+            } else if (aType === 'bananaburst') {
+                for (const angle of [-0.24, 0, 0.24]) {
+                    const r = rotated(nx, ny, angle);
+                    lasers.push(makeLaser(0, 0, r.vx * 0.82, r.vy * 0.82, 78, Math.max(1, Math.round(player.laserDamage * 0.9)), { aoeRadius: 30, bananaSlow: true }));
+                }
+                player.shootCooldown = 21;
+            } else if (aType === 'bombshot') {
+                lasers.push(makeLaser(0, 0, nx * 6.2, ny * 6.2, 130, Math.max(1, Math.round(player.laserDamage * 1.9)), { radius: 11, aoeRadius: 70 }));
+                player.shootCooldown = 26;
             } else if (aType === 'pumpburst') {
                 for (const angle of [-0.32, -0.1, 0.1, 0.32]) {
                     const r = rotated(nx, ny, angle);
@@ -2624,6 +3097,17 @@
                 aiLasers.push({ x: cx, y: cy, vx: dirX * laserSpeed, vy: dirY * laserSpeed, life: 90, damage: bot.laserDamage, shooter: bot, attackType: aType, aoeRadius: 55 });
             } else if (aType === 'venomshot') {
                 aiLasers.push({ x: cx, y: cy, vx: dirX * 11, vy: dirY * 11, life: 95, damage: bot.laserDamage, shooter: bot, attackType: aType, poisonTicks: 3 });
+            } else if (aType === 'shadowshot') {
+                aiLasers.push({ x: cx, y: cy, vx: dirX * 12.6, vy: dirY * 12.6, life: 88, damage: Math.max(1, Math.round(bot.laserDamage * 1.1)), shooter: bot, attackType: aType, poisonTicks: 2 });
+            } else if (aType === 'thiefshot') {
+                aiLasers.push({ x: cx, y: cy, vx: dirX * 9.5, vy: dirY * 9.5, life: 92, damage: Math.max(1, Math.round(bot.laserDamage * 1.2)), shooter: bot, attackType: aType, boomerang: true, returnTimer: 34, origVx: dirX * 9.5, origVy: dirY * 9.5, coinSteal: 3 });
+            } else if (aType === 'bananaburst') {
+                for (const angle of [-0.24, 0, 0.24]) {
+                    const r = rotated(dirX, dirY, angle);
+                    aiLasers.push({ x: cx, y: cy, vx: r.vx * 0.82, vy: r.vy * 0.82, life: 78, damage: Math.max(1, Math.round(bot.laserDamage * 0.9)), shooter: bot, attackType: aType, aoeRadius: 30, bananaSlow: true });
+                }
+            } else if (aType === 'bombshot') {
+                aiLasers.push({ x: cx, y: cy, vx: dirX * 6.2, vy: dirY * 6.2, life: 130, damage: Math.max(1, Math.round(bot.laserDamage * 1.9)), shooter: bot, attackType: aType, radius: 11, aoeRadius: 70 });
             } else if (aType === 'pumpburst') {
                 for (const angle of [-0.32, -0.1, 0.1, 0.32]) {
                     const r = rotated(dirX, dirY, angle);
@@ -3011,10 +3495,14 @@
         function findNearestHealthPack(bot) {
             let nearest = null;
             let minDistance = Infinity;
-            // Find nearest heal pickup first, then any pickup
-            const targets = pickupItems.filter(p => p.type === 'heal').length > 0
-                ? pickupItems.filter(p => p.type === 'heal')
-                : pickupItems;
+            // Prefer direct heal packs, otherwise heal pickups from crates, otherwise any pickup
+            let targets = healthPacks;
+            if (!targets || targets.length === 0) {
+                targets = pickupItems.filter(p => p.type === 'heal');
+            }
+            if (!targets || targets.length === 0) {
+                targets = pickupItems;
+            }
             for (let item of targets) {
                 const dist = getDistance(bot.x, bot.y, item.x, item.y);
                 if (dist < minDistance) {
@@ -3437,6 +3925,28 @@
         }
 
         function drawHealthPacks() {
+            // ── Draw direct heal packs ──
+            ctx.save();
+            const healPulse = Math.sin(Date.now() / 260) * 0.12 + 1;
+            for (const hp of healthPacks) {
+                const cx = hp.x - camera.x + hp.size / 2;
+                const cy = hp.y - camera.y + hp.size / 2;
+                const r = (hp.size / 2) * healPulse;
+
+                ctx.shadowColor = '#22cc55';
+                ctx.shadowBlur = 12;
+                ctx.fillStyle = 'rgba(34, 204, 85, 0.35)';
+                ctx.beginPath();
+                ctx.arc(cx, cy, r, 0, Math.PI * 2);
+                ctx.fill();
+
+                ctx.shadowBlur = 0;
+                ctx.fillStyle = '#ffffff';
+                ctx.fillRect(cx - 3, cy - 10, 6, 20);
+                ctx.fillRect(cx - 10, cy - 3, 20, 6);
+            }
+            ctx.restore();
+
             // ── Draw destructible crates ──
             ctx.save();
             for (const c of crateBoxes) {
@@ -3563,11 +4073,17 @@
                     ctx.globalAlpha = 0.4;
                 }
 
-                // Invisible (gadget cloak) — faint for human, hidden for enemies
+                // Shaado super phase: partially transparent while dashing
+                const isShadowPhasing = (p.shadowPhaseTimer || 0) > 0;
+                if (isShadowPhasing) {
+                    ctx.globalAlpha = Math.min(ctx.globalAlpha, 0.55);
+                }
+
+                // Invisible (gadget cloak) — keep enemies faintly visible for fairness/readability
                 const isInvisible = (p.gadgetInvisibleTimer || 0) > 0;
                 if (isInvisible) {
                     if (p.isHuman) ctx.globalAlpha = 0.25;
-                    else { ctx.restore(); return; }
+                    else ctx.globalAlpha = Math.min(ctx.globalAlpha, 0.18);
                 }
 
                 const teamColor = p.team ? teamColors[p.team] : null;
@@ -3739,6 +4255,21 @@
                     ctx.strokeStyle = '#ffcc00';
                     ctx.lineWidth = 2;
                     ctx.stroke();
+                } else if (aType === 'bombshot') {
+                    const r = laser.radius || 10;
+                    ctx.shadowColor = '#ffb347';
+                    ctx.shadowBlur = 16;
+                    ctx.fillStyle = '#d97706';
+                    ctx.beginPath();
+                    ctx.arc(lx, ly, r, 0, Math.PI * 2);
+                    ctx.fill();
+                    ctx.strokeStyle = '#fde68a';
+                    ctx.lineWidth = 2;
+                    ctx.stroke();
+                    ctx.fillStyle = '#2b2b2b';
+                    ctx.beginPath();
+                    ctx.arc(lx - r * 0.25, ly - r * 0.2, Math.max(2, r * 0.22), 0, Math.PI * 2);
+                    ctx.fill();
                 } else if (aType === 'homing') {
                     ctx.strokeStyle = '#00ff88';
                     ctx.lineWidth = 3;
@@ -3767,6 +4298,33 @@
                     ctx.beginPath();
                     ctx.moveTo(lx, ly);
                     ctx.lineTo(lx - laser.vx * 2.5, ly - laser.vy * 2.5);
+                    ctx.stroke();
+                } else if (aType === 'shadowshot') {
+                    ctx.strokeStyle = '#8b5cf6';
+                    ctx.lineWidth = 3;
+                    ctx.shadowColor = '#7c3aed';
+                    ctx.shadowBlur = 12;
+                    ctx.beginPath();
+                    ctx.moveTo(lx, ly);
+                    ctx.lineTo(lx - laser.vx * 2.6, ly - laser.vy * 2.6);
+                    ctx.stroke();
+                } else if (aType === 'thiefshot') {
+                    ctx.strokeStyle = '#facc15';
+                    ctx.lineWidth = 3;
+                    ctx.shadowColor = '#f59e0b';
+                    ctx.shadowBlur = 10;
+                    ctx.beginPath();
+                    ctx.arc(lx, ly, 6, 0, Math.PI * 1.7);
+                    ctx.stroke();
+                } else if (aType === 'bananaburst') {
+                    ctx.shadowColor = '#facc15';
+                    ctx.shadowBlur = 10;
+                    ctx.fillStyle = '#facc15';
+                    ctx.beginPath();
+                    ctx.arc(lx, ly, 4, 0, Math.PI * 2);
+                    ctx.fill();
+                    ctx.strokeStyle = '#ca8a04';
+                    ctx.lineWidth = 1.5;
                     ctx.stroke();
                 } else {
                     // standard / spread / triple / double / rapid
@@ -4257,20 +4815,44 @@
 
             // Damage players outside the zone
             if (poisonZone.timer % POISON_TICK_INTERVAL === 0) {
-                players.forEach(p => {
-                    if (p.currentHp <= 0) return;
-                    if (hasDamageShield(p)) return;
+                const toKill = [];
+                for (const p of players) {
+                    if (p.currentHp <= 0) continue;
+                    if (hasDamageShield(p)) continue;
                     if (p.x < poisonZone.x || p.x + p.size > poisonZone.x + poisonZone.w ||
                         p.y < poisonZone.y || p.y + p.size > poisonZone.y + poisonZone.h) {
                         const dmg = POISON_DAMAGE + poisonZone.phase * COMBAT_STAT_SCALE;
                         p.currentHp -= dmg;
                         registerDamageFeedback(p, dmg, '#c26bff');
-                        if (p.isHuman) {
-                            p.regenCooldown = 180;
-                            p.regenTimer = 0;
+                        if (p.isHuman) { p.regenCooldown = 180; p.regenTimer = 0; }
+                        if (p.currentHp <= 0) {
+                            p.currentHp = 0;
+                            killFeed.push({ killerName: '☠️ Zone', victimName: p.name, ts: Date.now(), isHumanKill: false });
+                            toKill.push(p);
                         }
                     }
-                });
+                }
+                for (const p of toKill) {
+                    const isTeamMode = gameModes[currentGameMode] && gameModes[currentGameMode].teams;
+                    if (isTeamMode) {
+                        p.respawnTimer = getRespawnFramesForMode();
+                        p.dead = true;
+                        dropPlayerItems(p);
+                    } else {
+                        if (p.isBot && getRespawnFramesForMode() > 0) {
+                            p.respawnTimer = getRespawnFramesForMode();
+                            p.dead = true;
+                            dropPlayerItems(p);
+                        } else {
+                            dropPlayerItems(p);
+                            matchStatsList.push({ name: p.name, kills: p.kills, damageDealt: p.damageDealt, healingReceived: p.healingReceived, team: p.team, isHuman: p.isHuman });
+                            const idx = players.indexOf(p);
+                            if (idx !== -1) players.splice(idx, 1);
+                            if (p.isBot) { const bi = bots.findIndex(b => b.id === p.id); if (bi !== -1) bots.splice(bi, 1); }
+                            if (p.isHuman) endGame('Game Over! You were defeated by the Zone!', false);
+                        }
+                    }
+                }
             }
 
             const targetWispCount = 36;
@@ -4911,7 +5493,10 @@
 
                 // Check collision with brown brick obstacles
                 if (checkLaserObstacleCollision(laser)) {
-                    if (laser.aoeRadius) dealAoeDamage(laser.x, laser.y, laser.aoeRadius, Math.round(laser.damage * 0.5), laser.shooter);
+                    if (laser.aoeRadius) {
+                        dealAoeDamage(laser.x, laser.y, laser.aoeRadius, Math.round(laser.damage * 0.5), laser.shooter);
+                        superEffects.push({ type: 'screamflash', x: laser.x, y: laser.y, radius: Math.max(28, laser.aoeRadius * 0.5), timer: 14, shooter: laser.shooter });
+                    }
                     lasers.splice(i, 1);
                     continue;
                 }
@@ -4963,6 +5548,7 @@
                         // AoE on hit (heavy / aoehit)
                         if (laser.aoeRadius) {
                             dealAoeDamage(laser.x, laser.y, laser.aoeRadius, Math.round(laser.damage * 0.5), laser.shooter);
+                            superEffects.push({ type: 'screamflash', x: laser.x, y: laser.y, radius: Math.max(28, laser.aoeRadius * 0.5), timer: 14, shooter: laser.shooter });
                         }
                         // Taking damage reveals from bush
                         targetPlayer.bushRevealTimer = 90;
@@ -4972,6 +5558,12 @@
                             targetPlayer._poisonTicks = Math.max(targetPlayer._poisonTicks || 0, laser.poisonTicks);
                             targetPlayer._poisonTickTimer = 45;
                             targetPlayer._poisonBy = laser.shooter;
+                        }
+                        if (laser.bananaSlow) {
+                            targetPlayer._slowTimer = Math.max(targetPlayer._slowTimer || 0, 70);
+                        }
+                        if (laser.coinSteal && laser.shooter.isHuman && actualDamage > 0) {
+                            playerCoins += laser.coinSteal;
                         }
                         hit = true;
 
@@ -5055,7 +5647,10 @@
 
                 // Check collision with brown brick obstacles
                 if (checkLaserObstacleCollision(laser)) {
-                    if (laser.aoeRadius) dealAoeDamage(laser.x, laser.y, laser.aoeRadius, Math.round(laser.damage * 0.5), laser.shooter);
+                    if (laser.aoeRadius) {
+                        dealAoeDamage(laser.x, laser.y, laser.aoeRadius, Math.round(laser.damage * 0.5), laser.shooter);
+                        superEffects.push({ type: 'screamflash', x: laser.x, y: laser.y, radius: Math.max(28, laser.aoeRadius * 0.5), timer: 14, shooter: laser.shooter });
+                    }
                     aiLasers.splice(i, 1);
                     continue;
                 }
@@ -5106,6 +5701,7 @@
                         // AoE on hit (aoehit)
                         if (laser.aoeRadius) {
                             dealAoeDamage(laser.x, laser.y, laser.aoeRadius, Math.round(laser.damage * 0.5), laser.shooter);
+                            superEffects.push({ type: 'screamflash', x: laser.x, y: laser.y, radius: Math.max(28, laser.aoeRadius * 0.5), timer: 14, shooter: laser.shooter });
                         }
                         // Taking damage reveals from bush
                         targetPlayer.bushRevealTimer = 90;
@@ -5115,6 +5711,12 @@
                             targetPlayer._poisonTicks = Math.max(targetPlayer._poisonTicks || 0, laser.poisonTicks);
                             targetPlayer._poisonTickTimer = 45;
                             targetPlayer._poisonBy = laser.shooter;
+                        }
+                        if (laser.bananaSlow) {
+                            targetPlayer._slowTimer = Math.max(targetPlayer._slowTimer || 0, 70);
+                        }
+                        if (laser.coinSteal && laser.shooter.isHuman && actualDamage > 0) {
+                            playerCoins += laser.coinSteal;
                         }
                         hit = true;
 
@@ -5606,17 +6208,17 @@
                         if (p.isHuman) { currentStreak = 0; streakTimer = 0; }
                         shooter.kills++;
                         killFeed.push({ killerName: shooter.name, victimName: p.name, ts: Date.now(), isHumanKill: shooter.isHuman });
-                        if (shooter.isHuman) awardMedals(1);
+                        if (shooter.isHuman) {
+                            awardMedals(1);
+                            registerKill();
+                            progressDaily('kills', 1);
+                        }
                         const isTeamMode = gameModes[currentGameMode] && gameModes[currentGameMode].teams;
                         if (isTeamMode) {
                             if ((currentGameMode === 'ballGoal' || currentGameMode === 'kingTown') && p.hasBall && ball) {
                                 dropBall(p);
                             }
                             p.respawnTimer = getRespawnFramesForMode();
-                            if (shooter.isHuman) {
-                                registerKill();
-                                progressDaily('kills', 1);
-                            }
                             p.dead = true;
                         } else {
                             if (p.isBot && getRespawnFramesForMode() > 0) {
@@ -5792,28 +6394,39 @@
                     break;
                 }
                 case 'shadowburst': {
-                    // Teleport toward target direction, then burst at landing
+                    // Phase dash through walls, then burst at landing
                     const tx = targetX ?? cx + 200;
                     const ty = targetY ?? cy;
                     const dist = Math.hypot(tx - cx, ty - cy) || 1;
                     const dashDist = 280;
                     const dirX = (tx - cx) / dist;
                     const dirY = (ty - cy) / dist;
-                    let lastSafeX = p.x, lastSafeY = p.y;
-                    for (let s = 1; s <= Math.ceil(dashDist / p.size); s++) {
-                        const nx = Math.max(0, Math.min(MAP_WIDTH - p.size, p.x + dirX * p.size * s));
-                        const ny = Math.max(0, Math.min(MAP_HEIGHT - p.size, p.y + dirY * p.size * s));
-                        let blocked = false;
-                        for (const obs of obstacles) {
-                            if (nx < obs.x + obs.width && nx + p.size > obs.x && ny < obs.y + obs.height && ny + p.size > obs.y) { blocked = true; break; }
-                        }
-                        if (blocked) break;
-                        lastSafeX = nx; lastSafeY = ny;
-                    }
-                    p.x = lastSafeX; p.y = lastSafeY;
+                    p.x = Math.max(0, Math.min(MAP_WIDTH - p.size, p.x + dirX * dashDist));
+                    p.y = Math.max(0, Math.min(MAP_HEIGHT - p.size, p.y + dirY * dashDist));
+                    p.shadowPhaseTimer = Math.max(p.shadowPhaseTimer || 0, 55);
                     // Burst at landing spot
                     fireRadialBurst(p, 10, p.laserDamage * 3, 13, 110);
                     superEffects.push({ type: 'screamflash', x: p.x + p.size / 2, y: p.y + p.size / 2, radius: 90, timer: 25, shooter: p });
+                    break;
+                }
+                case 'pickpocket': {
+                    const radius = 145;
+                    dealAoeDamage(cx, cy, radius, p.laserDamage * 2.4, p);
+                    const hitEnemies = players.filter(t => t !== p && t.currentHp > 0 && (!p.team || t.team !== p.team) && Math.hypot((t.x + t.size / 2) - cx, (t.y + t.size / 2) - cy) <= radius).length;
+                    if (hitEnemies > 0) {
+                        const gain = hitEnemies * 8;
+                        playerCredits += gain;
+                        if (p.isHuman) showLootboxPopup(`👜 Pickpocket +${gain} Hero Marks`);
+                    }
+                    superEffects.push({ type: 'screamflash', x: cx, y: cy, radius: radius, timer: 22, shooter: p });
+                    break;
+                }
+                case 'bananastorm': {
+                    fireRadialBurst(p, 12, p.laserDamage * 2.2, 12, 95);
+                    for (let i = 0; i < 4; i++) {
+                        const a = (Math.PI * 2 / 4) * i;
+                        superEffects.push({ type: 'smokezone', x: cx + Math.cos(a) * 55, y: cy + Math.sin(a) * 55, radius: 50, timer: 110, tickTimer: 0, tickInterval: 26, damage: Math.max(1, Math.round(p.laserDamage * 0.7)), shooter: p });
+                    }
                     break;
                 }
                 case 'smokezone': {
@@ -5827,13 +6440,15 @@
                     for (let i = 0; i < 3; i++) {
                         const angle = Math.random() * Math.PI * 2;
                         const spawnDist = 24 + Math.random() * 18;
+                        const snakeHp = 5 * COMBAT_STAT_SCALE;
                         snakeMinions.push({
                             id: `snake_${Date.now()}_${Math.floor(Math.random() * 99999)}`,
                             owner: p,
                             x: cx + Math.cos(angle) * spawnDist,
                             y: cy + Math.sin(angle) * spawnDist,
                             size: 20,
-                            hp: 5 * COMBAT_STAT_SCALE,
+                            hp: snakeHp,
+                            maxHp: snakeHp,
                             damage: 2 * COMBAT_STAT_SCALE,
                             speed: 3.5,
                             life: 1080,
@@ -6269,6 +6884,16 @@
                 ctx.arc(x + 4, y - 2, 3, 0, Math.PI * 2);
                 ctx.arc(x - 4, y - 2, 3, 0, Math.PI * 2);
                 ctx.fill();
+                // HP bar
+                const barW = s.size * 1.2;
+                const barH = 4;
+                const barX = x - barW / 2;
+                const barY = y - s.size / 2 - 8;
+                const hpRatio = Math.max(0, s.hp / s.maxHp);
+                ctx.fillStyle = '#333';
+                ctx.fillRect(barX, barY, barW, barH);
+                ctx.fillStyle = hpRatio > 0.5 ? '#22c55e' : hpRatio > 0.25 ? '#facc15' : '#ef4444';
+                ctx.fillRect(barX, barY, barW * hpRatio, barH);
                 ctx.restore();
             }
         }
@@ -6307,6 +6932,7 @@
                 if (p.superCooldown > 0) p.superCooldown--;
                 if (p.gadgetCooldown > 0) p.gadgetCooldown--;
                 if (p.gadgetInvisibleTimer > 0) p.gadgetInvisibleTimer--;
+                if (p.shadowPhaseTimer > 0) p.shadowPhaseTimer--;
                 if (p._stunTimer > 0) p._stunTimer--;
                 if (p._fireBoostTimer > 0) p._fireBoostTimer--;
                 if (p._slowTimer > 0) {
@@ -6444,7 +7070,7 @@
                 if (bot.currentHp <= 0 || bot.superCharge < 100 || bot.superCooldown > 0) continue;
                 if (Math.random() > 0.04) continue; // 4% chance per frame to fire
                 const target = findClosestTarget(bot);
-                if (!target && bot.superType !== 'berserk' && bot.superType !== 'coffeerush' && bot.superType !== 'rockshield') continue;
+                if (!target && bot.superType !== 'berserk' && bot.superType !== 'coffeerush' && bot.superType !== 'rockshield' && bot.superType !== 'pickpocket' && bot.superType !== 'bananastorm') continue;
                 const tx = target ? target.x + target.size / 2 : bot.x;
                 const ty = target ? target.y + target.size / 2 : bot.y;
                 activateSuper(bot, tx, ty);
@@ -6487,7 +7113,14 @@
                 awardMedals(winMedals);
                 saveProgress();
                 showCoins();
-                messageEl.innerHTML += `<br><br>🎉 You earned ${winCoins} coins, +${winMedals} 🏅 medals, +${winCredits} 🎖️ credits and +${winSparks} ⚡ sparks!`;
+                messageEl.innerHTML += `<br><br>🎉 You earned ${winCoins} coins, +${winMedals} 🏅 medals, +${winCredits} 🎖️ Hero Marks and +${winSparks} ⚡ sparks!`;
+
+                const dailyReward = awardDailyWinReward();
+                if (dailyReward) {
+                    messageEl.innerHTML += `<br>${dailyReward.icon} Daily win reward: ${dailyReward.text} (${dailyWinsState.wins}/${DAILY_WINS_MAX})`;
+                } else {
+                    messageEl.innerHTML += `<br>✅ Daily win rewards completed (${DAILY_WINS_MAX}/${DAILY_WINS_MAX})`;
+                }
 
                 // Progress daily challenges
                 const humanPlayer = matchStatsList.find(s => s.isHuman) || { kills: 0, damageDealt: 0 };
@@ -6514,7 +7147,7 @@
                 awardMedals(loseMedals);
                 saveProgress();
                 showCoins();
-                messageEl.innerHTML += `<br><br>💫 You earned ${loseCoins} coins, ${loseMedals} 🏅 medals, +${loseCredits} 🎖️ credits and +${loseSparks} ⚡ sparks.`;
+                messageEl.innerHTML += `<br><br>💫 You earned ${loseCoins} coins, ${loseMedals} 🏅 medals, +${loseCredits} 🎖️ Hero Marks and +${loseSparks} ⚡ sparks.`;
 
                 // Progress daily challenges
                 const humanPlayer2 = matchStatsList.find(s => s.isHuman) || { kills: 0, damageDealt: 0 };
@@ -6554,9 +7187,6 @@
 
             // Show the overlay
             overlay.style.display = 'flex';
-
-            // Mark that a chest is waiting — show it when player returns to menu
-            pendingStarDrop = true;
 
             // Reset game state but keep player progress
             players = [];
@@ -6607,7 +7237,7 @@
                     { type: 'sparks', amount: 50, weight: 20, icon: '⚡', text: '+50 Energy Sparks' },
                     { type: 'killfeedcolor', weight: 10, icon: '🎨', text: '', colors: killFeedColors },
                     { type: 'medals', amount: 3, weight: 10, icon: '🏅', text: '+3 Medals' },
-                    { type: 'credits', amount: 50, weight: 15, icon: '🎖️', text: '+50 Credits' },
+                    { type: 'credits', amount: 50, weight: 15, icon: '🎖️', text: '+50 Hero Marks' },
                     { type: 'gadget', weight: 6, icon: '🧰', text: 'Random Gadget Unlock' },
                 ],
                 // Epic
@@ -6617,7 +7247,7 @@
                     { type: 'sparks', amount: 30, weight: 15, icon: '⚡', text: '+30 Energy Sparks' },
                     { type: 'killfeedcolor', weight: 10, icon: '🎨', text: '', colors: killFeedColors },
                     { type: 'medals', amount: 5, weight: 15, icon: '🏅', text: '+5 Medals' },
-                    { type: 'credits', amount: 100, weight: 25, icon: '🎖️', text: '+100 Credits!' },
+                    { type: 'credits', amount: 100, weight: 25, icon: '🎖️', text: '+100 Hero Marks!' },
                     { type: 'gadget', weight: 10, icon: '🧰', text: 'Random Gadget Unlock' },
                 ],
                 // Mythic
@@ -6627,7 +7257,7 @@
                     { type: 'sparks', amount: 60, weight: 20, icon: '⚡', text: '+60 Energy Sparks' },
                     { type: 'medals', amount: 8, weight: 15, icon: '🏅', text: '+8 Medals!' },
                     { type: 'killfeedcolor', weight: 20, icon: '🎨', text: '', colors: killFeedColors },
-                    { type: 'credits', amount: 150, weight: 15, icon: '🎖️', text: '+150 Credits!' },
+                    { type: 'credits', amount: 150, weight: 15, icon: '🎖️', text: '+150 Hero Marks!' },
                     { type: 'gadget', weight: 12, icon: '🧰', text: 'Random Gadget Unlock' },
                 ],
                 // Legendary
@@ -6637,7 +7267,7 @@
                     { type: 'sparks', amount: 100, weight: 25, icon: '⚡', text: '+100 Energy Sparks!' },
                     { type: 'medals', amount: 12, weight: 15, icon: '🏅', text: '+12 Medals!!' },
                     { type: 'killfeedcolor', weight: 10, icon: '🎨', text: '', colors: killFeedColors },
-                    { type: 'credits', amount: 250, weight: 25, icon: '🎖️', text: '+250 Credits!!' },
+                    { type: 'credits', amount: 250, weight: 25, icon: '🎖️', text: '+250 Hero Marks!!' },
                     { type: 'gadget', weight: 18, icon: '🧰', text: 'Random Gadget Unlock' },
                 ],
             ];
@@ -6664,6 +7294,7 @@
         }
 
         function showStarDrop() {
+            if (pendingStarDrops > 0) pendingStarDrops--;
             const overlay = document.getElementById('stardrop-overlay');
             const box = document.getElementById('stardrop-box');
             const chest = document.getElementById('stardrop-chest');
@@ -6762,6 +7393,9 @@
                             saveProgress();
                             showCoins();
                             overlay.style.display = 'none';
+                            if (pendingStarDrops > 0) {
+                                setTimeout(() => showStarDrop(), 250);
+                            }
                         };
                     }, 400);
                 }
@@ -6771,8 +7405,6 @@
             chest.onmouseenter = () => { if (clicksLeft > 0) chest.style.transform = `scale(${1.08 + (5 - clicksLeft) * 0.02})`; };
             chest.onmouseleave = () => { if (clicksLeft > 0) chest.style.transform = `scale(${1 + (5 - clicksLeft) * 0.02})`; };
         }
-
-        let pendingStarDrop = false;
 
         // Also update the return to menu button handler to properly reset the game
         document.getElementById('return-to-menu').addEventListener('click', () => {
@@ -6792,9 +7424,8 @@
             // Clear the canvas
             ctx.clearRect(0, 0, gameCanvas.width, gameCanvas.height);
 
-            // Show the chest now that we're back at the menu
-            if (pendingStarDrop) {
-                pendingStarDrop = false;
+            // Show queued chests now that we're back at the menu
+            if (pendingStarDrops > 0) {
                 setTimeout(() => showStarDrop(), 400);
             }
         });
@@ -7124,9 +7755,9 @@
             { title: '🔫 Shooting', text: 'Click / Tap / Right Joystick to aim and fire. Lead your shots on moving targets. Different characters have different attack types!' },
             { title: '⚡ Super Ability', text: 'Each character has a unique super ability charged by dealing damage. Press the Super button (or assigned key) to unleash it for massive effect.' },
             { title: '💚 Health Packs', text: 'Green cross drops heal you for 10 HP. Grab them when your health is low. You auto-heal slowly when not taking damage.' },
-            { title: '🛡️ Obstacles', text: 'Trees, rocks, and water block your movement and bullets. Use them as cover against enemies.' },
+            { title: '🛡️ Obstacles', text: ' brown bricks and blue water block your movement and bullets. Use them as cover against enemies.(some players can move on water)' },
             { title: '🏆 Game Modes', text: 'Try different modes: Showdown (Free-for-All), Team Battle (3v3), Ball-Goal (soccer), and more. Each has unique rewards!' },
-            { title: '💰 Progression', text: 'Earn coins and medals from every match. Spend coins to unlock new characters in the Bazaar. Use energy sparks to upgrade character stats.' },
+            { title: '💰 Progression', text: 'Earn coins and medals from every match. Use energy sparks and coins to upgrade character stats.' },
             { title: '⚔️ Daily Challenges', text: 'Complete daily challenges for extra energy sparks. Win streaks, survive matches, deal damage – the more you play, the more you earn!' },
             { title: '🎮 Mobile Support', text: 'Play on mobile with touch joysticks (left for movement, right for aiming). Adjustable in settings when on touch devices.' },
             { title: '🌟 Tips for Victory', text: 'Stay mobile, use cover, focus fire with teammates, manage your health, and upgrade your favorite characters. Good luck!' },
@@ -7221,14 +7852,14 @@
             { level:  4, type:'coins',   amount: 200,   icon: '💰', reward: '200 coins',           claimed: false },
             { level:  5, type:'unlock',  playerId: 'lazerman',        icon: '🔓', reward: 'Unlock Lazerman (Rare)', claimed: false },
             { level:  6, type:'coins',   amount: 300,   icon: '💰', reward: '300 coins',           claimed: false },
-            { level:  7, type:'credits', amount: 5,     icon: '🎖️', reward: '5 credits',           claimed: false },
+            { level:  7, type:'credits', amount: 5,     icon: '🎖️', reward: '5 Hero Marks',           claimed: false },
             { level:  8, type:'unlock',  playerId: 'fournakis',       icon: '🔓', reward: 'Unlock Fournakis (Rare)', claimed: false },
             { level:  9, type:'coins',   amount: 400,   icon: '💰', reward: '400 coins',           claimed: false },
             { level: 10, type:'unlock',  playerId: 'firekoupepy',     icon: '🔓', reward: 'Unlock Firekoupepy (Rare)', claimed: false },
             { level: 11, type:'sparks',  amount: 500,   icon: '⚡', reward: '500 energy sparks',   claimed: false },
             { level: 12, type:'unlock',  playerId: 'baklavasbazookos',icon: '🔓', reward: 'Unlock Baklavasbazookos (Rare)', claimed: false },
             { level: 13, type:'sparks',  amount: 600,   icon: '⚡', reward: '600 energy sparks',   claimed: false },
-            { level: 14, type:'credits', amount: 10,    icon: '🎖️', reward: '10 credits',          claimed: false },
+            { level: 14, type:'credits', amount: 10,    icon: '🎖️', reward: '10 Hero Marks',          claimed: false },
             { level: 15, type:'unlock',  playerId: 'timor',           icon: '🔓', reward: 'Unlock Timor (Rare)',    claimed: false },
             { level: 16, type:'sparks',  amount: 700,   icon: '⚡', reward: '700 energy sparks',   claimed: false },
             { level: 17, type:'unlock',  playerId: 'kleftros',        icon: '🔓', reward: 'Unlock Kleftros (Rare)', claimed: false },
@@ -7238,13 +7869,13 @@
             { level: 21, type:'coins',   amount: 1000,  icon: '💰', reward: '1000 coins',          claimed: false },
             { level: 22, type:'sparks',  amount: 1100,  icon: '⚡', reward: '1100 energy sparks',  claimed: false },
             { level: 23, type:'coins',   amount: 1100,  icon: '💰', reward: '1100 coins',          claimed: false },
-            { level: 24, type:'credits', amount: 15,    icon: '🎖️', reward: '15 credits',          claimed: false },
+            { level: 24, type:'credits', amount: 15,    icon: '🎖️', reward: '15 Hero Marks',          claimed: false },
             { level: 25, type:'coins',   amount: 1500,  icon: '💰', reward: '1500 coins',          claimed: false },
             { level: 26, type:'sparks',  amount: 1200,  icon: '⚡', reward: '1200 energy sparks',  claimed: false },
             { level: 27, type:'coins',   amount: 1200,  icon: '💰', reward: '1200 coins',          claimed: false },
             { level: 28, type:'sparks',  amount: 1500,  icon: '⚡', reward: '1500 energy sparks',  claimed: false },
             { level: 29, type:'coins',   amount: 1500,  icon: '💰', reward: '1500 coins',          claimed: false },
-            { level: 30, type:'credits', amount: 20,    icon: '🎖️', reward: '20 credits',          claimed: false },
+            { level: 30, type:'credits', amount: 20,    icon: '🎖️', reward: '20 Hero Marks',          claimed: false },
             { level: 31, type:'sparks',  amount: 1800,  icon: '⚡', reward: '1800 energy sparks',  claimed: false },
             { level: 32, type:'coins',   amount: 1800,  icon: '💰', reward: '1800 coins',          claimed: false },
             { level: 33, type:'sparks',  amount: 2000,  icon: '⚡', reward: '2000 energy sparks',  claimed: false },
@@ -7253,18 +7884,18 @@
             { level: 36, type:'sparks',  amount: 2200,  icon: '⚡', reward: '2200 energy sparks',  claimed: false },
             { level: 37, type:'coins',   amount: 2200,  icon: '💰', reward: '2200 coins',          claimed: false },
             { level: 38, type:'sparks',  amount: 2500,  icon: '⚡', reward: '2500 energy sparks',  claimed: false },
-            { level: 39, type:'credits', amount: 25,    icon: '🎖️', reward: '25 credits',          claimed: false },
+            { level: 39, type:'credits', amount: 25,    icon: '🎖️', reward: '25 Hero Marks',          claimed: false },
             { level: 40, type:'coins',   amount: 3000,  icon: '💰', reward: '3000 coins',          claimed: false },
             { level: 41, type:'sparks',  amount: 3000,  icon: '⚡', reward: '3000 energy sparks',  claimed: false },
             { level: 42, type:'coins',   amount: 3000,  icon: '💰', reward: '3000 coins',          claimed: false },
             { level: 43, type:'sparks',  amount: 3500,  icon: '⚡', reward: '3500 energy sparks',  claimed: false },
             { level: 44, type:'coins',   amount: 3500,  icon: '💰', reward: '3500 coins',          claimed: false },
-            { level: 45, type:'credits', amount: 30,    icon: '🎖️', reward: '30 credits',          claimed: false },
+            { level: 45, type:'credits', amount: 30,    icon: '🎖️', reward: '30 Hero Marks',          claimed: false },
             { level: 46, type:'sparks',  amount: 4000,  icon: '⚡', reward: '4000 energy sparks',  claimed: false },
             { level: 47, type:'coins',   amount: 4000,  icon: '💰', reward: '4000 coins',          claimed: false },
             { level: 48, type:'sparks',  amount: 4500,  icon: '⚡', reward: '4500 energy sparks',  claimed: false },
             { level: 49, type:'coins',   amount: 4500,  icon: '💰', reward: '4500 coins',          claimed: false },
-            { level: 50, type:'credits', amount: 50,    icon: '🎖️', reward: '50 credits',          claimed: false },
+            { level: 50, type:'credits', amount: 50,    icon: '🎖️', reward: '50 Hero Marks',          claimed: false },
         ];
         // Restore claimed state from localStorage
         const _claimedLevels = JSON.parse(localStorage.getItem('claimedLevelRewards') ?? '[]');
@@ -7295,7 +7926,7 @@
             // Check and auto-claim any newly reached rewards
             claimLevelRewards();
             document.getElementById('coins-display').innerHTML =
-                `💰 Coins: ${playerCoins}<br>🏅 Medals: ${playerMedals} &nbsp;(Lv ${playerLevel})<br>⚡ Energy Sparks: ${energySparks}<br>🎖️ Credits: ${playerCredits}`;
+                `💰 Coins: ${playerCoins}<br>🏅 Medals: ${playerMedals} &nbsp;(Lv ${playerLevel})<br>⚡ Energy Sparks: ${energySparks}<br>🎖️ Hero Marks: ${playerCredits}`;
             // Keep account chip stats in sync
             const chipStats = document.getElementById('account-chip-stats');
             if (chipStats && currentAccount) {
@@ -7368,6 +7999,8 @@
             
             // Show badge if claimable on load
             updateDailyBadge();
+            dailyWinsState = loadDailyWinsState();
+            renderDailyWinsWidget();
         }
 
         function hideAllUI() {
@@ -7385,6 +8018,7 @@
             document.getElementById('daily-btn').style.display = 'none';
             document.getElementById('history-btn').style.display = 'none';
             document.getElementById('tutorial-btn').style.display = 'none';
+            document.getElementById('daily-wins-tracker').style.display = 'none';
             document.getElementById('leaderboard-btn').style.display = 'none';
         }
 
@@ -7395,6 +8029,7 @@
             document.getElementById('daily-btn').style.display = 'block';
             document.getElementById('history-btn').style.display = 'block';
             document.getElementById('tutorial-btn').style.display = 'block';
+            document.getElementById('daily-wins-tracker').style.display = 'block';
             document.getElementById('leaderboard-btn').style.display = 'block';
             if (window.innerWidth <= 1024 || ('ontouchstart' in window)) {
                 document.getElementById('joystick-container').style.display = 'block';
@@ -7719,7 +8354,7 @@
             unlockedNexus.push(pending.id);
             saveProgress();
             showCoins();
-            showLootboxPopup(`🎖️ Auto Unlock: ${pending.name} (${rarityLabels[pending.rarity]}) for ${pending.creditCost} credits`);
+            showLootboxPopup(`🎖️ Auto Unlock: ${pending.name} (${rarityLabels[pending.rarity]}) for ${pending.creditCost} Hero Marks`);
             return true;
         }
 
@@ -7735,9 +8370,9 @@
                 const pct  = cost > 0 ? Math.min(100, Math.round(playerCredits / cost * 100)) : 100;
                 barEl.innerHTML = `
                     <div style="color:#4ae8d8; font-size:13px; margin-bottom:4px; text-align:center;">
-                        🎖️ <strong>${playerCredits}</strong> credits &nbsp;→&nbsp;
+                        🎖️ <strong>${playerCredits}</strong> Hero Marks &nbsp;→&nbsp;
                         Next: <strong style="color:${rarityColors[nextTier]}">${rarityLabels[nextTier]}</strong>
-                        costs <strong>${cost}</strong> credits
+                        costs <strong>${cost}</strong> Hero Marks
                     </div>
                     <div style="background:#222; border-radius:8px; height:14px; overflow:hidden;">
                         <div style="width:${pct}%; height:100%; background:linear-gradient(90deg,#4ae8d8,#44ccff); border-radius:8px; transition:width 0.4s;"></div>
@@ -7854,7 +8489,7 @@
                     const credColor = playerCredits >= tierCost ? '#4ae8d8' : '#e94560';
                     const progressLine = document.createElement('div');
                     progressLine.style.cssText = 'display:flex; align-items:center; gap:8px; margin:0 0 14px; font-size:13px; color:#aaa;';
-                    progressLine.innerHTML = `<span>🎖️</span><span style="color:${credColor}; font-weight:bold;">${playerCredits} / ${tierCost}</span><span style="color:#777;">credits needed</span><div style="flex:1; background:#333; border-radius:4px; height:8px; overflow:hidden;"><div style="width:${pct}%; height:100%; background:${credColor}; border-radius:4px;"></div></div>`;
+                    progressLine.innerHTML = `<span>🎖️</span><span style="color:${credColor}; font-weight:bold;">${playerCredits} / ${tierCost}</span><span style="color:#777;">Hero Marks needed</span><div style="flex:1; background:#333; border-radius:4px; height:8px; overflow:hidden;"><div style="width:${pct}%; height:100%; background:${credColor}; border-radius:4px;"></div></div>`;
                     list.appendChild(progressLine);
 
                     const rowWrap = document.createElement('div');
@@ -7907,7 +8542,7 @@
             localStorage.setItem('playerCredits', playerCredits);
             unlockedNexus.push(playerId);
             saveProgress();
-            showLootboxPopup(`${rarityLabels[pd.rarity]} Unlocked: ${pd.name}! (-${pd.creditCost} credits)`);
+            showLootboxPopup(`${rarityLabels[pd.rarity]} Unlocked: ${pd.name}! (-${pd.creditCost} Hero Marks)`);
             showCoins();
             renderCreditsPanel();
         }
@@ -7941,7 +8576,6 @@
             Object.values(playersData).forEach(playerData => {
                 const playerId = playerData.id;
                 const isUnlocked = unlockedNexus.includes(playerId);
-                if (!isUnlocked) return;
                 const isSelected = selectedNexusId === playerId;
                 const pRarityColor = rarityColors[playerData.rarity] || '#b0b0b0';
                 const pLevel = getPlayerPowerLevel(playerId);
@@ -7955,6 +8589,10 @@
                     card.innerHTML = `<img src="${playerData.img}" style="width:100%; height:100%; object-fit:cover;" onerror="this.style.display='none'" />`;
                 } else {
                     card.style.background = playerData.color;
+                }
+
+                if (!isUnlocked) {
+                    card.style.filter = 'grayscale(0.95) brightness(0.75)';
                 }
 
                 // Level badge
@@ -7971,6 +8609,13 @@
                     card.appendChild(check);
                 }
 
+                if (!isUnlocked) {
+                    const lock = document.createElement('div');
+                    lock.style.cssText = 'position:absolute; top:2px; left:2px; background:rgba(0,0,0,0.7); color:#bbb; font-size:13px; padding:0 4px; border-radius:4px;';
+                    lock.textContent = '🔒';
+                    card.appendChild(lock);
+                }
+
                 card.onmouseenter = () => card.style.transform = 'scale(1.1)';
                 card.onmouseleave = () => card.style.transform = '';
                 card.onclick = () => showPlayerDetail(playerId);
@@ -7982,7 +8627,7 @@
         function showPlayerDetail(playerId) {
             const pd = playersData[playerId];
             const popup = document.getElementById('player-detail-popup');
-            if (!pd || !unlockedNexus.includes(playerId)) return;
+            if (!pd) return;
             const pRarityColor = rarityColors[pd.rarity] || '#b0b0b0';
             const pRarityLabel = rarityLabels[pd.rarity] || 'Common';
             const pLevel = getPlayerPowerLevel(playerId);
@@ -8012,7 +8657,7 @@
                     const canBuyCredits = creditsNextTier() === pd.rarity && playerCredits >= pd.creditCost;
                     upgradeDiv.innerHTML = `
                         <p style="color:#aaa; font-size:13px; margin:4px 0;">Locked character</p>
-                        <p style="font-size:13px; margin:2px 0;">🎖️ Cost: ${pd.creditCost} credits</p>
+                        <p style="font-size:13px; margin:2px 0;">🎖️ Cost: ${pd.creditCost} Hero Marks</p>
                         <p style="font-size:11px; color:#888; margin:2px 0;">You have: 🎖️ ${playerCredits}</p>
                         <button id="pd-unlock-btn" class="btn" ${canBuyCredits ? '' : 'disabled'}
                             style="font-size:14px; padding:6px 16px; margin-top:6px; background:${canBuyCredits ? '#4ae8d8' : '#555'}; color:${canBuyCredits ? '#000' : '#888'};">
@@ -8063,23 +8708,6 @@
                             style="font-size:14px; padding:6px 16px; margin-top:6px; background:${canUpgrade ? '#44ccff' : '#555'}; color:${canUpgrade ? '#000' : '#888'};">
                             ⚡ Upgrade
                         </button>`;
-                    const uBtn = upgradeDiv.querySelector('#pd-upgrade-btn');
-                    if (uBtn) {
-                        uBtn.onclick = () => {
-                            const upgraded = upgradePlayer(playerId);
-                            if (upgraded) {
-                                showPlayerDetail(playerId); // Refresh
-                                updatePlayerMenu(); // Refresh icons
-                            } else {
-                                const latestCost = getUpgradeCost(playerId);
-                                const s = toSafeInt(energySparks);
-                                const c = toSafeInt(playerCoins);
-                                if (latestCost) {
-                                    showLootboxPopup(`Need ⚡ ${latestCost.sparks} and 💰 ${latestCost.coins}. You have ⚡ ${s} and 💰 ${c}.`);
-                                }
-                            }
-                        };
-                    }
                 }
 
                 const gadgetKeys = getCharacterGadgetKeys(playerId);
@@ -8111,6 +8739,24 @@
                         }
                     };
                 });
+                // Attach upgrade button onclick AFTER all innerHTML is set
+                const uBtn = upgradeDiv.querySelector('#pd-upgrade-btn');
+                if (uBtn) {
+                    uBtn.onclick = () => {
+                        const upgraded = upgradePlayer(playerId);
+                        if (upgraded) {
+                            showPlayerDetail(playerId);
+                            updatePlayerMenu();
+                        } else {
+                            const latestCost = getUpgradeCost(playerId);
+                            const s = toSafeInt(energySparks);
+                            const c = toSafeInt(playerCoins);
+                            if (latestCost) {
+                                showLootboxPopup(`Need ⚡ ${latestCost.sparks} and 💰 ${latestCost.coins}. You have ⚡ ${s} and 💰 ${c}.`);
+                            }
+                        }
+                    };
+                }
             }
 
             // Select button
@@ -8372,6 +9018,10 @@
 
                 showAllUI();
                 updateCharShowcase();
+                renderDailyWinsWidget();
+                if (pendingStarDrops > 0 && document.getElementById('stardrop-overlay').style.display !== 'flex') {
+                    setTimeout(() => showStarDrop(), 350);
+                }
             });
 
             // Debug
