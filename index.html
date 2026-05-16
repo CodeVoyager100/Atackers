@@ -2189,9 +2189,10 @@
 
         function getPlayerPreferredImageSrc(playerLike) {
             if (!playerLike) return '';
-            // Magnets: live player gets +/- sprite; playersData entry (no currentHp) keeps magnets.png
-            if (playerLike.img === 'images/magnets.png' && playerLike.currentHp !== undefined) {
-                return playerLike._magnetsMinus === true ? 'images/magnets-.png' : 'images/magnets+.png';
+            // Magnets in live matches: use minus/plus icon sprites.
+            const charId = playerLike.characterId || playerLike.id;
+            if (charId === 'magnets' && playerLike.currentHp !== undefined) {
+                return playerLike._magnetsMinus === true ? 'images/minus.png' : 'images/plus.png';
             }
             const primary = playerLike.img || '';
             const fallback = playerLike.legacyImg || '';
@@ -2229,9 +2230,9 @@
                 }
             });
 
-            // Preload Magnets companion sprites
-            loadImage('images/magnets+.png');
-            loadImage('images/magnets-.png');
+            // Preload Magnets live-form sprites
+            loadImage('images/plus.png');
+            loadImage('images/minus.png');
         }
 
         const playersData = {
@@ -3343,10 +3344,21 @@
                 }
                 player.shootCooldown = 20;
             } else if (aType === 'magnetshot') {
-                const ox = -ny * 9, oy = nx * 9;
-                lasers.push(makeLaser( ox,  oy, nx * speed, ny * speed, 90, player.laserDamage, { magnetColor: '#ef4444' }));
-                lasers.push(makeLaser(-ox, -oy, nx * speed, ny * speed, 90, player.laserDamage, { magnetColor: '#3b82f6' }));
-                player.shootCooldown = 20;
+                if (player._magnetsMinus) {
+                    // Minus form: single heavy magnetic pulse (different from plus dual-beam).
+                    lasers.push(makeLaser(0, 0, nx * 9.2, ny * 9.2, 82, Math.max(1, Math.round(player.laserDamage * 1.35)), {
+                        magnetColor: '#f97316',
+                        radius: 10,
+                        aoeRadius: 42,
+                        freezeSlow: true
+                    }));
+                    player.shootCooldown = 24;
+                } else {
+                    const ox = -ny * 9, oy = nx * 9;
+                    lasers.push(makeLaser( ox,  oy, nx * speed, ny * speed, 90, player.laserDamage, { magnetColor: '#ef4444' }));
+                    lasers.push(makeLaser(-ox, -oy, nx * speed, ny * speed, 90, player.laserDamage, { magnetColor: '#3b82f6' }));
+                    player.shootCooldown = 20;
+                }
             } else if (aType === 'heavy') {
                 lasers.push(makeLaser(0, 0, nx * 5, ny * 5, 130, Math.round(player.laserDamage * 2.5), { radius: 12, aoeRadius: 60 }));
                 player.shootCooldown = 38;
@@ -3474,9 +3486,26 @@
                     aiLasers.push({ x: cx + px * s, y: cy + py * s, vx: dirX * laserSpeed, vy: dirY * laserSpeed, life: 90, damage: bot.laserDamage, shooter: bot, attackType: aType });
                 }
             } else if (aType === 'magnetshot') {
-                const ox = -dirY * 9, oy = dirX * 9;
-                aiLasers.push({ x: cx + ox, y: cy + oy, vx: dirX * laserSpeed, vy: dirY * laserSpeed, life: 90, damage: bot.laserDamage, shooter: bot, attackType: aType, magnetColor: '#ef4444' });
-                aiLasers.push({ x: cx - ox, y: cy - oy, vx: dirX * laserSpeed, vy: dirY * laserSpeed, life: 90, damage: bot.laserDamage, shooter: bot, attackType: aType, magnetColor: '#3b82f6' });
+                if (bot._magnetsMinus) {
+                    aiLasers.push({
+                        x: cx,
+                        y: cy,
+                        vx: dirX * 9.2,
+                        vy: dirY * 9.2,
+                        life: 82,
+                        damage: Math.max(1, Math.round(bot.laserDamage * 1.35)),
+                        shooter: bot,
+                        attackType: aType,
+                        magnetColor: '#f97316',
+                        radius: 10,
+                        aoeRadius: 42,
+                        freezeSlow: true
+                    });
+                } else {
+                    const ox = -dirY * 9, oy = dirX * 9;
+                    aiLasers.push({ x: cx + ox, y: cy + oy, vx: dirX * laserSpeed, vy: dirY * laserSpeed, life: 90, damage: bot.laserDamage, shooter: bot, attackType: aType, magnetColor: '#ef4444' });
+                    aiLasers.push({ x: cx - ox, y: cy - oy, vx: dirX * laserSpeed, vy: dirY * laserSpeed, life: 90, damage: bot.laserDamage, shooter: bot, attackType: aType, magnetColor: '#3b82f6' });
+                }
             } else if (aType === 'heavy') {
                 aiLasers.push({ x: cx, y: cy, vx: dirX * 5, vy: dirY * 5, life: 130, damage: Math.round(bot.laserDamage * 2.5), shooter: bot, attackType: aType, radius: 12, aoeRadius: 60 });
             } else if (aType === 'clustercannon') {
@@ -3877,6 +3906,17 @@
                     closest = other;
                 }
             });
+
+            for (const { owner, companion } of getLivingMagnetsCompanions()) {
+                if (owner === bot || companion === bot) continue;
+                if (bot.team && companion.team === bot.team) continue;
+                const dist = getDistance(bot.x, bot.y, companion.x, companion.y);
+                const weightedDistance = dist * (0.8 + Math.random() * 0.4);
+                if (weightedDistance < minDistance) {
+                    minDistance = weightedDistance;
+                    closest = companion;
+                }
+            }
 
             return closest;
         }
@@ -6114,10 +6154,14 @@
                     let nearest = null, nearestDist = Infinity;
                     for (const p of players) {
                         if (p === laser.shooter || (laser.shooter.team && p.team === laser.shooter.team) || p.currentHp <= 0) continue;
-                        // Skip Magnets companions
-                        if (p._magnetPlus !== undefined) continue;
                         const d = Math.hypot(p.x + p.size / 2 - laser.x, p.y + p.size / 2 - laser.y);
                         if (d < nearestDist) { nearestDist = d; nearest = p; }
+                    }
+                    for (const { owner: compOwner, companion: comp } of getLivingMagnetsCompanions()) {
+                        if (compOwner === laser.shooter || comp === laser.shooter) continue;
+                        if (laser.shooter.team && comp.team === laser.shooter.team) continue;
+                        const d = Math.hypot(comp.x + comp.size / 2 - laser.x, comp.y + comp.size / 2 - laser.y);
+                        if (d < nearestDist) { nearestDist = d; nearest = comp; }
                     }
                     if (nearest) {
                         const tdx = nearest.x + nearest.size / 2 - laser.x;
@@ -6173,10 +6217,6 @@
                     if (laser.shooter.team && targetPlayer.team === laser.shooter.team) continue;
                     // Don't hit dead players
                     if (targetPlayer.currentHp <= 0) continue;
-                    // Don't hit Magnets companions (+ form) — they are untargetable
-                    if (targetPlayer._magnetPlus !== undefined && targetPlayer._magnetPlus === targetPlayer._magnetPlus) continue;
-                    // Skip if this player IS a companion (no direct owner link in players array, so check _magnetsMinus flag)
-                    if (targetPlayer._magnetsMinus === true && !targetPlayer.isBot) continue;
 
                     const tcx = targetPlayer.x + targetPlayer.size / 2;
                     const tcy = targetPlayer.y + targetPlayer.size / 2;
@@ -6276,6 +6316,48 @@
                     }
                 }
 
+                if (!hit) {
+                    const companionTargets = getLivingMagnetsCompanions();
+                    for (let j = 0; j < companionTargets.length; j++) {
+                        const targetPlayer = companionTargets[j].companion;
+                        const targetOwner = companionTargets[j].owner;
+                        if (targetOwner === laser.shooter || targetPlayer === laser.shooter) continue;
+                        if (laser.shooter.team && targetPlayer.team === laser.shooter.team) continue;
+                        if ((targetPlayer.currentHp || 0) <= 0) continue;
+
+                        const tcx = targetPlayer.x + targetPlayer.size / 2;
+                        const tcy = targetPlayer.y + targetPlayer.size / 2;
+                        const playerHit = hitRadius > 0
+                            ? Math.hypot(laser.x - tcx, laser.y - tcy) < hitRadius + targetPlayer.size / 2
+                            : (laser.x >= targetPlayer.x && laser.x <= targetPlayer.x + targetPlayer.size &&
+                               laser.y >= targetPlayer.y && laser.y <= targetPlayer.y + targetPlayer.size);
+
+                        if (playerHit) {
+                            let dmg = laser.damage;
+                            if (laser.shooter._damageTimer > 0) dmg = Math.round(dmg * 1.5);
+                            const actualDamage = Math.min(dmg, Math.max(0, targetPlayer.currentHp));
+                            targetPlayer.currentHp -= dmg;
+                            targetPlayer.hp = targetPlayer.currentHp;
+                            if (actualDamage > 0) registerDamageFeedback(targetPlayer, actualDamage);
+                            laser.shooter.damageDealt += actualDamage;
+                            if (laser.shooter.isHuman && actualDamage > 0) progressDaily('damage', actualDamage);
+                            if (laser.shooter.superCharge !== undefined)
+                                laser.shooter.superCharge = Math.min(100, laser.shooter.superCharge + actualDamage * 4);
+                            if (laser.aoeRadius) {
+                                dealAoeDamage(laser.x, laser.y, laser.aoeRadius, Math.round(laser.damage * 0.5), laser.shooter);
+                                superEffects.push({ type: 'screamflash', x: laser.x, y: laser.y, radius: Math.max(28, laser.aoeRadius * 0.5), timer: 14, shooter: laser.shooter });
+                            }
+                            hit = true;
+                            if (targetPlayer.currentHp <= 0) {
+                                targetPlayer.currentHp = 0;
+                                targetPlayer.hp = 0;
+                                tryHandleCompanionDeath(targetPlayer, laser.shooter);
+                            }
+                            break;
+                        }
+                    }
+                }
+
                 if ((hit && !laser.piercing) || laser.life <= 0) {
                     lasers.splice(i, 1);
                 }
@@ -6310,10 +6392,14 @@
                     let nearest = null, nearestDist = Infinity;
                     for (const p of players) {
                         if (p === laser.shooter || (laser.shooter.team && p.team === laser.shooter.team) || p.currentHp <= 0) continue;
-                        // Skip Magnets companions
-                        if (p._magnetPlus !== undefined) continue;
                         const d = Math.hypot(p.x + p.size / 2 - laser.x, p.y + p.size / 2 - laser.y);
                         if (d < nearestDist) { nearestDist = d; nearest = p; }
+                    }
+                    for (const { owner: compOwner, companion: comp } of getLivingMagnetsCompanions()) {
+                        if (compOwner === laser.shooter || comp === laser.shooter) continue;
+                        if (laser.shooter.team && comp.team === laser.shooter.team) continue;
+                        const d = Math.hypot(comp.x + comp.size / 2 - laser.x, comp.y + comp.size / 2 - laser.y);
+                        if (d < nearestDist) { nearestDist = d; nearest = comp; }
                     }
                     if (nearest) {
                         const tdx = nearest.x + nearest.size / 2 - laser.x;
@@ -6368,8 +6454,6 @@
                     if (laser.shooter.team && targetPlayer.team === laser.shooter.team) continue;
                     // Don't hit dead players
                     if (targetPlayer.currentHp <= 0) continue;
-                    // Don't hit Magnets companions (+ form) — they are untargetable
-                    if (targetPlayer._magnetPlus !== undefined) continue;
 
                     const tcx2 = targetPlayer.x + targetPlayer.size / 2;
                     const tcy2 = targetPlayer.y + targetPlayer.size / 2;
@@ -6470,6 +6554,48 @@
                             }
                         }
                         break;
+                    }
+                }
+
+                if (!hit) {
+                    const companionTargets = getLivingMagnetsCompanions();
+                    for (let j = 0; j < companionTargets.length; j++) {
+                        const targetPlayer = companionTargets[j].companion;
+                        const targetOwner = companionTargets[j].owner;
+                        if (targetOwner === laser.shooter || targetPlayer === laser.shooter) continue;
+                        if (laser.shooter.team && targetPlayer.team === laser.shooter.team) continue;
+                        if ((targetPlayer.currentHp || 0) <= 0) continue;
+
+                        const tcx2 = targetPlayer.x + targetPlayer.size / 2;
+                        const tcy2 = targetPlayer.y + targetPlayer.size / 2;
+                        const aiPlayerHit = aiHitRadius > 0
+                            ? Math.hypot(laser.x - tcx2, laser.y - tcy2) < aiHitRadius + targetPlayer.size / 2
+                            : (laser.x >= targetPlayer.x && laser.x <= targetPlayer.x + targetPlayer.size &&
+                               laser.y >= targetPlayer.y && laser.y <= targetPlayer.y + targetPlayer.size);
+
+                        if (aiPlayerHit) {
+                            let dmg = laser.damage;
+                            if (laser.shooter._damageTimer > 0) dmg = Math.round(dmg * 1.5);
+                            const actualDamage = Math.min(dmg, Math.max(0, targetPlayer.currentHp));
+                            targetPlayer.currentHp -= dmg;
+                            targetPlayer.hp = targetPlayer.currentHp;
+                            if (actualDamage > 0) registerDamageFeedback(targetPlayer, actualDamage);
+                            laser.shooter.damageDealt += actualDamage;
+                            if (laser.shooter.isHuman && actualDamage > 0) progressDaily('damage', actualDamage);
+                            if (laser.shooter.superCharge !== undefined)
+                                laser.shooter.superCharge = Math.min(100, laser.shooter.superCharge + actualDamage * 4);
+                            if (laser.aoeRadius) {
+                                dealAoeDamage(laser.x, laser.y, laser.aoeRadius, Math.round(laser.damage * 0.5), laser.shooter);
+                                superEffects.push({ type: 'screamflash', x: laser.x, y: laser.y, radius: Math.max(28, laser.aoeRadius * 0.5), timer: 14, shooter: laser.shooter });
+                            }
+                            hit = true;
+                            if (targetPlayer.currentHp <= 0) {
+                                targetPlayer.currentHp = 0;
+                                targetPlayer.hp = 0;
+                                tryHandleCompanionDeath(targetPlayer, laser.shooter);
+                            }
+                            break;
+                        }
                     }
                 }
 
@@ -6995,6 +7121,27 @@
                     }
                 }
             }
+
+            for (const { owner, companion: p } of getLivingMagnetsCompanions()) {
+                if (owner === shooter || p === shooter) continue;
+                if (shooter.team && p.team === shooter.team) continue;
+                if ((p.currentHp || 0) <= 0) continue;
+                const px = p.x + p.size / 2, py = p.y + p.size / 2;
+                if ((px - cx) ** 2 + (py - cy) ** 2 <= radius * radius) {
+                    const actual = Math.min(damage, Math.max(0, p.currentHp));
+                    p.currentHp -= damage;
+                    p.hp = p.currentHp;
+                    if (actual > 0) registerDamageFeedback(p, actual, '#ff9955');
+                    shooter.damageDealt += actual;
+                    if (shooter.isHuman && actual > 0) progressDaily('damage', actual);
+                    if (shooter.superCharge !== undefined) shooter.superCharge = Math.min(100, shooter.superCharge + actual * 0.5);
+                    if (p.currentHp <= 0) {
+                        p.currentHp = 0;
+                        p.hp = 0;
+                        tryHandleCompanionDeath(p, shooter);
+                    }
+                }
+            }
         }
 
         function activateSuper(p, targetX, targetY) {
@@ -7342,9 +7489,19 @@
                     // Transform into "-" form; spawn "+" companion at current position
                     const compHp = Math.max(10, Math.ceil(p.currentHp * 0.55));
                     p._magnetPlus = {
+                        id: `${p.id || p.characterId || 'magnets'}_plus_clone`,
+                        characterId: 'magnets',
+                        name: `${p.name} +`,
                         x: p.x + p.size / 2 - 23,
                         y: p.y + p.size / 2 - 23,
                         size: 46,
+                        team: p.team,
+                        owner: p,
+                        isMagnetClone: true,
+                        _magnetsMinus: false,
+                        color: p.color || '#ef4444',
+                        img: 'images/plus.png',
+                        currentHp: compHp,
                         hp: compHp,
                         maxHp: compHp,
                         speed: (p.speed || 5) + 0.5,
@@ -7682,14 +7839,50 @@
         }
 
         // ── Magnets helpers ───────────────────────────────────────────────────
+        function getLivingMagnetsCompanions() {
+            const list = [];
+            for (const owner of players) {
+                const comp = owner._magnetPlus;
+                if (!comp) continue;
+                const compHp = comp.currentHp !== undefined ? comp.currentHp : comp.hp;
+                if (compHp <= 0) continue;
+                list.push({ owner, companion: comp });
+            }
+            return list;
+        }
+
+        function tryHandleCompanionDeath(target, killer) {
+            if (!target || !target.isMagnetClone) return false;
+            const owner = target.owner || players.find(p => p._magnetPlus === target);
+            if (owner) {
+                owner._magnetPlus = null;
+                owner._magnetsMinus = false;
+                owner.superActive = false;
+                owner.superTimer = 0;
+                owner.superBuffType = null;
+            }
+            if (killer) {
+                killer.kills = (killer.kills || 0) + 1;
+                killFeed.push({ killerName: killer.name, victimName: `${owner?.name || 'Magnets'} (+)`, ts: Date.now(), isHumanKill: killer.isHuman });
+                if (killer.isHuman) {
+                    awardMedals(1);
+                    registerKill();
+                    progressDaily('kills', 1);
+                }
+            }
+            return true;
+        }
+
         // Returns true if the player was saved by their "+" companion (HP swapped),
         // so the caller should skip the normal death logic.
         function tryMagnetsRespawn(p) {
-            if (!p._magnetsMinus || !p._magnetPlus || p._magnetPlus.hp <= 0) return false;
+            if (!p._magnetsMinus || !p._magnetPlus) return false;
             const comp = p._magnetPlus;
+            const compHp = comp.currentHp !== undefined ? comp.currentHp : comp.hp;
+            if (compHp <= 0) return false;
             p.x = comp.x;
             p.y = comp.y;
-            p.currentHp = Math.max(1, comp.hp);
+            p.currentHp = Math.max(1, compHp);
             p._magnetsMinus = false;
             p._magnetPlus = null;
             p.superActive = false;
@@ -7697,6 +7890,54 @@
             p.superBuffType = null;
             superEffects.push({ type: 'screamflash', x: p.x + p.size / 2, y: p.y + p.size / 2, radius: 55, timer: 20, shooter: p });
             return true;
+        }
+
+        function healMagnetsCompanion(comp) {
+            if (!comp || (comp.currentHp !== undefined ? comp.currentHp : comp.hp) <= 0) return;
+            if (comp.maxHp <= 0) return;
+
+            let hpNow = comp.currentHp !== undefined ? comp.currentHp : comp.hp;
+
+            // Direct heal packs
+            for (let i = healthPacks.length - 1; i >= 0; i--) {
+                const pack = healthPacks[i];
+                if (comp.x < pack.x + pack.size && comp.x + comp.size > pack.x &&
+                    comp.y < pack.y + pack.size && comp.y + comp.size > pack.y) {
+                    const amount = pack.healAmount || Math.round(8 * COMBAT_STAT_SCALE);
+                    const before = hpNow;
+                    hpNow = Math.min(comp.maxHp, hpNow + amount);
+                    const healed = Math.max(0, hpNow - before);
+                    if (healed > 0) {
+                        spawnHealPickupEffect(comp.x + comp.size / 2, comp.y + comp.size / 2, 1);
+                    }
+                    healthPacks.splice(i, 1);
+                    setTimeout(() => {
+                        if (!gameStarted) return;
+                        const pos = getSpawnPosition(26);
+                        healthPacks.push({ x: pos.x, y: pos.y, size: 26, healAmount: Math.round(8 * COMBAT_STAT_SCALE) });
+                    }, 14000);
+                }
+            }
+
+            // Ground heal pickups dropped from crates
+            for (let i = pickupItems.length - 1; i >= 0; i--) {
+                const item = pickupItems[i];
+                if (item.type !== 'heal') continue;
+                if (comp.x < item.x + item.size && comp.x + comp.size > item.x &&
+                    comp.y < item.y + item.size && comp.y + comp.size > item.y) {
+                    const amount = ITEM_HEAL_AMOUNT;
+                    const before = hpNow;
+                    hpNow = Math.min(comp.maxHp, hpNow + amount);
+                    const healed = Math.max(0, hpNow - before);
+                    if (healed > 0) {
+                        spawnHealPickupEffect(comp.x + comp.size / 2, comp.y + comp.size / 2, 2);
+                    }
+                    pickupItems.splice(i, 1);
+                }
+            }
+
+            comp.currentHp = hpNow;
+            comp.hp = hpNow;
         }
 
         function updateMagnetsCompanions() {
@@ -7709,20 +7950,20 @@
                     owner._magnetsMinus = false;
                     continue;
                 }
-                if (comp.hp <= 0) {
+                const compHp = comp.currentHp !== undefined ? comp.currentHp : comp.hp;
+                if (compHp <= 0) {
                     owner._magnetPlus = null;
                     owner._magnetsMinus = false;
                     owner.superActive = false;
                     owner.superTimer = 0;
                     continue;
                 }
+                healMagnetsCompanion(comp);
                 // Find target
                 let target = null, bestDist = 520;
                 for (const p of players) {
                     if (p === owner || p.currentHp <= 0) continue;
                     if (owner.team && p.team === owner.team) continue;
-                    // Skip Magnets companions (untargetable)
-                    if (p._magnetPlus !== undefined) continue;
                     const d = Math.hypot((p.x + p.size / 2) - comp.x, (p.y + p.size / 2) - comp.y);
                     if (d < bestDist) { bestDist = d; target = p; }
                 }
@@ -7732,16 +7973,11 @@
                     const d = Math.hypot(dx, dy) || 1;
                     const reach = target.size / 2 + comp.size / 2 + 8;
                     if (d > reach) {
-                        const nx = Math.max(0, Math.min(MAP_WIDTH, comp.x + (dx / d) * comp.speed));
-                        const ny = Math.max(0, Math.min(MAP_HEIGHT, comp.y + (dy / d) * comp.speed));
-                        const blocked = obstacles.some(o => o.type === 'brick' && nx >= o.x && nx <= o.x + o.width && ny >= o.y && ny <= o.y + o.height);
-                        if (!blocked) { comp.x = nx; comp.y = ny; }
-                        else {
-                            const bX = obstacles.some(o => o.type === 'brick' && nx >= o.x && nx <= o.x + o.width && comp.y >= o.y && comp.y <= o.y + o.height);
-                            if (!bX) comp.x = nx;
-                            const bY = obstacles.some(o => o.type === 'brick' && comp.x >= o.x && comp.x <= o.x + o.width && ny >= o.y && ny <= o.y + o.height);
-                            if (!bY) comp.y = ny;
-                        }
+                        const nx = Math.max(0, Math.min(MAP_WIDTH - comp.size, comp.x + (dx / d) * comp.speed));
+                        const ny = Math.max(0, Math.min(MAP_HEIGHT - comp.size, comp.y + (dy / d) * comp.speed));
+                        // Clone must obey all normal movement blocking: walls and lakes.
+                        if (canEntityMoveTo(comp, nx, comp.y)) comp.x = nx;
+                        if (canEntityMoveTo(comp, comp.x, ny)) comp.y = ny;
                     }
                     if (d <= reach + comp.speed && comp.attackCooldown <= 0) {
                         if (!hasDamageShield(target)) {
@@ -7783,22 +8019,22 @@
         function drawMagnetsCompanions() {
             for (const owner of players) {
                 const comp = owner._magnetPlus;
-                if (!comp || comp.hp <= 0) continue;
+                if (!comp || (comp.currentHp !== undefined ? comp.currentHp : comp.hp) <= 0) continue;
                 const cx = comp.x - camera.x;
                 const cy = comp.y - camera.y;
                 ctx.save();
-                // Companion renders as magnets+.png sprite with full visibility
-                const imgEntry = loadImage('images/magnets+.png');
+                const spriteSrc = getPlayerPreferredImageSrc(comp);
+                const imgEntry = spriteSrc ? loadImage(spriteSrc) : null;
                 if (imgEntry && imgEntry.complete && !imgEntry._failed && imgEntry.naturalWidth > 0) {
                     ctx.drawImage(imgEntry, cx, cy, comp.size, comp.size);
                 } else {
                     // Fallback to owner color if sprite fails
-                    ctx.fillStyle = owner.color || '#ef4444';
+                    ctx.fillStyle = comp.color || owner.color || '#ef4444';
                     ctx.fillRect(cx, cy, comp.size, comp.size);
                 }
                 // HP bar
                 const barW = comp.size;
-                const hpRatio = Math.max(0, comp.hp / comp.maxHp);
+                const hpRatio = Math.max(0, (comp.currentHp !== undefined ? comp.currentHp : comp.hp) / comp.maxHp);
                 ctx.fillStyle = '#333';
                 ctx.fillRect(cx, cy - 10, barW, 5);
                 ctx.fillStyle = hpRatio > 0.6 ? '#00ff00' : hpRatio > 0.3 ? '#ffff00' : '#ff4444';
@@ -7823,8 +8059,6 @@
                 if (trap.triggered) continue;
                 for (const p of players) {
                     if (p === trap.owner || (trap.owner.team && p.team === trap.owner.team) || p.currentHp <= 0) continue;
-                    // Skip Magnets companions
-                    if (p._magnetPlus !== undefined) continue;
                     const tcx = p.x + p.size / 2;
                     const tcy = p.y + p.size / 2;
                     if (Math.abs(tcx - (trap.x + 14)) < p.size / 2 + 14 && Math.abs(tcy - (trap.y + 14)) < p.size / 2 + 14) {
@@ -7920,8 +8154,6 @@
                 for (const p of players) {
                     if (p === s.owner || p.currentHp <= 0) continue;
                     if (s.owner.team && p.team === s.owner.team) continue;
-                    // Skip Magnets companions
-                    if (p._magnetPlus !== undefined) continue;
                     const d = Math.hypot((p.x + p.size / 2) - s.x, (p.y + p.size / 2) - s.y);
                     if (d < bestDist) {
                         bestDist = d;
@@ -7935,8 +8167,6 @@
                     for (const p of players) {
                         if (p === s.owner || p.currentHp <= 0) continue;
                         if (s.owner.team && p.team === s.owner.team) continue;
-                        // Skip Magnets companions
-                        if (p._magnetPlus !== undefined) continue;
                         const d = Math.hypot((p.x + p.size / 2) - ownerCx, (p.y + p.size / 2) - ownerCy);
                         if (d < ownerBest) {
                             ownerBest = d;
