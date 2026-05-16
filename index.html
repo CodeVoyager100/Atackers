@@ -494,6 +494,15 @@
             box-shadow: 0 0 30px rgba(255, 204, 0, 0.3);
         }
 
+        @media (max-width: 600px) {
+            .modal-panel {
+                padding: 14px 10px;
+                max-height: 85vh;
+                width: 96vw !important;
+                top: 48% !important;
+            }
+        }
+
             .modal-panel h2 {
                 margin-top: 0;
                 color: #ffcc00;
@@ -1061,10 +1070,25 @@
 
     <div id="credits-panel" class="modal-panel" style="width:700px;">
         <h2 style="color:#4ae8d8;">🎖️ Hero Marks Progression</h2>
-        <p style="text-align:center; color:#aaa; margin-top:-10px; font-size:13px;">Choose one player per active tier. Your pick unlocks automatically when you reach enough Hero Marks.</p>
+        <p style="text-align:center; color:#aaa; margin-top:-10px; font-size:13px;">Earn Hero Marks in battles, then choose which player to unlock.</p>
         <div id="credits-progress-bar" style="margin:10px auto 18px; max-width:420px;"></div>
         <div id="credits-tier-list"></div>
         <button class="btn modal-close" id="close-credits-panel" style="margin-top:12px;">Close</button>
+    </div>
+
+    <div id="bazzar-overlay" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.72); z-index:1200; justify-content:center; align-items:center;">
+        <div id="bazzar-panel" style="position:relative; background:#12192a; border:2px solid #ffcc66; border-radius:16px; padding:28px 24px 22px; width:min(500px,92vw); max-height:min(420px,88vh); overflow-y:auto; box-shadow:0 0 40px rgba(255,204,102,0.18);">
+            <button id="close-bazzar-panel" aria-label="Close Bazzar" style="position:sticky; float:right; top:0; width:32px; height:32px; border-radius:50%; border:1px solid #ff7b7b; background:#3a1414; color:#ff4d4d; font-weight:bold; font-size:18px; cursor:pointer; z-index:10;">✕</button>
+            <h2 style="color:#ffcc66; margin:0 0 6px;">🛒 Bazzar</h2>
+            <p style="text-align:center; color:#aaa; margin:0 0 14px; font-size:13px;">Redeem developer codes for testing rewards.</p>
+
+            <div style="background:#101726; border:1px solid #2f3b52; border-radius:10px; padding:12px;">
+                <input id="bazzar-redeem-input" placeholder="Enter code" autocomplete="off" style="width:100%; padding:9px; border-radius:8px; border:1px solid #394760; background:#0b1322; color:#fff; margin-bottom:8px; box-sizing:border-box;" />
+                <button class="btn" id="bazzar-redeem-btn" style="width:100%;">Redeem Code</button>
+            </div>
+
+            <p id="bazzar-status" style="text-align:center; color:#9aa8bf; font-size:12px; min-height:18px; margin:10px 0 0;"></p>
+        </div>
     </div>
 
     <div id="player-menu" class="modal-panel">
@@ -1074,8 +1098,8 @@
     </div>
 
     <!-- Player Detail Popup -->
-    <div id="player-detail-popup" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.7); z-index:1100; justify-content:center; align-items:center;">
-        <div id="player-detail-box" style="background:#1a1a2e; border-radius:16px; border:3px solid #ffcc00; padding:24px; max-width:340px; width:90%; text-align:center; color:#fff;">
+    <div id="player-detail-popup" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.7); z-index:1100; justify-content:center; align-items:center; overflow-y:auto;">
+        <div id="player-detail-box" style="background:#1a1a2e; border-radius:16px; border:3px solid #ffcc00; padding:24px; max-width:340px; width:90%; text-align:center; color:#fff; max-height:88vh; overflow-y:auto; position:relative;">
             <img id="pd-img" src="" style="width:120px; height:120px; object-fit:cover; border-radius:12px; border:3px solid #ccc;" />
             <h2 id="pd-name" style="margin:8px 0 4px; color:#fff;"></h2>
             <p id="pd-rarity" style="font-weight:bold; margin:2px 0;"></p>
@@ -1154,6 +1178,7 @@
         <button class="btn" id="game-mode-btn">🎮 Game Modes</button>
         <button class="btn" id="start-btn">⚔️ Battle!</button>
         <button class="btn" id="credits-btn" style="background:#1a3a3a; border:1px solid #4ae8d8; color:#4ae8d8;">🎖️ Hero Marks</button>
+        <button class="btn" id="bazzar-btn" style="background:#3a2a14; border:1px solid #ffcc66; color:#ffcc66;">🛒 Bazzar</button>
         <button class="btn" id="switch-player-btn"> Players</button>
     </div>
 
@@ -1287,6 +1312,7 @@
         let energySparks = parseInt(localStorage.getItem('energySparks') ?? '0');
         let playerCredits = parseInt(localStorage.getItem('playerCredits') ?? '0');
         let creditTierPick = JSON.parse(localStorage.getItem('creditTierPick') ?? '{}');
+        let selectedCreditTargetId = localStorage.getItem('selectedCreditTargetId') ?? null;
         let playerPowerLevels = JSON.parse(localStorage.getItem('playerPowerLevels') ?? '{}');
         let unlockedGadgets = JSON.parse(localStorage.getItem('unlockedGadgets') ?? '["default"]');
         let playerMedalsByNexus = JSON.parse(localStorage.getItem('playerMedalsByNexus') ?? '{}');
@@ -1307,7 +1333,7 @@
         let accountAuthMode = 'login';
         let currentAccount = null;
         let guestProfile = null;
-        const PROFILE_AVATAR_ICONS = ['😀', '😎', '🤖', '🔥', '⚡', '🛡️', '👑', '🐍', '🦾', '🎯', '🚀', '⭐','🐖','💘','😡'];
+        const PROFILE_AVATAR_ICONS = ['😀', '😎', '🤖', '🔥', '⚡', '🛡️', '👑', '🐍', '🦾', '🎯', '🚀', '⭐','🐖','💘'];
         const TITLE_REWARDS = [
             { key: 'Rookie', unlockMedals: 0 },
             { key: 'Contender', unlockMedals: 60 },
@@ -1976,6 +2002,8 @@
             localStorage.setItem('energySparks', energySparks);
             localStorage.setItem('playerCredits', playerCredits);
             localStorage.setItem('creditTierPick', JSON.stringify(creditTierPick));
+            if (selectedCreditTargetId) localStorage.setItem('selectedCreditTargetId', selectedCreditTargetId);
+            else localStorage.removeItem('selectedCreditTargetId');
             localStorage.setItem('playerPowerLevels', JSON.stringify(playerPowerLevels));
             localStorage.setItem('unlockedGadgets', JSON.stringify(unlockedGadgets));
             localStorage.setItem('playerMedalsByNexus', JSON.stringify(playerMedalsByNexus));
@@ -1998,9 +2026,6 @@
             }
             saveProgress();
             showCoins();
-            if (milestoneMessages.length > 0) {
-                showLootboxPopup(milestoneMessages.join('\n'));
-            }
         }
         let currentGameMode = 'showdown';
 
@@ -2043,6 +2068,7 @@
         // Super ability effects (AoE zones, etc.)
         let superEffects = [];
         let snakeMinions = [];
+        let huntearTraps = []; // { x, y, owner, life, triggered }
 
         // ── Gadget system ────────────────────────────────────────────────────
         let gadgetEffects = [];   // extra visual effects from gadgets
@@ -2072,6 +2098,11 @@
             gobanana:         { name: '🍌 Banana Ring',   icon: '🍌', cooldown: 520 },
             freze:            { name: '❄️ Ice Dash',       icon: '❄️', cooldown: 540 },
             kara:             { name: '🌑 Dark Barrier',   icon: '🌑', cooldown: 600 },
+            punchpunch:       { name: '🥊 Guard Step',    icon: '🥊', cooldown: 500 },
+            cardon:           { name: '🃏 Razor Guard',   icon: '🃏', cooldown: 520 },
+            slamforge:        { name: '⚡ Slam Guard',    icon: '⚡', cooldown: 560 },
+            huntear:          { name: '🪤 Bear Trap',      icon: '🪤', cooldown: 540 },
+            magnets:          { name: '🧲 Magnetic Pull',  icon: '🧲', cooldown: 500 },
         };
 
         const TIMOR_GADGET_KEYS = ['timor', 'timor_mine', 'timor_rocket'];
@@ -2128,7 +2159,6 @@
             playerCoins -= price;
             if (!unlockGadget(gadgetKey)) return false;
             showCoins();
-            showLootboxPopup(`Unlocked gadget: ${gadgetData[gadgetKey].name} (-${price} coins)`);
             return true;
         }
 
@@ -2159,6 +2189,10 @@
 
         function getPlayerPreferredImageSrc(playerLike) {
             if (!playerLike) return '';
+            // Magnets: live player gets +/- sprite; playersData entry (no currentHp) keeps magnets.png
+            if (playerLike.img === 'images/magnets.png' && playerLike.currentHp !== undefined) {
+                return playerLike._magnetsMinus === true ? 'images/magnets-.png' : 'images/magnets+.png';
+            }
             const primary = playerLike.img || '';
             const fallback = playerLike.legacyImg || '';
 
@@ -2194,6 +2228,10 @@
                     loadImage(player.legacyImg);
                 }
             });
+
+            // Preload Magnets companion sprites
+            loadImage('images/magnets+.png');
+            loadImage('images/magnets-.png');
         }
 
         const playersData = {
@@ -2563,7 +2601,93 @@
                 superType: 'darkrift',        // dark rift at target: pulls enemies + heavy damage
                 superName: '🌑 Dark Rift',
                 superNeedsAim: true
+            },
+            punchpunch: {
+                id: 'punchpunch',
+                name: 'Punch-Punch',
+                img: 'images/punch-punch.png',
+                color: '#f97316',
+                hp: 50,
+                speed: 5.5,
+                laserDamage: 4,
+                size: 56,
+                laserRange: 210,
+                creditCost: 200,
+                rarity: 'epic',
+                attackType: 'combojab',       // short-range multi-jab burst
+                superType: 'punchflurry',     // chain AoE punches while moving
+                superName: '👊 Punch Flurry',
+                superNeedsAim: false
+            },
+            cardon: {
+                id: 'cardon',
+                name: 'Cardon',
+                img: 'images/cardon.png',
+                color: '#e11d48',
+                hp: 40,
+                speed: 5.3,
+                laserDamage: 3,
+                size: 52,
+                laserRange: 250,
+                creditCost: 200,
+                rarity: 'epic',
+                attackType: 'cardslash',      // close fan of returning cards
+                superType: 'cardcage',        // trap zone + radial card burst
+                superName: '🃏 Card Cage',
+                superNeedsAim: true
+            },
+            slamforge: {
+                id: 'slamforge',
+                name: 'Slamforge',
+                img: 'images/ScorpiosSouvlak3.png',
+                color: '#ef4444',
+                hp: 58,
+                speed: 4.3,
+                laserDamage: 4,
+                size: 58,
+                laserRange: 205,
+                creditCost: 200,
+                rarity: 'epic',
+                attackType: 'shockknuckle',   // very short heavy strike shot
+                superType: 'groundslam',      // stun + knockback around self
+                superName: '💥 Ground Slam',
+                superNeedsAim: false
+            },
+            huntear: {
+                id: 'huntear',
+                name: 'Huntear',
+                img: 'images/huntear.png',
+                color: '#a16207',
+                hp: 44,
+                speed: 5,
+                laserDamage: 4,
+                size: 54,
+                laserRange: 500,
+                creditCost: 1000,
+                rarity: 'legendary',
+                attackType: 'arrowshot',      // arrow + delayed second arrow
+                superType: 'traplayer',       // lay traps while moving for 5 s
+                superName: '🪤 Trap Field',
+                superNeedsAim: false
+            },
+            magnets: {
+                id: 'magnets',
+                name: 'Magnets',
+                img: 'images/magnets.png',
+                color: '#ef4444',
+                hp: 48,
+                speed: 5,
+                laserDamage: 3,
+                size: 56,
+                laserRange: 480,
+                creditCost: 1000,
+                rarity: 'legendary',
+                attackType: 'magnetshot',
+                superType: 'magnetswap',      // transform: spawn + companion, become - form
+                superName: '🧲 Polarity Swap',
+                superNeedsAim: false
             }
+          
         };
 
         // Rarity colors and labels
@@ -2632,13 +2756,25 @@
 
         // Input handling
         const keysPressed = {};
+        function setMovementKeyFromCode(code, isDown) {
+            if (code === 'KeyW') keysPressed['w'] = isDown;
+            else if (code === 'KeyA') keysPressed['a'] = isDown;
+            else if (code === 'KeyS') keysPressed['s'] = isDown;
+            else if (code === 'KeyD') keysPressed['d'] = isDown;
+            else if (code === 'ArrowUp') keysPressed['arrowup'] = isDown;
+            else if (code === 'ArrowLeft') keysPressed['arrowleft'] = isDown;
+            else if (code === 'ArrowDown') keysPressed['arrowdown'] = isDown;
+            else if (code === 'ArrowRight') keysPressed['arrowright'] = isDown;
+        }
         window.addEventListener('keydown', (e) => {
             const k = e.key.toLowerCase();
             keysPressed[k] = true;
+            setMovementKeyFromCode(e.code, true);
         });
         window.addEventListener('keyup', (e) => {
             const k = e.key.toLowerCase();
             keysPressed[k] = false;
+            setMovementKeyFromCode(e.code, false);
         });
 
         // Core game functions
@@ -2733,6 +2869,34 @@
         function isBlockingObstacleForEntity(entity, obs) {
             if (obs.type === 'water' && canWalkOnWater(entity)) return false;
             return true;
+        }
+
+        function canEntityMoveTo(entity, x, y) {
+            const testRect = { x, y, size: entity.size };
+            for (const obs of obstacles) {
+                if (!isBlockingObstacleForEntity(entity, obs)) continue;
+                if (checkCollisionWithRect(testRect, obs)) return false;
+            }
+            return true;
+        }
+
+        function displaceEntitySafely(entity, deltaX, deltaY, stepSize = 10) {
+            if (!entity || (deltaX === 0 && deltaY === 0)) return;
+            const steps = Math.max(1, Math.ceil(Math.max(Math.abs(deltaX), Math.abs(deltaY)) / stepSize));
+            const stepX = deltaX / steps;
+            const stepY = deltaY / steps;
+
+            for (let s = 0; s < steps; s++) {
+                const nextX = Math.max(0, Math.min(MAP_WIDTH - entity.size, entity.x + stepX));
+                if (canEntityMoveTo(entity, nextX, entity.y)) {
+                    entity.x = nextX;
+                }
+
+                const nextY = Math.max(0, Math.min(MAP_HEIGHT - entity.size, entity.y + stepY));
+                if (canEntityMoveTo(entity, entity.x, nextY)) {
+                    entity.y = nextY;
+                }
+            }
         }
 
         function canBreakBrickWalls(entity) {
@@ -3140,7 +3304,20 @@
             const aType = player.attackType || 'standard';
 
             function makeLaser(ox, oy, vx, vy, life, dmg, extra) {
-                return { x: startX + ox, y: startY + oy, vx, vy, life, damage: dmg, shooter: player, attackType: aType, ...extra };
+                return {
+                    x: startX + ox,
+                    y: startY + oy,
+                    vx,
+                    vy,
+                    life,
+                    damage: dmg,
+                    shooter: player,
+                    attackType: aType,
+                    startX: startX + ox,
+                    startY: startY + oy,
+                    maxRange: player.laserRange,
+                    ...extra
+                };
             }
             function rotated(nx, ny, angle) {
                 const c = Math.cos(angle), s = Math.sin(angle);
@@ -3165,6 +3342,11 @@
                     lasers.push(makeLaser(px * s, py * s, nx * speed, ny * speed, 90, player.laserDamage, {}));
                 }
                 player.shootCooldown = 20;
+            } else if (aType === 'magnetshot') {
+                const ox = -ny * 9, oy = nx * 9;
+                lasers.push(makeLaser( ox,  oy, nx * speed, ny * speed, 90, player.laserDamage, { magnetColor: '#ef4444' }));
+                lasers.push(makeLaser(-ox, -oy, nx * speed, ny * speed, 90, player.laserDamage, { magnetColor: '#3b82f6' }));
+                player.shootCooldown = 20;
             } else if (aType === 'heavy') {
                 lasers.push(makeLaser(0, 0, nx * 5, ny * 5, 130, Math.round(player.laserDamage * 2.5), { radius: 12, aoeRadius: 60 }));
                 player.shootCooldown = 38;
@@ -3179,11 +3361,33 @@
                 // Second shot fires after a short delay via a scheduled push
                 setTimeout(() => {
                     if (!gameStarted || player.currentHp <= 0) return;
-                    lasers.push({ x: startX, y: startY, vx: nx * speed, vy: ny * speed, life: 80, damage: player.laserDamage, shooter: player, attackType: 'rapid' });
+                    lasers.push({ x: startX, y: startY, vx: nx * speed, vy: ny * speed, life: 80, damage: player.laserDamage, shooter: player, attackType: 'rapid', startX, startY, maxRange: player.laserRange });
                 }, 100);
                 player.shootCooldown = 14;
+            } else if (aType === 'combojab') {
+                for (const angle of [-0.1, 0.1]) {
+                    const r = rotated(nx, ny, angle);
+                    lasers.push(makeLaser(0, 0, r.vx * 0.82, r.vy * 0.82, 52, Math.max(1, Math.round(player.laserDamage * 1.05)), { radius: 8, aoeRadius: 24 }));
+                }
+                setTimeout(() => {
+                    if (!gameStarted || player.currentHp <= 0) return;
+                    lasers.push({ x: startX, y: startY, vx: nx * speed * 0.86, vy: ny * speed * 0.86, life: 50, damage: Math.max(1, Math.round(player.laserDamage * 1.2)), shooter: player, attackType: 'combojab', radius: 8, aoeRadius: 26, startX, startY, maxRange: player.laserRange });
+                }, 70);
+                player.shootCooldown = 13;
+            } else if (aType === 'cardslash') {
+                for (const angle of [-0.42, -0.14, 0.14, 0.42]) {
+                    const r = rotated(nx, ny, angle);
+                    lasers.push(makeLaser(0, 0, r.vx * 0.72, r.vy * 0.72, 58, Math.max(1, Math.round(player.laserDamage * 0.9)), { boomerang: true, returnTimer: 26, origVx: r.vx * 0.72, origVy: r.vy * 0.72 }));
+                }
+                player.shootCooldown = 17;
+            } else if (aType === 'shockknuckle') {
+                lasers.push(makeLaser(0, 0, nx * 7, ny * 7, 54, Math.max(1, Math.round(player.laserDamage * 1.75)), { radius: 11, aoeRadius: 42, freezeSlow: true }));
+                player.shootCooldown = 20;
             } else if (aType === 'homing') {
-                lasers.push(makeLaser(0, 0, nx * 8, ny * 8, 150, player.laserDamage, { homingSpeed: 8 }));
+                const homingCfg = player.id === 'kafekauboy'
+                    ? { homingSpeed: 7, homingFrames: 20, homingTurn: 0.04 }
+                    : { homingSpeed: 8, homingFrames: 30, homingTurn: 0.055 };
+                lasers.push(makeLaser(0, 0, nx * homingCfg.homingSpeed, ny * homingCfg.homingSpeed, 150, player.laserDamage, homingCfg));
                 player.shootCooldown = 22;
             } else if (aType === 'boomerang') {
                 lasers.push(makeLaser(0, 0, nx * 9, ny * 9, 80, player.laserDamage, { boomerang: true, returnTimer: 40, origVx: nx * 9, origVy: ny * 9 }));
@@ -3221,6 +3425,13 @@
             } else if (aType === 'darkpulse') {
                 lasers.push(makeLaser(0, 0, nx * 13, ny * 13, 95, player.laserDamage, { darkPulse: true }));
                 player.shootCooldown = 18;
+            } else if (aType === 'arrowshot') {
+                lasers.push(makeLaser(0, 0, nx * 14, ny * 14, 90, player.laserDamage, { arrowShot: true }));
+                setTimeout(() => {
+                    if (!gameStarted || player.currentHp <= 0) return;
+                    lasers.push({ x: startX, y: startY, vx: nx * 14, vy: ny * 14, life: 90, damage: player.laserDamage, shooter: player, attackType: 'arrowshot', arrowShot: true, startX, startY, maxRange: player.laserRange });
+                }, 1000);
+                player.shootCooldown = 20;
             } else {
                 // standard
                 lasers.push(makeLaser(0, 0, nx * speed, ny * speed, 90, player.laserDamage, {}));
@@ -3262,6 +3473,10 @@
                 for (const s of [-1, 1]) {
                     aiLasers.push({ x: cx + px * s, y: cy + py * s, vx: dirX * laserSpeed, vy: dirY * laserSpeed, life: 90, damage: bot.laserDamage, shooter: bot, attackType: aType });
                 }
+            } else if (aType === 'magnetshot') {
+                const ox = -dirY * 9, oy = dirX * 9;
+                aiLasers.push({ x: cx + ox, y: cy + oy, vx: dirX * laserSpeed, vy: dirY * laserSpeed, life: 90, damage: bot.laserDamage, shooter: bot, attackType: aType, magnetColor: '#ef4444' });
+                aiLasers.push({ x: cx - ox, y: cy - oy, vx: dirX * laserSpeed, vy: dirY * laserSpeed, life: 90, damage: bot.laserDamage, shooter: bot, attackType: aType, magnetColor: '#3b82f6' });
             } else if (aType === 'heavy') {
                 aiLasers.push({ x: cx, y: cy, vx: dirX * 5, vy: dirY * 5, life: 130, damage: Math.round(bot.laserDamage * 2.5), shooter: bot, attackType: aType, radius: 12, aoeRadius: 60 });
             } else if (aType === 'clustercannon') {
@@ -3270,13 +3485,32 @@
                     aiLasers.push({ x: cx, y: cy, vx: r.vx * 0.55, vy: r.vy * 0.55, life: 120, damage: Math.max(1, Math.round(bot.laserDamage * 1.6)), shooter: bot, attackType: aType, radius: 10, aoeRadius: 36 });
                 }
             } else if (aType === 'rapid') {
-                aiLasers.push({ x: cx, y: cy, vx: dirX * laserSpeed, vy: dirY * laserSpeed, life: 80, damage: bot.laserDamage, shooter: bot, attackType: aType });
+                aiLasers.push({ x: cx, y: cy, vx: dirX * laserSpeed, vy: dirY * laserSpeed, life: 80, damage: bot.laserDamage, shooter: bot, attackType: aType, startX: cx, startY: cy, maxRange: bot.laserRange });
                 setTimeout(() => {
                     if (!gameStarted || bot.currentHp <= 0) return;
-                    aiLasers.push({ x: bot.x + bot.size / 2, y: bot.y + bot.size / 2, vx: dirX * laserSpeed, vy: dirY * laserSpeed, life: 80, damage: bot.laserDamage, shooter: bot, attackType: 'rapid' });
+                    aiLasers.push({ x: bot.x + bot.size / 2, y: bot.y + bot.size / 2, vx: dirX * laserSpeed, vy: dirY * laserSpeed, life: 80, damage: bot.laserDamage, shooter: bot, attackType: 'rapid', startX: bot.x + bot.size / 2, startY: bot.y + bot.size / 2, maxRange: bot.laserRange });
                 }, 120);
+            } else if (aType === 'combojab') {
+                for (const angle of [-0.1, 0.1]) {
+                    const r = rotated(dirX, dirY, angle);
+                    aiLasers.push({ x: cx, y: cy, vx: r.vx * 0.82, vy: r.vy * 0.82, life: 52, damage: Math.max(1, Math.round(bot.laserDamage * 1.05)), shooter: bot, attackType: aType, radius: 8, aoeRadius: 24 });
+                }
+                setTimeout(() => {
+                    if (!gameStarted || bot.currentHp <= 0) return;
+                    aiLasers.push({ x: bot.x + bot.size / 2, y: bot.y + bot.size / 2, vx: dirX * laserSpeed * 0.86, vy: dirY * laserSpeed * 0.86, life: 50, damage: Math.max(1, Math.round(bot.laserDamage * 1.2)), shooter: bot, attackType: aType, radius: 8, aoeRadius: 26, startX: bot.x + bot.size / 2, startY: bot.y + bot.size / 2, maxRange: bot.laserRange });
+                }, 90);
+            } else if (aType === 'cardslash') {
+                for (const angle of [-0.42, -0.14, 0.14, 0.42]) {
+                    const r = rotated(dirX, dirY, angle);
+                    aiLasers.push({ x: cx, y: cy, vx: r.vx * 0.72, vy: r.vy * 0.72, life: 58, damage: Math.max(1, Math.round(bot.laserDamage * 0.9)), shooter: bot, attackType: aType, boomerang: true, returnTimer: 26, origVx: r.vx * 0.72, origVy: r.vy * 0.72 });
+                }
+            } else if (aType === 'shockknuckle') {
+                aiLasers.push({ x: cx, y: cy, vx: dirX * 7, vy: dirY * 7, life: 54, damage: Math.max(1, Math.round(bot.laserDamage * 1.75)), shooter: bot, attackType: aType, radius: 11, aoeRadius: 42, freezeSlow: true });
             } else if (aType === 'homing') {
-                aiLasers.push({ x: cx, y: cy, vx: dirX * 8, vy: dirY * 8, life: 150, damage: bot.laserDamage, shooter: bot, attackType: aType, homingSpeed: 8 });
+                const homingCfg = bot.id === 'kafekauboy'
+                    ? { homingSpeed: 7, homingFrames: 20, homingTurn: 0.04 }
+                    : { homingSpeed: 8, homingFrames: 30, homingTurn: 0.055 };
+                aiLasers.push({ x: cx, y: cy, vx: dirX * homingCfg.homingSpeed, vy: dirY * homingCfg.homingSpeed, life: 150, damage: bot.laserDamage, shooter: bot, attackType: aType, homingSpeed: homingCfg.homingSpeed, homingFrames: homingCfg.homingFrames, homingTurn: homingCfg.homingTurn, startX: cx, startY: cy, maxRange: bot.laserRange });
             } else if (aType === 'boomerang') {
                 aiLasers.push({ x: cx, y: cy, vx: dirX * 9, vy: dirY * 9, life: 80, damage: bot.laserDamage, shooter: bot, attackType: aType, boomerang: true, returnTimer: 40, origVx: dirX * 9, origVy: dirY * 9 });
             } else if (aType === 'aoehit') {
@@ -3303,6 +3537,13 @@
                 aiLasers.push({ x: cx, y: cy, vx: dirX * 11, vy: dirY * 11, life: 100, damage: bot.laserDamage, shooter: bot, attackType: aType, freezeSlow: true });
             } else if (aType === 'darkpulse') {
                 aiLasers.push({ x: cx, y: cy, vx: dirX * 13, vy: dirY * 13, life: 95, damage: bot.laserDamage, shooter: bot, attackType: aType, darkPulse: true });
+            } else if (aType === 'arrowshot') {
+                aiLasers.push({ x: cx, y: cy, vx: dirX * 14, vy: dirY * 14, life: 90, damage: bot.laserDamage, shooter: bot, attackType: aType, arrowShot: true, startX: cx, startY: cy, maxRange: bot.laserRange });
+                setTimeout(() => {
+                    if (!gameStarted || bot.currentHp <= 0) return;
+                    const bx = bot.x + bot.size / 2, by = bot.y + bot.size / 2;
+                    aiLasers.push({ x: bx, y: by, vx: dirX * 14, vy: dirY * 14, life: 90, damage: bot.laserDamage, shooter: bot, attackType: 'arrowshot', arrowShot: true, startX: bx, startY: by, maxRange: bot.laserRange });
+                }, 1000);
             } else {
                 aiLasers.push({ x: cx, y: cy, vx: dirX * laserSpeed, vy: dirY * laserSpeed, life: 90, damage: bot.laserDamage, shooter: bot, attackType: 'standard' });
             }
@@ -4253,10 +4494,9 @@
                 // Fade players who are in a bush (and not revealed)
                 if (p.inBush && !isRevealed) {
                     if (p.isHuman) {
-                        ctx.globalAlpha = 0.45;
+                        ctx.globalAlpha = 0.72;
                     } else {
-                        const isTeammate = !!(player && player.team && p.team === player.team);
-                        ctx.globalAlpha = isTeammate ? 0.35 : 0.24;
+                        ctx.globalAlpha = 0.66;
                     }
                 }
 
@@ -4269,8 +4509,8 @@
                 // Invisible (gadget cloak) — keep enemies faintly visible for fairness/readability
                 const isInvisible = (p.gadgetInvisibleTimer || 0) > 0;
                 if (isInvisible) {
-                    if (p.isHuman) ctx.globalAlpha = 0.25;
-                    else ctx.globalAlpha = Math.min(ctx.globalAlpha, 0.18);
+                    if (p.isHuman) ctx.globalAlpha = 0.7;
+                    else ctx.globalAlpha = Math.min(ctx.globalAlpha, 0.62);
                 }
 
                 const teamColor = p.team ? teamColors[p.team] : null;
@@ -4282,6 +4522,15 @@
                     ctx.strokeStyle = teamColor;
                     ctx.lineWidth = 3;
                     ctx.strokeRect(px - 3, py - 3, p.size + 6, p.size + 6);
+                }
+
+                // Cloaked players still get a visible silhouette ring so they are never lost.
+                if (isInvisible) {
+                    ctx.strokeStyle = 'rgba(255,255,255,0.9)';
+                    ctx.lineWidth = 2;
+                    ctx.setLineDash([5, 4]);
+                    ctx.strokeRect(px - 2, py - 2, p.size + 4, p.size + 4);
+                    ctx.setLineDash([]);
                 }
 
                 // Try to draw player image if available
@@ -4419,6 +4668,21 @@
                     ctx.restore();
                 }
 
+                // Magnets +/- form indicator
+                if ((p.characterId || p.id) === 'magnets' || p._magnetsMinus !== undefined) {
+                    const symbol = p._magnetsMinus ? '−' : '+';
+                    const symColor = p._magnetsMinus ? '#f87171' : '#4ade80';
+                    ctx.save();
+                    ctx.font = 'bold 20px Arial';
+                    ctx.textAlign = 'center';
+                    ctx.fillStyle = symColor;
+                    ctx.strokeStyle = '#000';
+                    ctx.lineWidth = 3;
+                    ctx.strokeText(symbol, px + p.size / 2, py + p.size * 0.65);
+                    ctx.fillText(symbol, px + p.size / 2, py + p.size * 0.65);
+                    ctx.restore();
+                }
+
                 ctx.restore();
             });
         }
@@ -4547,6 +4811,38 @@
                     ctx.moveTo(lx, ly);
                     ctx.lineTo(lx - laser.vx * 2.5, ly - laser.vy * 2.5);
                     ctx.stroke();
+                } else if (laser.magnetColor) {
+                    const mc = laser.magnetColor;
+                    ctx.strokeStyle = mc;
+                    ctx.lineWidth = 3;
+                    ctx.shadowColor = mc;
+                    ctx.shadowBlur = 10;
+                    ctx.beginPath();
+                    ctx.moveTo(lx, ly);
+                    ctx.lineTo(lx - laser.vx * 2.2, ly - laser.vy * 2.2);
+                    ctx.stroke();
+                } else if (aType === 'arrowshot' || laser.arrowShot) {
+                    // Arrow: a line with an arrowhead tip
+                    // Arrow: a line with an arrowhead tip
+                    const spd = Math.hypot(laser.vx, laser.vy) || 1;
+                    const dx = laser.vx / spd, dy = laser.vy / spd;
+                    const len = 18;
+                    const ex = lx - dx * len, ey = ly - dy * len;
+                    ctx.strokeStyle = '#b45309';
+                    ctx.lineWidth = 3;
+                    ctx.shadowColor = '#fbbf24';
+                    ctx.shadowBlur = 8;
+                    ctx.beginPath(); ctx.moveTo(ex, ey); ctx.lineTo(lx, ly); ctx.stroke();
+                    // Arrowhead
+                    const hw = 5;
+                    const px2 = -dy, py2 = dx;
+                    ctx.fillStyle = '#fbbf24';
+                    ctx.beginPath();
+                    ctx.moveTo(lx, ly);
+                    ctx.lineTo(lx - dx * 10 + px2 * hw, ly - dy * 10 + py2 * hw);
+                    ctx.lineTo(lx - dx * 10 - px2 * hw, ly - dy * 10 - py2 * hw);
+                    ctx.closePath();
+                    ctx.fill();
                 } else {
                     // standard / spread / triple / double / rapid
                     const color = isSuperLaser ? '#ffcc00' : isAI ? '#ff4444' : '#00ffff';
@@ -4609,6 +4905,7 @@
         function getPreviewAnglesForAttackType(attackType) {
             switch (attackType || 'standard') {
                 case 'double':
+                case 'magnetshot':
                     return [-0.09, 0.09];
                 case 'spread':
                     return [-0.22, 0, 0.22];
@@ -4620,6 +4917,12 @@
                     return [-0.24, 0, 0.24];
                 case 'pumpburst':
                     return [-0.32, -0.1, 0.1, 0.32];
+                case 'combojab':
+                    return [-0.1, 0.1];
+                case 'cardslash':
+                    return [-0.42, -0.14, 0.14, 0.42];
+                case 'shockknuckle':
+                    return [0];
                 default:
                     return [0];
             }
@@ -5789,11 +6092,30 @@
                 laser.y += laser.vy;
                 laser.life--;
 
-                // Homing: steer toward nearest enemy
-                if (laser.attackType === 'homing') {
+                // Initialize range metadata for any legacy/projectile-created lasers.
+                if (laser.startX === undefined || laser.startY === undefined) {
+                    laser.startX = laser.x;
+                    laser.startY = laser.y;
+                }
+                if (laser.maxRange === undefined) {
+                    laser.maxRange = laser.shooter?.laserRange || Infinity;
+                }
+
+                // Remove projectiles that exceed shown attack range.
+                if (Math.hypot(laser.x - laser.startX, laser.y - laser.startY) > laser.maxRange) {
+                    lasers.splice(i, 1);
+                    continue;
+                }
+
+                // Homing: steer toward nearest enemy for a short duration only.
+                if (laser.attackType === 'homing' && (laser.homingFrames === undefined || laser.homingFrames > 0)) {
+                    if (laser.homingFrames === undefined) laser.homingFrames = 34;
+                    laser.homingFrames--;
                     let nearest = null, nearestDist = Infinity;
                     for (const p of players) {
                         if (p === laser.shooter || (laser.shooter.team && p.team === laser.shooter.team) || p.currentHp <= 0) continue;
+                        // Skip Magnets companions
+                        if (p._magnetPlus !== undefined) continue;
                         const d = Math.hypot(p.x + p.size / 2 - laser.x, p.y + p.size / 2 - laser.y);
                         if (d < nearestDist) { nearestDist = d; nearest = p; }
                     }
@@ -5801,9 +6123,17 @@
                         const tdx = nearest.x + nearest.size / 2 - laser.x;
                         const tdy = nearest.y + nearest.size / 2 - laser.y;
                         const td = Math.hypot(tdx, tdy) || 1;
-                        const spd = laser.homingSpeed || 8;
-                        laser.vx += (tdx / td * spd - laser.vx) * 0.12;
-                        laser.vy += (tdy / td * spd - laser.vy) * 0.12;
+                        const inLockDistance = nearestDist <= (laser.maxRange || Infinity) * 0.55;
+                        if (inLockDistance) {
+                            const spd = laser.homingSpeed || 8;
+                            const turn = laser.homingTurn || 0.06;
+                            const vLen = Math.hypot(laser.vx, laser.vy) || 1;
+                            const dot = (laser.vx / vLen) * (tdx / td) + (laser.vy / vLen) * (tdy / td);
+                            if (dot > 0.1) {
+                                laser.vx += (tdx / td * spd - laser.vx) * turn;
+                                laser.vy += (tdy / td * spd - laser.vy) * turn;
+                            }
+                        }
                     }
                 }
 
@@ -5843,6 +6173,10 @@
                     if (laser.shooter.team && targetPlayer.team === laser.shooter.team) continue;
                     // Don't hit dead players
                     if (targetPlayer.currentHp <= 0) continue;
+                    // Don't hit Magnets companions (+ form) — they are untargetable
+                    if (targetPlayer._magnetPlus !== undefined && targetPlayer._magnetPlus === targetPlayer._magnetPlus) continue;
+                    // Skip if this player IS a companion (no direct owner link in players array, so check _magnetsMinus flag)
+                    if (targetPlayer._magnetsMinus === true && !targetPlayer.isBot) continue;
 
                     const tcx = targetPlayer.x + targetPlayer.size / 2;
                     const tcy = targetPlayer.y + targetPlayer.size / 2;
@@ -5902,36 +6236,38 @@
                         hit = true;
 
                         if (targetPlayer.currentHp <= 0) {
-                            targetPlayer.currentHp = 0;
-                            if (targetPlayer.isHuman) { currentStreak = 0; streakTimer = 0; }
-                            laser.shooter.kills++;
-                            killFeed.push({ killerName: laser.shooter.name, victimName: targetPlayer.name, ts: Date.now(), isHumanKill: laser.shooter.isHuman });
-                            // Award XP for kill
-                            if (laser.shooter.isHuman) {
-                                awardMedals(1);
-                                registerKill();
-                                progressDaily('kills', 1);
-                            }
-                            // Check bounty 20-star win
-                            checkBountyWin();
-                            // In team modes: keep player for respawn; in FFA: remove
-                            const isTeamMode = gameModes[currentGameMode] && gameModes[currentGameMode].teams;
-                            if (isTeamMode) {
-                                targetPlayer.respawnTimer = getRespawnFramesForMode();
-                                targetPlayer.dead = true;
-                                dropPlayerItems(targetPlayer);
-                            } else {
-                                if (targetPlayer.isBot && getRespawnFramesForMode() > 0) {
+                            if (!tryMagnetsRespawn(targetPlayer)) {
+                                targetPlayer.currentHp = 0;
+                                if (targetPlayer.isHuman) { currentStreak = 0; streakTimer = 0; }
+                                laser.shooter.kills++;
+                                killFeed.push({ killerName: laser.shooter.name, victimName: targetPlayer.name, ts: Date.now(), isHumanKill: laser.shooter.isHuman });
+                                // Award XP for kill
+                                if (laser.shooter.isHuman) {
+                                    awardMedals(1);
+                                    registerKill();
+                                    progressDaily('kills', 1);
+                                }
+                                // Check bounty 20-star win
+                                checkBountyWin();
+                                // In team modes: keep player for respawn; in FFA: remove
+                                const isTeamMode = gameModes[currentGameMode] && gameModes[currentGameMode].teams;
+                                if (isTeamMode) {
                                     targetPlayer.respawnTimer = getRespawnFramesForMode();
                                     targetPlayer.dead = true;
                                     dropPlayerItems(targetPlayer);
                                 } else {
-                                    dropPlayerItems(targetPlayer);
-                                    matchStatsList.push({ name: targetPlayer.name, kills: targetPlayer.kills, damageDealt: targetPlayer.damageDealt, healingReceived: targetPlayer.healingReceived, team: targetPlayer.team, isHuman: targetPlayer.isHuman });
-                                    players.splice(j, 1);
-                                    if (targetPlayer.isBot) {
-                                        const botIndex = bots.findIndex(b => b.id === targetPlayer.id);
-                                        if (botIndex !== -1) bots.splice(botIndex, 1);
+                                    if (targetPlayer.isBot && getRespawnFramesForMode() > 0) {
+                                        targetPlayer.respawnTimer = getRespawnFramesForMode();
+                                        targetPlayer.dead = true;
+                                        dropPlayerItems(targetPlayer);
+                                    } else {
+                                        dropPlayerItems(targetPlayer);
+                                        matchStatsList.push({ name: targetPlayer.name, kills: targetPlayer.kills, damageDealt: targetPlayer.damageDealt, healingReceived: targetPlayer.healingReceived, team: targetPlayer.team, isHuman: targetPlayer.isHuman });
+                                        players.splice(j, 1);
+                                        if (targetPlayer.isBot) {
+                                            const botIndex = bots.findIndex(b => b.id === targetPlayer.id);
+                                            if (botIndex !== -1) bots.splice(botIndex, 1);
+                                        }
                                     }
                                 }
                             }
@@ -5952,11 +6288,30 @@
                 laser.y += laser.vy;
                 laser.life--;
 
-                // Homing: steer toward nearest player
-                if (laser.attackType === 'homing') {
+                // Initialize range metadata for any legacy/projectile-created lasers.
+                if (laser.startX === undefined || laser.startY === undefined) {
+                    laser.startX = laser.x;
+                    laser.startY = laser.y;
+                }
+                if (laser.maxRange === undefined) {
+                    laser.maxRange = laser.shooter?.laserRange || Infinity;
+                }
+
+                // Remove projectiles that exceed shown attack range.
+                if (Math.hypot(laser.x - laser.startX, laser.y - laser.startY) > laser.maxRange) {
+                    aiLasers.splice(i, 1);
+                    continue;
+                }
+
+                // Homing: steer toward nearest player for a short duration only.
+                if (laser.attackType === 'homing' && (laser.homingFrames === undefined || laser.homingFrames > 0)) {
+                    if (laser.homingFrames === undefined) laser.homingFrames = 34;
+                    laser.homingFrames--;
                     let nearest = null, nearestDist = Infinity;
                     for (const p of players) {
                         if (p === laser.shooter || (laser.shooter.team && p.team === laser.shooter.team) || p.currentHp <= 0) continue;
+                        // Skip Magnets companions
+                        if (p._magnetPlus !== undefined) continue;
                         const d = Math.hypot(p.x + p.size / 2 - laser.x, p.y + p.size / 2 - laser.y);
                         if (d < nearestDist) { nearestDist = d; nearest = p; }
                     }
@@ -5964,9 +6319,17 @@
                         const tdx = nearest.x + nearest.size / 2 - laser.x;
                         const tdy = nearest.y + nearest.size / 2 - laser.y;
                         const td = Math.hypot(tdx, tdy) || 1;
-                        const spd = laser.homingSpeed || 8;
-                        laser.vx += (tdx / td * spd - laser.vx) * 0.12;
-                        laser.vy += (tdy / td * spd - laser.vy) * 0.12;
+                        const inLockDistance = nearestDist <= (laser.maxRange || Infinity) * 0.55;
+                        if (inLockDistance) {
+                            const spd = laser.homingSpeed || 8;
+                            const turn = laser.homingTurn || 0.06;
+                            const vLen = Math.hypot(laser.vx, laser.vy) || 1;
+                            const dot = (laser.vx / vLen) * (tdx / td) + (laser.vy / vLen) * (tdy / td);
+                            if (dot > 0.1) {
+                                laser.vx += (tdx / td * spd - laser.vx) * turn;
+                                laser.vy += (tdy / td * spd - laser.vy) * turn;
+                            }
+                        }
                     }
                 }
 
@@ -6005,6 +6368,8 @@
                     if (laser.shooter.team && targetPlayer.team === laser.shooter.team) continue;
                     // Don't hit dead players
                     if (targetPlayer.currentHp <= 0) continue;
+                    // Don't hit Magnets companions (+ form) — they are untargetable
+                    if (targetPlayer._magnetPlus !== undefined) continue;
 
                     const tcx2 = targetPlayer.x + targetPlayer.size / 2;
                     const tcy2 = targetPlayer.y + targetPlayer.size / 2;
@@ -6070,34 +6435,36 @@
                         }
 
                         if (targetPlayer.currentHp <= 0) {
-                            targetPlayer.currentHp = 0;
-                            if (targetPlayer.isHuman) { currentStreak = 0; streakTimer = 0; }
-                            laser.shooter.kills++;
-                            killFeed.push({ killerName: laser.shooter.name, victimName: targetPlayer.name, ts: Date.now(), isHumanKill: laser.shooter.isHuman });
-                            // Check bounty 20-star win
-                            checkBountyWin();
-                            // In team modes: keep player for respawn; in FFA: remove
-                            const isTeamMode = gameModes[currentGameMode] && gameModes[currentGameMode].teams;
-                            if (isTeamMode) {
-                                targetPlayer.respawnTimer = getRespawnFramesForMode();
-                                targetPlayer.dead = true;
-                                dropPlayerItems(targetPlayer);
-                            } else {
-                                if (targetPlayer.isBot && getRespawnFramesForMode() > 0) {
+                            if (!tryMagnetsRespawn(targetPlayer)) {
+                                targetPlayer.currentHp = 0;
+                                if (targetPlayer.isHuman) { currentStreak = 0; streakTimer = 0; }
+                                laser.shooter.kills++;
+                                killFeed.push({ killerName: laser.shooter.name, victimName: targetPlayer.name, ts: Date.now(), isHumanKill: laser.shooter.isHuman });
+                                // Check bounty 20-star win
+                                checkBountyWin();
+                                // In team modes: keep player for respawn; in FFA: remove
+                                const isTeamMode = gameModes[currentGameMode] && gameModes[currentGameMode].teams;
+                                if (isTeamMode) {
                                     targetPlayer.respawnTimer = getRespawnFramesForMode();
                                     targetPlayer.dead = true;
                                     dropPlayerItems(targetPlayer);
                                 } else {
-                                    dropPlayerItems(targetPlayer);
-                                    matchStatsList.push({ name: targetPlayer.name, kills: targetPlayer.kills, damageDealt: targetPlayer.damageDealt, healingReceived: targetPlayer.healingReceived, team: targetPlayer.team, isHuman: targetPlayer.isHuman });
-                                    players.splice(j, 1);
-                                    if (targetPlayer.isBot) {
-                                        const botIndex = bots.findIndex(b => b.id === targetPlayer.id);
-                                        if (botIndex !== -1) bots.splice(botIndex, 1);
-                                    }
-                                    // End game if human dies in FFA
-                                    if (targetPlayer.isHuman) {
-                                        endGame('Game Over! You were defeated!', false);
+                                    if (targetPlayer.isBot && getRespawnFramesForMode() > 0) {
+                                        targetPlayer.respawnTimer = getRespawnFramesForMode();
+                                        targetPlayer.dead = true;
+                                        dropPlayerItems(targetPlayer);
+                                    } else {
+                                        dropPlayerItems(targetPlayer);
+                                        matchStatsList.push({ name: targetPlayer.name, kills: targetPlayer.kills, damageDealt: targetPlayer.damageDealt, healingReceived: targetPlayer.healingReceived, team: targetPlayer.team, isHuman: targetPlayer.isHuman });
+                                        players.splice(j, 1);
+                                        if (targetPlayer.isBot) {
+                                            const botIndex = bots.findIndex(b => b.id === targetPlayer.id);
+                                            if (botIndex !== -1) bots.splice(botIndex, 1);
+                                        }
+                                        // End game if human dies in FFA
+                                        if (targetPlayer.isHuman) {
+                                            endGame('Game Over! You were defeated!', false);
+                                        }
                                     }
                                 }
                             }
@@ -6382,21 +6749,47 @@
             if (player._speedTimer > 0) player._speedTimer--;
             if (player._damageTimer > 0) player._damageTimer--;
 
-            if (inputX !== 0 || inputY !== 0) {
-                const oldX = player.x, oldY = player.y;
-                player.x += inputX * player.speed * speedMult;
-                player.y += inputY * player.speed * speedMult;
-
-                player.x = Math.max(0, Math.min(player.x, MAP_WIDTH - player.size));
-                player.y = Math.max(0, Math.min(player.y, MAP_HEIGHT - player.size));
-
+            function collidesAt(x, y) {
+                const testRect = { x, y, size: player.size };
                 for (let obs of obstacles) {
                     if (!isBlockingObstacleForEntity(player, obs)) continue;
-                    if (checkCollisionWithRect(player, obs)) {
-                        player.x = oldX;
-                        player.y = oldY;
+                    if (checkCollisionWithRect(testRect, obs)) return true;
+                }
+                return false;
+            }
+
+            // If spawned/teleported slightly inside a wall, nudge out so movement can resume.
+            if (collidesAt(player.x, player.y)) {
+                const probe = Math.max(2, Math.round(player.size * 0.22));
+                const attempts = [
+                    [probe, 0], [-probe, 0], [0, probe], [0, -probe],
+                    [probe, probe], [probe, -probe], [-probe, probe], [-probe, -probe],
+                    [probe * 2, 0], [-probe * 2, 0], [0, probe * 2], [0, -probe * 2]
+                ];
+                for (const [dx, dy] of attempts) {
+                    const nx = Math.max(0, Math.min(player.x + dx, MAP_WIDTH - player.size));
+                    const ny = Math.max(0, Math.min(player.y + dy, MAP_HEIGHT - player.size));
+                    if (!collidesAt(nx, ny)) {
+                        player.x = nx;
+                        player.y = ny;
                         break;
                     }
+                }
+            }
+
+            if (inputX !== 0 || inputY !== 0) {
+                const moveStep = player.speed * speedMult;
+
+                // Move each axis separately so the player slides along walls
+                // instead of being fully blocked.
+                const nextX = Math.max(0, Math.min(player.x + inputX * moveStep, MAP_WIDTH - player.size));
+                if (!collidesAt(nextX, player.y)) {
+                    player.x = nextX;
+                }
+
+                const nextY = Math.max(0, Math.min(player.y + inputY * moveStep, MAP_HEIGHT - player.size));
+                if (!collidesAt(player.x, nextY)) {
+                    player.y = nextY;
                 }
             }
 
@@ -6725,6 +7118,22 @@
                     superEffects.push({ type: 'screamflash', x: cx, y: cy, radius, timer: 28, shooter: p });
                     break;
                 }
+                case 'punchflurry': {
+                    p.superActive = true;
+                    p.superTimer = 150;
+                    p._speedTimer = Math.max(p._speedTimer || 0, 150);
+                    p._damageTimer = Math.max(p._damageTimer || 0, 140);
+                    for (let i = 0; i < 3; i++) {
+                        setTimeout(() => {
+                            if (!gameStarted || p.currentHp <= 0) return;
+                            const px = p.x + p.size / 2;
+                            const py = p.y + p.size / 2;
+                            dealAoeDamage(px, py, 95, p.laserDamage * 2.2, p);
+                            superEffects.push({ type: 'screamflash', x: px, y: py, radius: 95, timer: 16, shooter: p });
+                        }, i * 120);
+                    }
+                    break;
+                }
                 case 'coffeerush': {
                     p.superActive = true;
                     p.superTimer = 240; // 4 s
@@ -6812,7 +7221,7 @@
                     if (hitEnemies > 0) {
                         const gain = hitEnemies * 8;
                         playerCredits += gain;
-                        if (p.isHuman) showLootboxPopup(`👜 Pickpocket +${gain} Hero Marks`);
+
                     }
                     superEffects.push({ type: 'screamflash', x: cx, y: cy, radius: radius, timer: 22, shooter: p });
                     break;
@@ -6868,11 +7277,29 @@
                         const d = Math.hypot(dx, dy);
                         if (d > 0 && d < radius) {
                             const push = (1 - d / radius) * 140;
-                            t.x = Math.max(0, Math.min(MAP_WIDTH - t.size, t.x + (dx / d) * push));
-                            t.y = Math.max(0, Math.min(MAP_HEIGHT - t.size, t.y + (dy / d) * push));
+                            displaceEntitySafely(t, (dx / d) * push, (dy / d) * push);
                         }
                     }
                     superEffects.push({ type: 'tornado', x: tx, y: ty, radius: radius, timer: 22, tickTimer: 999, tickInterval: 999, damage: 0, shooter: p, angle: 0 });
+                    break;
+                }
+                case 'cardcage': {
+                    const tx = targetX ?? cx;
+                    const ty = targetY ?? cy;
+                    const radius = 150;
+                    dealAoeDamage(tx, ty, radius, p.laserDamage * 3.2, p);
+                    for (const t of players) {
+                        if (t === p || (p.team && t.team === p.team) || t.currentHp <= 0) continue;
+                        const d = Math.hypot((t.x + t.size / 2) - tx, (t.y + t.size / 2) - ty);
+                        if (d < radius) t._slowTimer = Math.max(t._slowTimer || 0, 120);
+                    }
+                    for (let i = 0; i < 10; i++) {
+                        const a = (Math.PI * 2 / 10) * i;
+                        const vx = Math.cos(a) * 9.2;
+                        const vy = Math.sin(a) * 9.2;
+                        lasers.push({ x: tx, y: ty, vx, vy, life: 78, damage: Math.max(1, Math.round(p.laserDamage * 1.2)), shooter: p, attackType: 'cardslash', boomerang: true, returnTimer: 24, origVx: vx, origVy: vy, isSuperLaser: true });
+                    }
+                    superEffects.push({ type: 'tornado', x: tx, y: ty, radius: radius, timer: 24, tickTimer: 999, tickInterval: 999, damage: 0, shooter: p, angle: 0 });
                     break;
                 }
                 case 'rockrush': {
@@ -6900,6 +7327,53 @@
                     }
                     dealAoeDamage(p.x + p.size / 2, p.y + p.size / 2, 100, p.laserDamage * 6, p);
                     superEffects.push({ type: 'screamflash', x: p.x + p.size / 2, y: p.y + p.size / 2, radius: 100, timer: 25, shooter: p });
+                    break;
+                }
+                case 'traplayer': {
+                    // Activate trap-laying mode for 5 seconds (300 frames)
+                    p.superActive = true;
+                    p.superTimer = 300;
+                    p.superBuffType = 'traplayer';
+                    p._trapLayCooldown = 0;
+                    superEffects.push({ type: 'screamflash', x: cx, y: cy, radius: 60, timer: 20, shooter: p });
+                    break;
+                }
+                case 'magnetswap': {
+                    // Transform into "-" form; spawn "+" companion at current position
+                    const compHp = Math.max(10, Math.ceil(p.currentHp * 0.55));
+                    p._magnetPlus = {
+                        x: p.x + p.size / 2 - 23,
+                        y: p.y + p.size / 2 - 23,
+                        size: 46,
+                        hp: compHp,
+                        maxHp: compHp,
+                        speed: (p.speed || 5) + 0.5,
+                        damage: Math.max(1, p.laserDamage || 3),
+                        attackCooldown: 0,
+                        _orbitAngle: Math.random() * Math.PI * 2
+                    };
+                    p._magnetsMinus = true;
+                    p.superActive = true;
+                    p.superTimer = 900; // 15 s max
+                    p.superBuffType = 'magnetswap';
+                    superEffects.push({ type: 'screamflash', x: cx, y: cy, radius: 70, timer: 22, shooter: p });
+                    break;
+                }
+                case 'groundslam': {
+                    const radius = 130;
+                    dealAoeDamage(cx, cy, radius, p.laserDamage * 4.8, p);
+                    for (const t of players) {
+                        if (t === p || (p.team && t.team === p.team) || t.currentHp <= 0) continue;
+                        const dx = (t.x + t.size / 2) - cx;
+                        const dy = (t.y + t.size / 2) - cy;
+                        const d = Math.hypot(dx, dy);
+                        if (d > 0 && d < radius) {
+                            t._stunTimer = Math.max(t._stunTimer || 0, 70);
+                            const push = (1 - d / radius) * 120;
+                            displaceEntitySafely(t, (dx / d) * push, (dy / d) * push);
+                        }
+                    }
+                    superEffects.push({ type: 'screamflash', x: cx, y: cy, radius, timer: 24, shooter: p });
                     break;
                 }
                 case 'icestorm': {
@@ -6932,8 +7406,7 @@
                         const d = Math.hypot(dx, dy);
                         if (d > 0 && d < radius) {
                             const pull = (1 - d / radius) * 160;
-                            t.x = Math.max(0, Math.min(MAP_WIDTH - t.size, t.x + (dx / d) * pull));
-                            t.y = Math.max(0, Math.min(MAP_HEIGHT - t.size, t.y + (dy / d) * pull));
+                            displaceEntitySafely(t, (dx / d) * pull, (dy / d) * pull);
                         }
                     }
                     dealAoeDamage(tx, ty, radius, p.laserDamage * 4, p);
@@ -7009,8 +7482,7 @@
                         const d = Math.hypot(dx, dy);
                         if (d < 200 && d > 0) {
                             const force = (1 - d/200) * 220;
-                            other.x = Math.max(0, Math.min(MAP_WIDTH - other.size, other.x + dx/d * force));
-                            other.y = Math.max(0, Math.min(MAP_HEIGHT - other.size, other.y + dy/d * force));
+                            displaceEntitySafely(other, dx/d * force, dy/d * force);
                             if (other._slowTimer !== undefined) other._slowTimer = 60;
                         }
                     }
@@ -7155,6 +7627,48 @@
                     gadgetEffects.push({ type: 'cloak', x: cx, y: cy, timer: 14, color: '#c084fc' });
                     break;
                 }
+                case 'punchpunch': {
+                    for (let s = 0; s < 16; s++) {
+                        const nx = Math.max(0, Math.min(MAP_WIDTH - p.size, p.x + aimDx * 10));
+                        const ny = Math.max(0, Math.min(MAP_HEIGHT - p.size, p.y + aimDy * 10));
+                        let blocked = false;
+                        for (const obs of obstacles) {
+                            if (!isBlockingObstacleForEntity(p, obs)) continue;
+                            if (nx < obs.x + obs.width && nx + p.size > obs.x && ny < obs.y + obs.height && ny + p.size > obs.y) { blocked = true; break; }
+                        }
+                        if (blocked) break;
+                        p.x = nx;
+                        p.y = ny;
+                    }
+                    p._shieldHp = (p._shieldHp || 0) + 14 * COMBAT_STAT_SCALE;
+                    dealAoeDamage(p.x + p.size / 2, p.y + p.size / 2, 70, p.laserDamage * 2.2, p);
+                    gadgetEffects.push({ type: 'dashtrail', x: cx, y: cy, ex: p.x + p.size / 2, ey: p.y + p.size / 2, timer: 18, color: '#fb923c' });
+                    break;
+                }
+                case 'cardon': {
+                    p._shieldHp = (p._shieldHp || 0) + 14 * COMBAT_STAT_SCALE;
+                    for (const angle of [-0.35, -0.12, 0.12, 0.35]) {
+                        const c = Math.cos(angle), s = Math.sin(angle);
+                        const vx = (aimDx * c - aimDy * s) * 7.8;
+                        const vy = (aimDx * s + aimDy * c) * 7.8;
+                        superEffects.push({ type: 'bigshot', x: cx, y: cy, vx, vy, radius: 12, damage: Math.max(1, Math.round(p.laserDamage * 1.25)), shooter: p, life: 65 });
+                    }
+                    superEffects.push({ type: 'screamflash', x: cx, y: cy, radius: 48, timer: 18, shooter: p });
+                    break;
+                }
+                case 'slamforge': {
+                    p._shieldHp = (p._shieldHp || 0) + 20 * COMBAT_STAT_SCALE;
+                    p._speedTimer = Math.max(p._speedTimer || 0, 95);
+                    dealAoeDamage(cx, cy, 110, p.laserDamage * 1.8, p);
+                    for (const other of players) {
+                        if (other === p || other.currentHp <= 0) continue;
+                        if (p.team && other.team === p.team) continue;
+                        const d = Math.hypot((other.x + other.size / 2) - cx, (other.y + other.size / 2) - cy);
+                        if (d < 110) other._slowTimer = Math.max(other._slowTimer || 0, 80);
+                    }
+                    superEffects.push({ type: 'screamflash', x: cx, y: cy, radius: 72, timer: 18, shooter: p });
+                    break;
+                }
                 default:
                     p._speedTimer = 90;
                     break;
@@ -7165,6 +7679,212 @@
                 const owned = getOwnedGadgetKeysForPlayer('timor');
                 if (owned.length > 0) p._timorGadgetCycle = ((p._timorGadgetCycle || 0) + 1) % owned.length;
             }
+        }
+
+        // ── Magnets helpers ───────────────────────────────────────────────────
+        // Returns true if the player was saved by their "+" companion (HP swapped),
+        // so the caller should skip the normal death logic.
+        function tryMagnetsRespawn(p) {
+            if (!p._magnetsMinus || !p._magnetPlus || p._magnetPlus.hp <= 0) return false;
+            const comp = p._magnetPlus;
+            p.x = comp.x;
+            p.y = comp.y;
+            p.currentHp = Math.max(1, comp.hp);
+            p._magnetsMinus = false;
+            p._magnetPlus = null;
+            p.superActive = false;
+            p.superTimer = 0;
+            p.superBuffType = null;
+            superEffects.push({ type: 'screamflash', x: p.x + p.size / 2, y: p.y + p.size / 2, radius: 55, timer: 20, shooter: p });
+            return true;
+        }
+
+        function updateMagnetsCompanions() {
+            for (const owner of players) {
+                const comp = owner._magnetPlus;
+                if (!comp) continue;
+                // End super if timer expired or owner lost minus form
+                if (!owner._magnetsMinus || owner.superTimer <= 0) {
+                    owner._magnetPlus = null;
+                    owner._magnetsMinus = false;
+                    continue;
+                }
+                if (comp.hp <= 0) {
+                    owner._magnetPlus = null;
+                    owner._magnetsMinus = false;
+                    owner.superActive = false;
+                    owner.superTimer = 0;
+                    continue;
+                }
+                // Find target
+                let target = null, bestDist = 520;
+                for (const p of players) {
+                    if (p === owner || p.currentHp <= 0) continue;
+                    if (owner.team && p.team === owner.team) continue;
+                    // Skip Magnets companions (untargetable)
+                    if (p._magnetPlus !== undefined) continue;
+                    const d = Math.hypot((p.x + p.size / 2) - comp.x, (p.y + p.size / 2) - comp.y);
+                    if (d < bestDist) { bestDist = d; target = p; }
+                }
+                if (target) {
+                    const tx = target.x + target.size / 2, ty = target.y + target.size / 2;
+                    const dx = tx - comp.x, dy = ty - comp.y;
+                    const d = Math.hypot(dx, dy) || 1;
+                    const reach = target.size / 2 + comp.size / 2 + 8;
+                    if (d > reach) {
+                        const nx = Math.max(0, Math.min(MAP_WIDTH, comp.x + (dx / d) * comp.speed));
+                        const ny = Math.max(0, Math.min(MAP_HEIGHT, comp.y + (dy / d) * comp.speed));
+                        const blocked = obstacles.some(o => o.type === 'brick' && nx >= o.x && nx <= o.x + o.width && ny >= o.y && ny <= o.y + o.height);
+                        if (!blocked) { comp.x = nx; comp.y = ny; }
+                        else {
+                            const bX = obstacles.some(o => o.type === 'brick' && nx >= o.x && nx <= o.x + o.width && comp.y >= o.y && comp.y <= o.y + o.height);
+                            if (!bX) comp.x = nx;
+                            const bY = obstacles.some(o => o.type === 'brick' && comp.x >= o.x && comp.x <= o.x + o.width && ny >= o.y && ny <= o.y + o.height);
+                            if (!bY) comp.y = ny;
+                        }
+                    }
+                    if (d <= reach + comp.speed && comp.attackCooldown <= 0) {
+                        if (!hasDamageShield(target)) {
+                            const dmg = comp.damage;
+                            const actual = Math.min(dmg, Math.max(0, target.currentHp));
+                            target.currentHp -= dmg;
+                            if (actual > 0) registerDamageFeedback(target, actual, '#f87171');
+                            owner.damageDealt = (owner.damageDealt || 0) + actual;
+                            target.bushRevealTimer = 60;
+                            comp.attackCooldown = 28;
+                            // Kill handling (FFA only, simplified)
+                            if (target.currentHp <= 0 && !tryMagnetsRespawn(target)) {
+                                target.currentHp = 0;
+                                owner.kills = (owner.kills || 0) + 1;
+                                killFeed.push({ killerName: owner.name, victimName: target.name, ts: Date.now(), isHumanKill: owner.isHuman });
+                                if (owner.isHuman) { awardMedals(1); registerKill(); progressDaily('kills', 1); }
+                                checkBountyWin();
+                                const isTeamMode = gameModes[currentGameMode] && gameModes[currentGameMode].teams;
+                                if (isTeamMode) { target.respawnTimer = getRespawnFramesForMode(); target.dead = true; dropPlayerItems(target); }
+                                else {
+                                    if (target.isBot && getRespawnFramesForMode() > 0) { target.respawnTimer = getRespawnFramesForMode(); target.dead = true; dropPlayerItems(target); }
+                                    else { dropPlayerItems(target); matchStatsList.push({ name: target.name, kills: target.kills, damageDealt: target.damageDealt, healingReceived: target.healingReceived, team: target.team, isHuman: target.isHuman }); const idx = players.indexOf(target); if (idx !== -1) players.splice(idx, 1); if (target.isBot) { const bi = bots.findIndex(b => b.id === target.id); if (bi !== -1) bots.splice(bi, 1); } if (target.isHuman) endGame('Game Over! You were defeated!', false); }
+                                }
+                            }
+                        } else { comp.attackCooldown = 16; }
+                    }
+                } else {
+                    // Orbit the owner
+                    comp._orbitAngle = (comp._orbitAngle || 0) + 0.07;
+                    const ox = owner.x + owner.size / 2 + Math.cos(comp._orbitAngle) * 54;
+                    const oy = owner.y + owner.size / 2 + Math.sin(comp._orbitAngle) * 54;
+                    comp.x += (ox - comp.x) * 0.12;
+                    comp.y += (oy - comp.y) * 0.12;
+                }
+                if (comp.attackCooldown > 0) comp.attackCooldown--;
+            }
+        }
+
+        function drawMagnetsCompanions() {
+            for (const owner of players) {
+                const comp = owner._magnetPlus;
+                if (!comp || comp.hp <= 0) continue;
+                const cx = comp.x - camera.x;
+                const cy = comp.y - camera.y;
+                ctx.save();
+                // Companion renders as magnets+.png sprite with full visibility
+                const imgEntry = loadImage('images/magnets+.png');
+                if (imgEntry && imgEntry.complete && !imgEntry._failed && imgEntry.naturalWidth > 0) {
+                    ctx.drawImage(imgEntry, cx, cy, comp.size, comp.size);
+                } else {
+                    // Fallback to owner color if sprite fails
+                    ctx.fillStyle = owner.color || '#ef4444';
+                    ctx.fillRect(cx, cy, comp.size, comp.size);
+                }
+                // HP bar
+                const barW = comp.size;
+                const hpRatio = Math.max(0, comp.hp / comp.maxHp);
+                ctx.fillStyle = '#333';
+                ctx.fillRect(cx, cy - 10, barW, 5);
+                ctx.fillStyle = hpRatio > 0.6 ? '#00ff00' : hpRatio > 0.3 ? '#ffff00' : '#ff4444';
+                ctx.fillRect(cx, cy - 10, barW * hpRatio, 5);
+                ctx.restore();
+            }
+        }
+
+        function updateHuntearTraps() {
+            // Lay traps while traplayer super is active
+            for (const p of players) {
+                if (!p.superActive || p.superBuffType !== 'traplayer') continue;
+                if ((p._trapLayCooldown || 0) > 0) { p._trapLayCooldown--; continue; }
+                p._trapLayCooldown = 22; // lay one trap every ~22 frames while moving
+                huntearTraps.push({ x: p.x + p.size / 2 - 14, y: p.y + p.size / 2 - 14, owner: p, life: 1200, triggered: false });
+            }
+            // Check collisions and tick lifetime
+            for (let i = huntearTraps.length - 1; i >= 0; i--) {
+                const trap = huntearTraps[i];
+                trap.life--;
+                if (trap.life <= 0) { huntearTraps.splice(i, 1); continue; }
+                if (trap.triggered) continue;
+                for (const p of players) {
+                    if (p === trap.owner || (trap.owner.team && p.team === trap.owner.team) || p.currentHp <= 0) continue;
+                    // Skip Magnets companions
+                    if (p._magnetPlus !== undefined) continue;
+                    const tcx = p.x + p.size / 2;
+                    const tcy = p.y + p.size / 2;
+                    if (Math.abs(tcx - (trap.x + 14)) < p.size / 2 + 14 && Math.abs(tcy - (trap.y + 14)) < p.size / 2 + 14) {
+                        trap.triggered = true;
+                        const dmg = 500 * COMBAT_STAT_SCALE;
+                        const actual = Math.min(dmg, Math.max(0, p.currentHp));
+                        p.currentHp -= dmg;
+                        if (actual > 0) registerDamageFeedback(p, actual, '#f59e0b');
+                        trap.owner.damageDealt = (trap.owner.damageDealt || 0) + actual;
+                        p._slowTimer = Math.max(p._slowTimer || 0, 300); // 5 s can't move
+                        p._stunTimer = Math.max(p._stunTimer || 0, 300);
+                        p.bushRevealTimer = 90;
+                        if (p.currentHp <= 0) {
+                            if (!tryMagnetsRespawn(p)) {
+                                p.currentHp = 0;
+                                trap.owner.kills = (trap.owner.kills || 0) + 1;
+                                killFeed.push({ killerName: trap.owner.name, victimName: p.name, ts: Date.now(), isHumanKill: trap.owner.isHuman });
+                                if (trap.owner.isHuman) { awardMedals(1); registerKill(); progressDaily('kills', 1); }
+                                const isTeamMode = gameModes[currentGameMode] && gameModes[currentGameMode].teams;
+                                if (isTeamMode) {
+                                    p.respawnTimer = getRespawnFramesForMode(); p.dead = true; dropPlayerItems(p);
+                                } else {
+                                    if (p.isBot && getRespawnFramesForMode() > 0) { p.respawnTimer = getRespawnFramesForMode(); p.dead = true; dropPlayerItems(p); }
+                                    else { dropPlayerItems(p); matchStatsList.push({ name: p.name, kills: p.kills, damageDealt: p.damageDealt, healingReceived: p.healingReceived, team: p.team, isHuman: p.isHuman }); const idx = players.indexOf(p); if (idx !== -1) players.splice(idx, 1); if (p.isBot) { const bi = bots.findIndex(b => b.id === p.id); if (bi !== -1) bots.splice(bi, 1); } if (p.isHuman) endGame('Game Over! You were defeated!', false); }
+                                }
+                            }
+                        }
+                        huntearTraps.splice(i, 1);
+                        break;
+                    }
+                }
+            }
+        }
+
+        function drawHuntearTraps() {
+            if (huntearTraps.length === 0) return;
+            ctx.save();
+            for (const trap of huntearTraps) {
+                if (trap.triggered) continue;
+                const tx = trap.x - camera.x;
+                const ty = trap.y - camera.y;
+                const pulse = 0.7 + Math.sin(Date.now() / 220) * 0.3;
+                ctx.globalAlpha = pulse;
+                // Outer warning glow
+                ctx.shadowColor = '#f59e0b';
+                ctx.shadowBlur = 14;
+                ctx.fillStyle = '#78350f';
+                ctx.fillRect(tx, ty, 28, 28);
+                ctx.strokeStyle = '#f59e0b';
+                ctx.lineWidth = 2;
+                ctx.strokeRect(tx, ty, 28, 28);
+                ctx.shadowBlur = 0;
+                // X mark
+                ctx.strokeStyle = '#fde68a';
+                ctx.lineWidth = 2.5;
+                ctx.beginPath(); ctx.moveTo(tx + 5, ty + 5); ctx.lineTo(tx + 23, ty + 23); ctx.stroke();
+                ctx.beginPath(); ctx.moveTo(tx + 23, ty + 5); ctx.lineTo(tx + 5, ty + 23); ctx.stroke();
+            }
+            ctx.globalAlpha = 1;
+            ctx.restore();
         }
 
         function updateSnakeMinions() {
@@ -7200,6 +7920,8 @@
                 for (const p of players) {
                     if (p === s.owner || p.currentHp <= 0) continue;
                     if (s.owner.team && p.team === s.owner.team) continue;
+                    // Skip Magnets companions
+                    if (p._magnetPlus !== undefined) continue;
                     const d = Math.hypot((p.x + p.size / 2) - s.x, (p.y + p.size / 2) - s.y);
                     if (d < bestDist) {
                         bestDist = d;
@@ -7213,6 +7935,8 @@
                     for (const p of players) {
                         if (p === s.owner || p.currentHp <= 0) continue;
                         if (s.owner.team && p.team === s.owner.team) continue;
+                        // Skip Magnets companions
+                        if (p._magnetPlus !== undefined) continue;
                         const d = Math.hypot((p.x + p.size / 2) - ownerCx, (p.y + p.size / 2) - ownerCy);
                         if (d < ownerBest) {
                             ownerBest = d;
@@ -7295,38 +8019,40 @@
                         s.attackCooldown = 24;
 
                         if (target.currentHp <= 0) {
-                            target.currentHp = 0;
-                            if (target.isHuman) { currentStreak = 0; streakTimer = 0; }
-                            s.owner.kills++;
-                            killFeed.push({ killerName: s.owner.name, victimName: target.name, ts: Date.now(), isHumanKill: s.owner.isHuman });
-                            if (s.owner.isHuman) {
-                                awardMedals(1);
-                                registerKill();
-                                progressDaily('kills', 1);
-                            }
-                            checkBountyWin();
+                            if (!tryMagnetsRespawn(target)) {
+                                target.currentHp = 0;
+                                if (target.isHuman) { currentStreak = 0; streakTimer = 0; }
+                                s.owner.kills++;
+                                killFeed.push({ killerName: s.owner.name, victimName: target.name, ts: Date.now(), isHumanKill: s.owner.isHuman });
+                                if (s.owner.isHuman) {
+                                    awardMedals(1);
+                                    registerKill();
+                                    progressDaily('kills', 1);
+                                }
+                                checkBountyWin();
 
-                            const isTeamMode = gameModes[currentGameMode] && gameModes[currentGameMode].teams;
-                            if (isTeamMode) {
-                                if ((currentGameMode === 'ballGoal' || currentGameMode === 'kingTown') && target.hasBall && ball) dropBall(target);
-                                target.respawnTimer = getRespawnFramesForMode();
-                                target.dead = true;
-                                dropPlayerItems(target);
-                            } else {
-                                if (target.isBot && getRespawnFramesForMode() > 0) {
+                                const isTeamMode = gameModes[currentGameMode] && gameModes[currentGameMode].teams;
+                                if (isTeamMode) {
+                                    if ((currentGameMode === 'ballGoal' || currentGameMode === 'kingTown') && target.hasBall && ball) dropBall(target);
                                     target.respawnTimer = getRespawnFramesForMode();
                                     target.dead = true;
                                     dropPlayerItems(target);
                                 } else {
-                                    dropPlayerItems(target);
-                                    matchStatsList.push({ name: target.name, kills: target.kills, damageDealt: target.damageDealt, healingReceived: target.healingReceived, team: target.team, isHuman: target.isHuman });
-                                    const idx = players.indexOf(target);
-                                    if (idx !== -1) players.splice(idx, 1);
-                                    if (target.isBot) {
-                                        const botIdx = bots.findIndex(b => b.id === target.id);
-                                        if (botIdx !== -1) bots.splice(botIdx, 1);
+                                    if (target.isBot && getRespawnFramesForMode() > 0) {
+                                        target.respawnTimer = getRespawnFramesForMode();
+                                        target.dead = true;
+                                        dropPlayerItems(target);
+                                    } else {
+                                        dropPlayerItems(target);
+                                        matchStatsList.push({ name: target.name, kills: target.kills, damageDealt: target.damageDealt, healingReceived: target.healingReceived, team: target.team, isHuman: target.isHuman });
+                                        const idx = players.indexOf(target);
+                                        if (idx !== -1) players.splice(idx, 1);
+                                        if (target.isBot) {
+                                            const botIdx = bots.findIndex(b => b.id === target.id);
+                                            if (botIdx !== -1) bots.splice(botIdx, 1);
+                                        }
+                                        if (target.isHuman) endGame('Game Over! You were defeated!', false);
                                     }
-                                    if (target.isHuman) endGame('Game Over! You were defeated!', false);
                                 }
                             }
                         }
@@ -7921,6 +8647,8 @@
 
             updateAllBots();
             updateSnakeMinions();
+            updateHuntearTraps();
+            updateMagnetsCompanions();
             updateRespawns();
             updateLasers();
             updateSupers();
@@ -7941,6 +8669,8 @@
             drawDamagePopups();
             drawHealPickupEffects();
             drawSnakeMinions();
+            drawHuntearTraps();
+            drawMagnetsCompanions();
             drawBushes();
             drawSuperEffects();
             updateDrawGadgetEffects();
@@ -8145,8 +8875,22 @@
 
         // ── MATCH HISTORY ────────────────────────────────────────────────────────
 
-        function loadMatchHistory() {
-            return JSON.parse(localStorage.getItem('matchHistory') || '[]');
+        function getMatchHistoryStorageKey(accountKey = null) {
+            if (accountKey) return `matchHistory_${accountKey}`;
+            const profile = getCurrentProfile();
+            if (profile?.username) return `matchHistory_${normalizeUsername(profile.username)}`;
+            return 'matchHistory_guest';
+        }
+
+        function loadMatchHistory(accountKey = null) {
+            const key = getMatchHistoryStorageKey(accountKey);
+            const raw = localStorage.getItem(key);
+            if (raw) return JSON.parse(raw);
+            // Backward compatibility for older builds that used one global key.
+            if (!accountKey && key !== 'matchHistory') {
+                return JSON.parse(localStorage.getItem('matchHistory') || '[]');
+            }
+            return [];
         }
 
         function saveMatchToHistory(isVictory, mode, kills, medals, characterId, coinsEarned) {
@@ -8163,7 +8907,7 @@
                 ts: Date.now(),
             });
             if (history.length > 20) history.length = 20;
-            localStorage.setItem('matchHistory', JSON.stringify(history));
+            localStorage.setItem(getMatchHistoryStorageKey(), JSON.stringify(history));
         }
 
         function openMatchHistory() {
@@ -8256,9 +9000,8 @@
             const account = store[accountKey];
             if (!account) return null;
 
-            // Load account's match history (currently global; could be per-account later)
-            const history = loadMatchHistory();
-            const accountMatches = history; // For now, all matches are global
+            // Load this account's own match history.
+            const accountMatches = loadMatchHistory(accountKey);
             
             const totalMatches = accountMatches.length;
             const wins = accountMatches.filter(h => h.result === 'win').length;
@@ -8334,6 +9077,7 @@
             { level: 16, type:'sparks',  amount: 700,   icon: '⚡', reward: '700 energy sparks',   claimed: false },
             { level: 17, type:'unlock',  playerId: 'kleftros',        icon: '🔓', reward: 'Unlock Kleftros (Rare)', claimed: false },
             { level: 18, type:'sparks',  amount: 800,   icon: '⚡', reward: '800 energy sparks',   claimed: false },
+            { level: 51, type:'credits', amount: 100, icon: '🎖️', reward: '100 Hero Marks',  claimed: false },
             { level: 19, type:'coins',   amount: 900,   icon: '💰', reward: '900 coins',           claimed: false },
             { level: 20, type:'sparks',  amount: 1000,  icon: '⚡', reward: '1000 energy sparks',  claimed: false },
             { level: 21, type:'coins',   amount: 1000,  icon: '💰', reward: '1000 coins',          claimed: false },
@@ -8395,12 +9139,7 @@
             const medalsIntoLevel = playerMedals % 10;
             // Check and auto-claim any newly reached rewards
             claimLevelRewards();
-            let unlockedByCredits = false;
-            let guard = 0;
-            while (guard < 3 && tryAutoUnlockCreditTier()) {
-                unlockedByCredits = true;
-                guard++;
-            }
+            const unlockedByCredits = tryAutoUnlockCreditTier();
             document.getElementById('coins-display').innerHTML =
                 `💰 Coins: ${playerCoins}<br>🏅 Medals: ${playerMedals} &nbsp;(Lv ${playerLevel})<br>⚡ Energy Sparks: ${energySparks}<br>🎖️ Hero Marks: ${playerCredits}`;
             // Keep account chip stats in sync
@@ -8825,39 +9564,53 @@
         }
 
         function tryAutoUnlockCreditTier() {
-            return false;
+            const { lockedInTier } = getActiveCreditTierState();
+            if (!lockedInTier.length) return false;
+            if (!selectedCreditTargetId) return false;
+            if (!lockedInTier.some(p => p.id === selectedCreditTargetId)) return false;
+
+            const pd = playersData[selectedCreditTargetId];
+            if (!pd || !pd.creditCost) return false;
+            if (playerCredits < pd.creditCost) return false;
+
+            playerCredits -= pd.creditCost;
+            unlockedNexus.push(pd.id);
+            selectedCreditTargetId = null;
+            saveProgress();
+            return true;
+        }
+
+        function getActiveCreditTierState() {
+            const rarityOrder = ['epic', 'mythic', 'legendary'];
+            for (let i = 0; i < rarityOrder.length; i++) {
+                const rarity = rarityOrder[i];
+                if (rarity === 'legendary') {
+                    const mythicUnlocked = Object.values(playersData).filter(p => p.rarity === 'mythic' && p.creditCost && unlockedNexus.includes(p.id)).length;
+                    if (mythicUnlocked === 0) continue;
+                }
+                const lockedInTier = Object.values(playersData)
+                    .filter(p => p.rarity === rarity && p.creditCost && !unlockedNexus.includes(p.id))
+                    .sort((a, b) => a.creditCost - b.creditCost || a.name.localeCompare(b.name));
+                if (lockedInTier.length > 0) {
+                    return { currentTier: rarity, lockedInTier, currentTierIndex: i };
+                }
+            }
+            return { currentTier: null, lockedInTier: [], currentTierIndex: -1 };
+        }
+
+        function selectCreditTarget(playerId) {
+            const { lockedInTier } = getActiveCreditTierState();
+            if (!lockedInTier.some(p => p.id === playerId)) return;
+            selectedCreditTargetId = playerId;
+            saveProgress();
+            renderCreditsPanel();
         }
 
         function renderCreditsPanel() {
             const barEl = document.getElementById('credits-progress-bar');
             const list = document.getElementById('credits-tier-list');
 
-            // Find current tier (first tier with locked players)
-            const rarityOrder = ['epic', 'mythic', 'legendary'];
-            let currentTier = null;
-            let lockedInTier = [];
-            let currentTierIndex = 0;
-
-            for (let i = 0; i < rarityOrder.length; i++) {
-                const rarity = rarityOrder[i];
-                
-                // Tier gating: Legendary requires at least 1 mythic unlocked
-                if (rarity === 'legendary') {
-                    const mythicUnlocked = Object.values(playersData).filter(p => p.rarity === 'mythic' && p.creditCost && unlockedNexus.includes(p.id)).length;
-                    if (mythicUnlocked === 0) continue; // Skip legendary if no mythic unlocked yet
-                }
-                
-                const tierPlayers = Object.values(playersData)
-                    .filter(p => p.rarity === rarity && p.creditCost)
-                    .sort((a, b) => a.creditCost - b.creditCost || a.name.localeCompare(b.name));
-                const locked = tierPlayers.filter(p => !unlockedNexus.includes(p.id));
-                if (locked.length > 0) {
-                    currentTier = rarity;
-                    lockedInTier = locked;
-                    currentTierIndex = i;
-                    break;
-                }
-            }
+            const { currentTier, lockedInTier } = getActiveCreditTierState();
 
             if (!currentTier || lockedInTier.length === 0) {
                 // All players unlocked
@@ -8867,57 +9620,69 @@
                     playerCoins += 2000;
                     energySparks += 1000;
                     saveProgress();
-                    showLootboxPopup('🏆 Champion! You unlocked all Hero Marks fighters!\n+2000 coins & +1000 sparks awarded!');
                 }
                 barEl.innerHTML = '<div style="text-align:center; padding:20px 10px;"><div style="font-size:48px;">🏆</div><h3 style="color:#ffcc00; margin:8px 0 4px; font-size:20px;">Master Attacker!</h3><p style="color:#aaa; font-size:13px; margin:0;">You unlocked all Hero Marks fighters.</p></div>';
                 list.innerHTML = '';
                 return;
             }
 
-            const rc = rarityColors[currentTier];
-            const tierLabel = currentTier === 'epic' ? '⚫ Epic' : (currentTier === 'mythic' ? '🔴 Mythic' : '🟡 Legendary');
+            if (!selectedCreditTargetId || unlockedNexus.includes(selectedCreditTargetId) || !lockedInTier.some(p => p.id === selectedCreditTargetId)) {
+                selectedCreditTargetId = lockedInTier[0].id;
+                saveProgress();
+            }
+
+            const target = playersData[selectedCreditTargetId];
+            const rc = rarityColors[currentTier] || '#b44aff';
+            const progressValue = Math.min(playerCredits, target.creditCost);
+            const progressPct = Math.max(0, Math.min(100, Math.round((progressValue / target.creditCost) * 100)));
+            const remaining = Math.max(0, target.creditCost - playerCredits);
+            const canUnlockSelected = playerCredits >= target.creditCost;
+
             const totalInTier = Object.values(playersData).filter(p => p.rarity === currentTier && p.creditCost).length;
             const unlockedInTier = Object.values(playersData).filter(p => p.rarity === currentTier && p.creditCost && unlockedNexus.includes(p.id)).length;
 
-            barEl.innerHTML = '<div style="color:#4ae8d8; font-size:13px; margin-bottom:4px; text-align:center;">🎖️ <strong>' + playerCredits + '</strong> Hero Marks</div>' +
-                '<div style="background:#222; border-radius:8px; height:14px; overflow:hidden;"><div style="width:100%; height:100%; background:linear-gradient(90deg,#4ae8d8,#44ccff); border-radius:8px;"></div></div>' +
-                '<p style="color:' + rc + '; font-size:13px; text-align:center; margin:8px 0 0; font-weight:bold;">' + tierLabel + ' • ' + unlockedInTier + '/' + totalInTier + ' unlocked</p>' +
-                '<p style="color:#aaa; font-size:11px; text-align:center; margin:6px 0 0;">✨ Scroll & choose a player to unlock:</p>';
+            const tierLabel = currentTier === 'epic' ? '⚫ Epic' : (currentTier === 'mythic' ? '🔴 Mythic' : '🟡 Legendary');
 
-            // Build scrollable card carousel - FIXED to be visible
+            barEl.innerHTML = '<div style="color:#4ae8d8; font-size:13px; margin-bottom:4px; text-align:center;">🎖️ <strong>' + playerCredits + '</strong> Hero Marks</div>' +
+                '<div style="background:#222; border-radius:8px; height:14px; overflow:hidden;"><div style="width:' + progressPct + '%; height:100%; background:linear-gradient(90deg,#4ae8d8,#44ccff); border-radius:8px;"></div></div>' +
+                '<p style="color:' + rc + '; font-size:13px; text-align:center; margin:8px 0 0; font-weight:bold;">' + tierLabel + ' • ' + unlockedInTier + '/' + totalInTier + ' unlocked</p>' +
+                '<p style="color:#aaa; font-size:11px; text-align:center; margin:6px 0 0;">Target: <strong>' + target.name + '</strong> • ' + progressValue + '/' + target.creditCost + '</p>' +
+                (canUnlockSelected
+                    ? '<p style="color:#7df7ab; font-size:11px; text-align:center; margin:6px 0 0;">Ready: unlock happens automatically</p>'
+                    : '<p style="color:#999; font-size:11px; text-align:center; margin:6px 0 0;">Need ' + remaining + ' more marks for ' + target.name + '</p>');
+
+            // Build scrollable card carousel (select target)
             let cardsHtml = '<div style="width:100%; display:block; min-height:300px; margin:12px 0; background:linear-gradient(135deg, #0a0e1a 0%, #0f1323 100%); border-radius:12px; border:2px solid ' + rc + '40; padding:12px;">' +
                 '<div style="display:flex; gap:12px; overflow-x:auto; overflow-y:visible; padding:0; width:100%;">';
 
             lockedInTier.forEach(pd => {
                 const bBonus = getStatBonus(pd.id);
-                const canAfford = playerCredits >= pd.creditCost;
                 const needed = Math.max(0, pd.creditCost - playerCredits);
                 const preferredSrc = getPlayerPreferredImageSrc(pd);
-
-                const btnText = canAfford ? 'Unlock (' + pd.creditCost + ')' : 'Need ' + needed;
-                const btnStyle = canAfford ? 'background:#4ae8d8; color:#000; cursor:pointer; border:2px solid #2a9fa8; font-weight:bold;' : 'background:#2a2a3a; color:#99a; cursor:not-allowed; border:2px solid #1a1a2a;';
-                const btnDisabled = canAfford ? '' : 'disabled';
+                const isSelected = pd.id === selectedCreditTargetId;
 
                 const hpVal = Math.round(pd.hp * bBonus * COMBAT_STAT_SCALE);
                 const dmgVal = Math.round(pd.laserDamage * bBonus * COMBAT_STAT_SCALE);
 
-                cardsHtml += '<div style="flex-shrink:0; width:220px; background:linear-gradient(135deg, #1a1a2e 0%, #242838 100%); border:3px solid ' + rc + '; border-radius:14px; padding:14px; text-align:center; box-shadow:0 0 16px ' + rc + '50;">' +
-                    '<div style="width:100%; height:160px; background:' + pd.color + '; border-radius:10px; display:flex; align-items:center; justify-content:center; margin-bottom:12px; overflow:hidden; border:2px solid rgba(255,255,255,0.15); box-shadow:inset 0 0 8px rgba(0,0,0,0.5);">';
+                const cardImg = preferredSrc
+                    ? '<img src="' + preferredSrc + '" alt="' + pd.name + '" style="width:100%; height:100%; object-fit:contain; padding:8px;">'
+                    : '<span style="color:white; font-weight:bold; font-size:18px;">' + pd.name + '</span>';
 
-                if (preferredSrc) {
-                    cardsHtml += '<img src="' + preferredSrc + '" alt="' + pd.name + '" style="width:100%; height:100%; object-fit:contain; padding:8px;">';
-                } else {
-                    cardsHtml += '<span style="color:white; font-weight:bold; font-size:18px;">' + pd.name + '</span>';
-                }
+                const cardBorder = isSelected ? '#ffcc00' : rc;
+                const selectedBadge = isSelected ? '<p style="margin:0 0 4px; font-size:11px; color:#ffcc00; font-weight:bold;">✓ Selected</p>' : '';
+                const actionText = isSelected ? (remaining > 0 ? ('Need ' + remaining) : 'Ready to unlock') : 'Select';
 
-                cardsHtml += '</div>' +
-                    '<h3 style="margin:8px 0 3px; font-size:14px; color:#fff; font-weight:bold;">' + pd.name + '</h3>' +
-                    '<p style="margin:0 0 8px; font-size:12px; color:' + rc + '; font-weight:bold;">' + rarityLabels[pd.rarity] + '</p>' +
-                    '<div style="font-size:10px; color:#ccc; margin-bottom:10px;">' +
-                    '<p style="margin:2px 0;">❤️ ' + hpVal + '</p>' +
-                    '<p style="margin:2px 0;">🔥 ' + dmgVal + '</p>' +
+                cardsHtml += '<div onclick="selectCreditTarget(\'' + pd.id + '\')" style="flex-shrink:0; width:200px; background:linear-gradient(135deg, #1a1a2e 0%, #242838 100%); border:3px solid ' + cardBorder + '; border-radius:14px; padding:12px; text-align:center; box-shadow:' + (isSelected ? '0 0 16px #ffcc00aa' : ('0 0 16px ' + rc + '50')) + '; cursor:pointer;">' +
+                    selectedBadge +
+                    '<div style="width:100%; height:150px; background:' + pd.color + '; border-radius:10px; display:flex; align-items:center; justify-content:center; margin-bottom:10px; overflow:hidden; border:2px solid rgba(255,255,255,0.15);">' +
+                    cardImg +
                     '</div>' +
-                    '<button class="unlock-card-btn" data-player-id="' + pd.id + '" style="width:100%; padding:8px 4px; margin-top:6px; font-size:12px; border-radius:6px; border:none; ' + btnStyle + '" ' + btnDisabled + '>' + btnText + '</button>' +
+                    '<h3 style="margin:6px 0 2px; font-size:13px; color:#fff; font-weight:bold;">' + pd.name + '</h3>' +
+                    '<p style="margin:0 0 6px; font-size:11px; color:' + (rarityColors[pd.rarity] || rc) + '; font-weight:bold;">' + rarityLabels[pd.rarity] + '</p>' +
+                    '<div style="font-size:10px; color:#ccc; margin-bottom:8px;">' +
+                    '<span>❤️ ' + hpVal + '</span>  <span>🔥 ' + dmgVal + '</span>' +
+                    '</div>' +
+                    '<button style="width:100%; padding:8px 4px; font-size:12px; border-radius:6px; border:none; background:' + (isSelected ? '#ffcc00' : '#2a2a3a') + '; color:' + (isSelected ? '#000' : '#ddd') + '; font-weight:bold;">' + actionText + '</button>' +
                     '</div>';
             });
 
@@ -8950,30 +9715,144 @@
             }
 
             list.innerHTML = cardsHtml + nextTiersHtml;
+        }
 
-            // Attach click handlers directly to buttons
-            const buttons = document.querySelectorAll('.unlock-card-btn');
-            buttons.forEach(btn => {
-                btn.onclick = function(e) {
-                    e.preventDefault();
-                    e.stopPropagation();
-                    const playerId = this.getAttribute('data-player-id');
-                    buyPlayerWithCredits(playerId);
+        // Bazaar System (developer-defined redeem codes)
+        const BAZZAR_CODE_DEFINITIONS = {
+            // Add or edit your testing codes here.
+            // Format: CODE: { coins: number, sparks: number, credits: number }
+            // Codes have UNLIMITED uses — no maxUses needed.
+            SOT: { coins: 10000, sparks: 10000, credits: 1000 },
+        };
+
+        function getBazzarUsageState() {
+            try {
+                const parsed = JSON.parse(localStorage.getItem('bazzarCodeUsageState') || '{}');
+                return parsed && typeof parsed === 'object' ? parsed : {};
+            } catch (e) {
+                return {};
+            }
+        }
+
+        function saveBazzarUsageState(state) {
+            localStorage.setItem('bazzarCodeUsageState', JSON.stringify(state || {}));
+        }
+
+        function setBazzarStatus(text, color = '#9aa8bf') {
+            const el = document.getElementById('bazzar-status');
+            if (!el) return;
+            el.style.color = color;
+            el.textContent = text || '';
+        }
+
+        function getBazzarRuntimeCodes() {
+            const runtime = {};
+            Object.entries(BAZZAR_CODE_DEFINITIONS).forEach(([code, cfg]) => {
+                const key = String(code || '').toUpperCase().trim();
+                if (!key) return;
+                runtime[key] = {
+                    coins: Math.max(0, toSafeInt(cfg.coins || 0)),
+                    sparks: Math.max(0, toSafeInt(cfg.sparks || 0)),
+                    credits: Math.max(0, toSafeInt(cfg.credits || 0))
                 };
+            });
+            return runtime;
+        }
+
+        function renderBazaarItems() {
+            // Hidden by request: do not show configured codes in UI.
+            return;
+        }
+
+        function initModalCloseXButtons() {
+            document.querySelectorAll('.modal-panel').forEach(panel => {
+                if (panel.querySelector('.modal-x-close')) return;
+                const btn = document.createElement('button');
+                btn.className = 'modal-x-close';
+                btn.setAttribute('aria-label', 'Close');
+                btn.textContent = '\u2715';
+                btn.style.cssText = 'position:absolute; top:10px; right:10px; width:30px; height:30px; border-radius:50%; border:1px solid #ff7b7b; background:#3a1414; color:#ff4d4d; font-weight:bold; font-size:16px; cursor:pointer; z-index:10; line-height:1; padding:0; flex-shrink:0;';
+                btn.addEventListener('click', () => {
+                    const closer = panel.querySelector('.modal-close');
+                    if (closer) { closer.click(); return; }
+                    panel.style.display = 'none';
+                });
+                panel.insertBefore(btn, panel.firstChild);
             });
         }
 
-        // Bazaar System
-        function initBazaar() { /* Bazaar removed */ }
+        function initBazaar() {
+            const openBtn = document.getElementById('bazzar-btn');
+            const overlay = document.getElementById('bazzar-overlay');
+            const closeBtn = document.getElementById('close-bazzar-panel');
+            const redeemBtn = document.getElementById('bazzar-redeem-btn');
 
-        function renderBazaarItems() { /* Bazaar removed */ }
+            if (!openBtn || !overlay || !closeBtn || !redeemBtn) return;
+
+            function openBazzar() {
+                overlay.style.display = 'flex';
+                setBazzarStatus('');
+                const input = document.getElementById('bazzar-redeem-input');
+                if (input) setTimeout(() => input.focus(), 80);
+            }
+
+            function closeBazzar() {
+                overlay.style.display = 'none';
+            }
+
+            openBtn.addEventListener('click', openBazzar);
+            closeBtn.addEventListener('click', closeBazzar);
+
+            // Click backdrop to close
+            overlay.addEventListener('click', (e) => {
+                if (e.target === overlay) closeBazzar();
+            });
+
+            // Escape key to close
+            document.addEventListener('keydown', (e) => {
+                if (e.key === 'Escape' && overlay.style.display === 'flex') closeBazzar();
+            });
+
+            // Enter key in input to redeem
+            const redeemInput = document.getElementById('bazzar-redeem-input');
+            if (redeemInput) {
+                redeemInput.addEventListener('keydown', (e) => {
+                    if (e.key === 'Enter') redeemBtn.click();
+                });
+            }
+
+            redeemBtn.addEventListener('click', () => {
+                const input = document.getElementById('bazzar-redeem-input');
+                const key = (input?.value || '').trim().toUpperCase();
+                if (!key) {
+                    setBazzarStatus('Enter a code first.', '#ff9da0');
+                    return;
+                }
+
+                const runtimeCodes = getBazzarRuntimeCodes();
+                const cfg = runtimeCodes[key];
+                if (!cfg) {
+                    setBazzarStatus('Code not found.', '#ff9da0');
+                    return;
+                }
+
+                playerCoins += cfg.coins;
+                energySparks += cfg.sparks;
+                playerCredits += cfg.credits;
+
+                saveProgress();
+                showCoins();
+                renderBazaarItems();
+                setBazzarStatus('Redeemed ' + key + '!', '#7df7ab');
+                if (input) { input.value = ''; input.focus(); }
+            });
+        }
 
         function buyPlayer(playerId) {
             const playerData = playersData[playerId];
             if (playerData && !unlockedNexus.includes(playerId)) {
                 unlockedNexus.push(playerId);
                 saveProgress();
-                showLootboxPopup(`Unlocked ${playerData.name}!`);
                 showCoins();
             }
         }
@@ -8982,12 +9861,13 @@
             const pd = playersData[playerId];
             if (!pd || !pd.creditCost) return;
             if (unlockedNexus.includes(playerId)) return;
-            if (playerCredits < pd.creditCost) return;       // can't afford
+            const { lockedInTier } = getActiveCreditTierState();
+            if (!lockedInTier.some(p => p.id === playerId)) return;
+            if (playerCredits < pd.creditCost) return;
             playerCredits -= pd.creditCost;
-            localStorage.setItem('playerCredits', playerCredits);
             unlockedNexus.push(playerId);
+            selectedCreditTargetId = null; // clear selection after unlock
             saveProgress();
-            showLootboxPopup(`${rarityLabels[pd.rarity]} Unlocked: ${pd.name}! (-${pd.creditCost} Hero Marks)`);
             showCoins();
             renderCreditsPanel();
         }
@@ -8995,11 +9875,8 @@
         // switchPlayerInTier removed — no switching allowed after unlocking a tier
 
         function showLootboxPopup(message) {
-            document.getElementById('lootbox-content').textContent = message;
-            document.getElementById('lootbox-popup').style.display = 'block';
-            document.getElementById('lootbox-ok').onclick = () => {
-                document.getElementById('lootbox-popup').style.display = 'none';
-            };
+            // Alerts/popups are disabled by request.
+            return;
         }
 
         // Player Menu
@@ -9111,7 +9988,12 @@
                 case 'burst':
                 case 'megazord':
                 case 'scream':
+                case 'punchflurry':
+                case 'groundslam':
                     superDesc = `<div style="text-align:center; margin:8px 0;"><div style="width:50px; height:50px; border:2px dashed #ffcc00; border-radius:50%; margin:0 auto;"></div><p style="color:#aaa; font-size:11px; margin:4px 0;">AoE around self</p></div>`;
+                    break;
+                case 'cardcage':
+                    superDesc = `<div style="text-align:center; margin:8px 0;"><div style="width:50px; height:50px; border:2px dashed #ffcc00; border-radius:50%; margin:0 auto;"></div><p style="color:#aaa; font-size:11px; margin:4px 0;">Trap zone at target + radial cards</p></div>`;
                     break;
                 case 'piercebeam':
                     superDesc = `<div style="text-align:center; margin:8px 0;"><div style="width:50px; height:8px; background:#ffcc00; margin:0 auto;"></div><p style="color:#aaa; font-size:11px; margin:4px 0;">Beam across entire map</p></div>`;
@@ -9136,40 +10018,52 @@
             const upgradeDiv = document.getElementById('pd-upgrade-section');
             if (!isUnlocked) {
                 if (pd.creditCost) {
-                    const canBuyCredits = playerCredits >= pd.creditCost;
                     upgradeDiv.innerHTML = `
                         <p style="color:#aaa; font-size:13px; margin:4px 0;">Locked character</p>
                         <p style="font-size:13px; margin:2px 0;">🎖️ Cost: ${pd.creditCost} Hero Marks</p>
                         <p style="font-size:11px; color:#888; margin:2px 0;">You have: 🎖️ ${playerCredits}</p>
-                        <button id="pd-unlock-btn" class="btn" ${canBuyCredits ? '' : 'disabled'}
-                            style="font-size:14px; padding:6px 16px; margin-top:6px; background:${canBuyCredits ? '#4ae8d8' : '#555'}; color:${canBuyCredits ? '#000' : '#888'};">
-                            Unlock
+                        <button id="pd-unlock-btn" class="btn"
+                            style="font-size:14px; padding:6px 16px; margin-top:6px; background:#4ae8d8; color:#000;">
+                            Set Hero Marks Target
                         </button>`;
                     const unlockBtn = upgradeDiv.querySelector('#pd-unlock-btn');
-                    if (unlockBtn && canBuyCredits) {
+                    if (unlockBtn) {
                         unlockBtn.onclick = () => {
-                            buyPlayerWithCredits(playerId);
+                            selectCreditTarget(playerId);
                             showPlayerDetail(playerId);
+                            document.getElementById('credits-panel').style.display = 'block';
+                            renderCreditsPanel();
                             updatePlayerMenu();
                             updateCharShowcase();
                         };
                     }
                 } else if (!unlockedNexus.includes(playerId)) {
-                    upgradeDiv.innerHTML = `
-                        <p style="color:#aaa; font-size:13px; margin:4px 0;">Locked character</p>
-                        <p style="font-size:13px; margin:2px 0;">🆓 Free Unlock!</p>
-                        <button id="pd-unlock-btn" class="btn"
-                            style="font-size:14px; padding:6px 16px; margin-top:6px; background:#ffcc00; color:#000;">
-                            Unlock
-                        </button>`;
-                    const unlockBtn = upgradeDiv.querySelector('#pd-unlock-btn');
-                    if (unlockBtn) {
-                        unlockBtn.onclick = () => {
-                            buyPlayer(playerId);
-                            showPlayerDetail(playerId);
-                            updatePlayerMenu();
-                            updateCharShowcase();
-                        };
+                    if (pd.rarity && pd.rarity !== 'common') {
+                        // Rare+ without creditCost → locked behind Medals Road
+                        const roadMilestone = levelRewards.find(m => m.type === 'unlock' && m.playerId === playerId);
+                        const reqLevel = roadMilestone ? roadMilestone.level : '?';
+                        upgradeDiv.innerHTML = `
+                            <p style="color:#aaa; font-size:13px; margin:4px 0;">Locked character</p>
+                            <p style="font-size:13px; margin:4px 0;">🏅 Unlock via <strong style="color:#ffcc00;">Medals Road</strong></p>
+                            <p style="font-size:12px; color:#aaa; margin:2px 0;">Reach Level ${reqLevel} in the Medals Road</p>
+                            <p style="font-size:11px; color:#666; margin:2px 0;">You are Level ${playerLevel}</p>`;
+                    } else {
+                        upgradeDiv.innerHTML = `
+                            <p style="color:#aaa; font-size:13px; margin:4px 0;">Locked character</p>
+                            <p style="font-size:13px; margin:2px 0;">🆓 Free Unlock!</p>
+                            <button id="pd-unlock-btn" class="btn"
+                                style="font-size:14px; padding:6px 16px; margin-top:6px; background:#ffcc00; color:#000;">
+                                Unlock
+                            </button>`;
+                        const unlockBtn = upgradeDiv.querySelector('#pd-unlock-btn');
+                        if (unlockBtn) {
+                            unlockBtn.onclick = () => {
+                                buyPlayer(playerId);
+                                showPlayerDetail(playerId);
+                                updatePlayerMenu();
+                                updateCharShowcase();
+                            };
+                        }
                     }
                 } else {
                     upgradeDiv.innerHTML = '<p style="color:#aaa; font-size:13px; margin:4px 0;">Locked character</p>';
@@ -9260,6 +10154,10 @@
             // Close button
             document.getElementById('pd-close-btn').onclick = () => {
                 popup.style.display = 'none';
+            };
+            // Click backdrop to close
+            popup.onclick = (e) => {
+                if (e.target === popup) popup.style.display = 'none';
             };
 
             popup.style.display = 'flex';
@@ -9517,6 +10415,7 @@
                 });
             })();
             initBazaar();
+            initModalCloseXButtons();
             initCreditsPanel();
             initPlayerMenu();
             initProfilePanel();
