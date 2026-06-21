@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-Cyprus Brainrots Game is a single-file HTML5 canvas browser game with no build system, no package manager, and no external dependencies. All game logic, rendering, UI, and styles live in [index.html](index.html) (~2000 lines).
+Aakers is a single-file HTML5 canvas browser game with no build system, no package manager, and no external dependencies. All game logic, rendering, UI, and styles live in [index.html](index.html) (~2000 lines).
 
 ## Running the Game
 
