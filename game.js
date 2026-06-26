@@ -43,18 +43,45 @@
             }
         }
 
+        const inMemoryStorage = Object.create(null);
+
+        function storageGetItem(key) {
+            try {
+                return localStorage.getItem(key);
+            } catch (e) {
+                return Object.prototype.hasOwnProperty.call(inMemoryStorage, key) ? inMemoryStorage[key] : null;
+            }
+        }
+
+        function storageSetItem(key, value) {
+            const stringValue = String(value);
+            try {
+                localStorage.setItem(key, stringValue);
+            } catch (e) {
+                inMemoryStorage[key] = stringValue;
+            }
+        }
+
+        function storageRemoveItem(key) {
+            try {
+                localStorage.removeItem(key);
+            } catch (e) {
+                delete inMemoryStorage[key];
+            }
+        }
+
         // Migrate old playerXP key to playerMedals
-        if (localStorage.getItem('playerXP') !== null && localStorage.getItem('playerMedals') === null) {
-            localStorage.setItem('playerMedals', localStorage.getItem('playerXP'));
-            localStorage.removeItem('playerXP');
+        if (storageGetItem('playerXP') !== null && storageGetItem('playerMedals') === null) {
+            storageSetItem('playerMedals', storageGetItem('playerXP'));
+            storageRemoveItem('playerXP');
         }
 
         // Migrate legacy player keys to nexus naming
-        if (localStorage.getItem('unlockedNexus') === null && localStorage.getItem('unlockedPlayers') !== null) {
-            localStorage.setItem('unlockedNexus', localStorage.getItem('unlockedPlayers'));
+        if (storageGetItem('unlockedNexus') === null && storageGetItem('unlockedPlayers') !== null) {
+            storageSetItem('unlockedNexus', storageGetItem('unlockedPlayers'));
         }
-        if (localStorage.getItem('selectedNexusId') === null && localStorage.getItem('selectedPlayerId') !== null) {
-            localStorage.setItem('selectedNexusId', localStorage.getItem('selectedPlayerId'));
+        if (storageGetItem('selectedNexusId') === null && storageGetItem('selectedPlayerId') !== null) {
+            storageSetItem('selectedNexusId', storageGetItem('selectedPlayerId'));
         }
 
         function parseStorageJson(raw, fallback) {
@@ -68,29 +95,30 @@
         }
 
         function readStorageJson(key, fallback) {
-            return parseStorageJson(localStorage.getItem(key), fallback);
+            return parseStorageJson(storageGetItem(key), fallback);
         }
 
         // Game state (persisted via localStorage)
-        let playerCoins = parseInt(localStorage.getItem('playerCoins') ?? '0');
+        let playerCoins = parseInt(storageGetItem('playerCoins') ?? '0');
         let unlockedNexus = readStorageJson('unlockedNexus', ['default']);
-        let selectedNexusId = localStorage.getItem('selectedNexusId') ?? 'default';
-        let playerMedals = parseInt(localStorage.getItem('playerMedals') ?? '0');
+        let selectedNexusId = storageGetItem('selectedNexusId') ?? 'default';
+        let playerMedals = parseInt(storageGetItem('playerMedals') ?? '0');
         let playerLevel = Math.floor(playerMedals / 10) + 1;
-        let killFeedColor = localStorage.getItem('killFeedColor') ?? '#ffffff';
-        let energySparks = parseInt(localStorage.getItem('energySparks') ?? '0');
-        let playerCredits = parseInt(localStorage.getItem('playerCredits') ?? '0');
+        let killFeedColor = storageGetItem('killFeedColor') ?? '#ffffff';
+        let energySparks = parseInt(storageGetItem('energySparks') ?? '0');
+        let playerCredits = parseInt(storageGetItem('playerCredits') ?? '0');
         let creditTierPick = readStorageJson('creditTierPick', {});
-        let selectedCreditTargetId = localStorage.getItem('selectedCreditTargetId') ?? null;
+        let selectedCreditTargetId = storageGetItem('selectedCreditTargetId') ?? null;
         let playerPowerLevels = readStorageJson('playerPowerLevels', {});
         let unlockedGadgets = readStorageJson('unlockedGadgets', ['default']);
         let playerMedalsByNexus = readStorageJson('playerMedalsByNexus', {});
         let claimedNexusMedalMilestones = readStorageJson('claimedNexusMedalMilestones', {});
-        let rankedPoints = parseInt(localStorage.getItem('rankedPoints') ?? '1000');
-        let rankedSeasonId = localStorage.getItem('rankedSeasonId') ?? '';
+        let playerMatchesPlayed = parseInt(storageGetItem('playerMatchesPlayed') ?? '0');
+        let rankedPoints = parseInt(storageGetItem('rankedPoints') ?? '1000');
+        let rankedSeasonId = storageGetItem('rankedSeasonId') ?? '';
         let clanState = readStorageJson('clanState', { name: '', points: 0, wins: 0 });
-        let pompakisBombVariant = localStorage.getItem('pompakisBombVariant') ?? 'classic';
-        let selectedKillEffect = localStorage.getItem('selectedKillEffect') ?? 'classic';
+        let pompakisBombVariant = storageGetItem('pompakisBombVariant') ?? 'classic';
+        let selectedKillEffect = storageGetItem('selectedKillEffect') ?? 'classic';
         const DAILY_WINS_MAX = 8;
         let dailyWinsState = { day: '', wins: 0 };
         let pendingStarDrops = 0;
@@ -201,16 +229,16 @@
             if (rankedSeasonId === season) return;
             rankedSeasonId = season;
             rankedPoints = 1000;
-            localStorage.setItem('rankedSeasonId', rankedSeasonId);
-            localStorage.setItem('rankedPoints', String(rankedPoints));
+            storageSetItem('rankedSeasonId', rankedSeasonId);
+            storageSetItem('rankedPoints', String(rankedPoints));
         }
 
         function saveMetaProgress() {
-            localStorage.setItem('rankedPoints', String(rankedPoints));
-            localStorage.setItem('rankedSeasonId', rankedSeasonId);
-            localStorage.setItem('clanState', JSON.stringify(clanState));
-            localStorage.setItem('pompakisBombVariant', pompakisBombVariant);
-            localStorage.setItem('selectedKillEffect', selectedKillEffect);
+            storageSetItem('rankedPoints', String(rankedPoints));
+            storageSetItem('rankedSeasonId', rankedSeasonId);
+            storageSetItem('clanState', JSON.stringify(clanState));
+            storageSetItem('pompakisBombVariant', pompakisBombVariant);
+            storageSetItem('selectedKillEffect', selectedKillEffect);
         }
 
         function loadDailyWinsState() {
@@ -220,12 +248,12 @@
                 return { day: today, wins: Math.max(0, Math.min(DAILY_WINS_MAX, toSafeInt(saved.wins))) };
             }
             const fresh = { day: today, wins: 0 };
-            localStorage.setItem('dailyWinsState', JSON.stringify(fresh));
+            storageSetItem('dailyWinsState', JSON.stringify(fresh));
             return fresh;
         }
 
         function saveDailyWinsState() {
-            localStorage.setItem('dailyWinsState', JSON.stringify(dailyWinsState));
+            storageSetItem('dailyWinsState', JSON.stringify(dailyWinsState));
         }
 
         function ensureDailyWinsState() {
@@ -1528,11 +1556,28 @@
             p.icon = `${p.iconsFolder}/icon.png`;
         });
 
+        function normalizePlayerSelectionState() {
+            if (!Array.isArray(unlockedNexus)) unlockedNexus = ['default'];
+            unlockedNexus = unlockedNexus.filter(id => typeof id === 'string' && !!playersData[id]);
+            if (!unlockedNexus.includes('default')) unlockedNexus.unshift('default');
+
+            if (typeof selectedNexusId !== 'string' || !playersData[selectedNexusId]) {
+                selectedNexusId = unlockedNexus[0] || 'default';
+            }
+            if (!unlockedNexus.includes(selectedNexusId)) unlockedNexus.unshift(selectedNexusId);
+
+            storageSetItem('unlockedNexus', JSON.stringify(unlockedNexus));
+            storageSetItem('selectedNexusId', selectedNexusId);
+        }
+
+        normalizePlayerSelectionState();
+
         function hasUnlockedRarity(rarity) {
             return Object.values(playersData).some(p => p.rarity === rarity && unlockedNexus.includes(p.id));
         }
 
         const gameModes = {
+            easyStage: { name: "Easy Stage", maxPlayers: 4, teams: false, fillBots: true, easyStage: true },
             showdown: { name: "Showdown", maxPlayers: 8, teams: false, fillBots: true },
             '3v3': { name: "3v3 Team Battle", maxPlayers: 12, teams: true, teamSize: 3, teamNames: ['red','blue','green','yellow'], fillBots: true },
             '2v2': { name: "2v2 Team Battle", maxPlayers: 8, teams: true, teamSize: 2, teamNames: ['red','blue','green','yellow'], fillBots: true },
@@ -1651,7 +1696,7 @@
         }
 
         function getRespawnFramesForMode() {
-            if (currentGameMode === 'elimination' || currentGameMode === 'showdown') return 0;
+            if (currentGameMode === 'elimination' || currentGameMode === 'showdown' || currentGameMode === 'easyStage') return 0;
             return currentGameMode === 'bounty' ? 300 : 900;
         }
 
@@ -2502,6 +2547,101 @@
 
         const BOT_TACTIC_POOL = Object.keys(BOT_TACTIC_PROFILES);
 
+        const BOT_DIFFICULTY_PROFILES = [
+            {
+                id: 'starter',
+                maxMatches: 12,
+                rarities: ['rare', 'epic'],
+                hpMult: 0.86,
+                damageMult: 0.84,
+                speedMult: 0.93,
+                shootChanceMult: 0.78,
+                cooldownMult: 1.22,
+                spreadMult: 1.35,
+                aimLeadMult: 0.18
+            },
+            {
+                id: 'learning',
+                maxMatches: 35,
+                rarities: ['rare', 'epic'],
+                hpMult: 0.94,
+                damageMult: 0.92,
+                speedMult: 0.97,
+                shootChanceMult: 0.88,
+                cooldownMult: 1.12,
+                spreadMult: 1.2,
+                aimLeadMult: 0.22
+            },
+            {
+                id: 'regular',
+                maxMatches: 80,
+                rarities: ['rare', 'epic', 'mythic'],
+                hpMult: 1.0,
+                damageMult: 1.0,
+                speedMult: 1.0,
+                shootChanceMult: 1.0,
+                cooldownMult: 1.0,
+                spreadMult: 1.0,
+                aimLeadMult: 0.25
+            },
+            {
+                id: 'advanced',
+                maxMatches: 160,
+                rarities: ['epic', 'mythic', 'legendary'],
+                hpMult: 1.08,
+                damageMult: 1.06,
+                speedMult: 1.04,
+                shootChanceMult: 1.08,
+                cooldownMult: 0.93,
+                spreadMult: 0.9,
+                aimLeadMult: 0.3
+            },
+            {
+                id: 'veteran',
+                maxMatches: Infinity,
+                rarities: ['epic', 'mythic', 'legendary'],
+                hpMult: 1.14,
+                damageMult: 1.1,
+                speedMult: 1.06,
+                shootChanceMult: 1.14,
+                cooldownMult: 0.88,
+                spreadMult: 0.84,
+                aimLeadMult: 0.34
+            }
+        ];
+
+        function getBotDifficultyProfile() {
+            if (currentGameMode === 'easyStage') return BOT_DIFFICULTY_PROFILES[0];
+            const matches = Math.max(0, Number.isFinite(playerMatchesPlayed) ? playerMatchesPlayed : 0);
+            for (const profile of BOT_DIFFICULTY_PROFILES) {
+                if (matches <= profile.maxMatches) return profile;
+            }
+            return BOT_DIFFICULTY_PROFILES[BOT_DIFFICULTY_PROFILES.length - 1];
+        }
+
+        function pickBotIdForDifficulty(excludedId, profile) {
+            const allowedRarities = profile?.rarities || ['rare', 'epic'];
+            const candidates = Object.keys(playersData).filter(id => {
+                if (id === excludedId) return false;
+                const p = playersData[id];
+                return p && allowedRarities.includes(p.rarity);
+            });
+            if (candidates.length > 0) return candidates[Math.floor(Math.random() * candidates.length)];
+
+            const fallback = Object.keys(playersData).filter(id => id !== excludedId);
+            return fallback[Math.floor(Math.random() * fallback.length)] || 'default';
+        }
+
+        function applyBotDifficulty(bot, profile) {
+            if (!bot || !profile) return;
+            bot.maxHp = Math.max(1, Math.round(bot.maxHp * profile.hpMult));
+            bot.currentHp = bot.maxHp;
+            bot.laserDamage = Math.max(1, Math.round(bot.laserDamage * profile.damageMult));
+            bot.speed = bot.speed * profile.speedMult;
+            bot.difficultyProfileId = profile.id;
+            bot._difficultyProfile = profile;
+        }
+
         function assignRandomBotTactic(bot) {
             if (!bot) return;
             bot.aiTactic = BOT_TACTIC_POOL[Math.floor(Math.random() * BOT_TACTIC_POOL.length)] || 'balanced';
@@ -2513,6 +2653,7 @@
                 if (bot.currentHp <= 0) return;
                 if (!bot.aiTactic) assignRandomBotTactic(bot);
                 const tactic = BOT_TACTIC_PROFILES[bot.aiTactic] || BOT_TACTIC_PROFILES.balanced;
+                const difficulty = bot._difficultyProfile || getBotDifficultyProfile();
 
                 // Stunned — skip all AI this frame
                 if (bot._stunTimer > 0) return;
@@ -2718,8 +2859,12 @@
                                 kickBall(bot, goalCx, goalCy);
                                 bot.shootCooldown = 30;
                             }
-                        } else if (bot.shootCooldown <= 0 && distance < bot.laserRange &&
-                            hasLineOfSight(bot, closestTarget) && Math.random() < (bot.inBush ? Math.min(0.8, tactic.shootChance + 0.14) : tactic.shootChance)) {
+                        } else if (bot.shootCooldown <= 0 && distance < bot.laserRange) {
+                            const baseShootChance = bot.inBush ? Math.min(0.8, tactic.shootChance + 0.14) : tactic.shootChance;
+                            const adjustedShootChance = Math.min(0.68, baseShootChance * (difficulty.shootChanceMult || 1));
+                            if (!hasLineOfSight(bot, closestTarget) || Math.random() >= adjustedShootChance) {
+                                // Skip shot this frame.
+                            } else {
 
                             const laserSpeed = 10;
                             const timeToHit = distance / laserSpeed;
@@ -2727,24 +2872,27 @@
                             // Mild lead shot — slight prediction, not perfect
                             const targetVx = closestTarget.vx || 0;
                             const targetVy = closestTarget.vy || 0;
-                            const predictedX = closestTarget.x + closestTarget.size / 2 + targetVx * timeToHit * 0.25;
-                            const predictedY = closestTarget.y + closestTarget.size / 2 + targetVy * timeToHit * 0.25;
+                            const lead = difficulty.aimLeadMult || 0.25;
+                            const predictedX = closestTarget.x + closestTarget.size / 2 + targetVx * timeToHit * lead;
+                            const predictedY = closestTarget.y + closestTarget.size / 2 + targetVy * timeToHit * lead;
 
                             const aimDx = predictedX - (bot.x + bot.size / 2);
                             const aimDy = predictedY - (bot.y + bot.size / 2);
                             const aimDist = Math.sqrt(aimDx * aimDx + aimDy * aimDy) || 1;
 
                             // Aim spread increases with distance
-                            const spread = (distance / bot.laserRange) * 0.25;
+                            const spread = (distance / bot.laserRange) * 0.25 * (difficulty.spreadMult || 1);
                             const spreadAngle = (Math.random() - 0.5) * spread;
                             const cos = Math.cos(spreadAngle), sin = Math.sin(spreadAngle);
                             const dirX = aimDx / aimDist;
                             const dirY = aimDy / aimDist;
 
                             botFireAttack(bot, (dirX * cos - dirY * sin), (dirX * sin + dirY * cos), laserSpeed);
-                            bot.shootCooldown = tactic.shootCooldown;
+                            const cooldown = Math.round(tactic.shootCooldown * (difficulty.cooldownMult || 1));
+                            bot.shootCooldown = Math.max(16, cooldown);
                             // Shooting reveals bot from bush
                             bot.bushRevealTimer = 90;
+                            }
                         }
                     }
                     }
@@ -3037,9 +3185,9 @@
 
             // Create bots
             const botCount = modeConfig.maxPlayers - 1;
+            const botDifficultyProfile = getBotDifficultyProfile();
             for (let i = 0; i < botCount; i++) {
-                const availableBots = Object.keys(playersData).filter(id => id !== selectedNexusId);
-                const botPlayerId = availableBots[Math.floor(Math.random() * availableBots.length)];
+                const botPlayerId = pickBotIdForDifficulty(selectedNexusId, botDifficultyProfile);
                 const botData = playersData[botPlayerId];
                 const botTeam = modeConfig.teams ? modeConfig.teamNames[Math.floor((i + 1) / modeConfig.teamSize)] || modeConfig.teamNames[modeConfig.teamNames.length - 1] : null;
                 const botPos = modeConfig.teams ? getTeamSpawnPosition(botData.size, botTeam) : getSpawnPosition(botData.size);
@@ -3084,6 +3232,17 @@
                     _poisonBy: null,
                     spawnShieldTimer: getSpawnShieldFrames()
                 };
+
+                applyBotDifficulty(bot, botDifficultyProfile);
+
+                if (modeConfig.easyStage) {
+                    bot.maxHp = Math.round(bot.maxHp * 0.72);
+                    bot.currentHp = bot.maxHp;
+                    bot.laserDamage = Math.max(1, Math.round(bot.laserDamage * 0.68));
+                    bot.speed = bot.speed * 0.9;
+                    bot.aiTactic = 'balanced';
+                }
+
                 players.push(bot);
                 bots.push(bot);
             }
@@ -4943,7 +5102,7 @@
         // Respawn system for team modes
         function updateRespawns() {
             const isTeamMode = gameModes[currentGameMode] && gameModes[currentGameMode].teams;
-            if (currentGameMode === 'elimination' || currentGameMode === 'showdown') return; // no respawns
+            if (currentGameMode === 'elimination' || currentGameMode === 'showdown' || currentGameMode === 'easyStage') return; // no respawns
 
             function setSafeRespawnPosition(p, desiredX, desiredY) {
                 let x = Math.max(0, Math.min(desiredX, MAP_WIDTH - p.size));
@@ -5068,6 +5227,13 @@
             // Update player lasers
             for (let i = lasers.length - 1; i >= 0; i--) {
                 const laser = lasers[i];
+                if (!laser || typeof laser.x !== 'number' || typeof laser.y !== 'number' || typeof laser.vx !== 'number' || typeof laser.vy !== 'number') {
+                    lasers.splice(i, 1);
+                    continue;
+                }
+                if (!laser.shooter) {
+                    laser.shooter = { team: null, isHuman: false, superCharge: 0, damageDealt: 0, laserRange: Infinity, _damageTimer: 0 };
+                }
                 // Store previous position for swept collision detection
                 laser._prevX = laser.x;
                 laser._prevY = laser.y;
@@ -5237,9 +5403,10 @@
                         }
                         if (laser.darkPulse && targetPlayer.currentHp < targetPlayer.maxHp * 0.5) {
                             const bonus = Math.round(laser.damage * 0.6);
-                            targetPlayer.currentHp -= bonus;
-                            if (bonus > 0) registerDamageFeedback(targetPlayer, bonus, '#c084fc');
-                            laser.shooter.damageDealt = (laser.shooter.damageDealt || 0) + bonus;
+                            const bonusActual = Math.min(bonus, Math.max(0, targetPlayer.currentHp));
+                            targetPlayer.currentHp -= bonusActual;
+                            if (bonusActual > 0) registerDamageFeedback(targetPlayer, bonusActual, '#c084fc');
+                            laser.shooter.damageDealt = (laser.shooter.damageDealt || 0) + bonusActual;
                         }
                         if (laser.coinSteal && laser.shooter.isHuman && actualDamage > 0) {
                             playerCoins += laser.coinSteal;
@@ -5337,6 +5504,13 @@
             // Update AI lasers - can hit ANY player (including other bots, but not teammates)
             for (let i = aiLasers.length - 1; i >= 0; i--) {
                 const laser = aiLasers[i];
+                if (!laser || typeof laser.x !== 'number' || typeof laser.y !== 'number' || typeof laser.vx !== 'number' || typeof laser.vy !== 'number') {
+                    aiLasers.splice(i, 1);
+                    continue;
+                }
+                if (!laser.shooter) {
+                    laser.shooter = { team: null, isHuman: false, superCharge: 0, damageDealt: 0, laserRange: Infinity, _damageTimer: 0 };
+                }
                 // Store previous position for swept collision detection
                 laser._prevX = laser.x;
                 laser._prevY = laser.y;
@@ -5506,9 +5680,10 @@
                         }
                         if (laser.darkPulse && targetPlayer.currentHp < targetPlayer.maxHp * 0.5) {
                             const bonus = Math.round(laser.damage * 0.6);
-                            targetPlayer.currentHp -= bonus;
-                            if (bonus > 0) registerDamageFeedback(targetPlayer, bonus, '#c084fc');
-                            laser.shooter.damageDealt = (laser.shooter.damageDealt || 0) + bonus;
+                            const bonusActual = Math.min(bonus, Math.max(0, targetPlayer.currentHp));
+                            targetPlayer.currentHp -= bonusActual;
+                            if (bonusActual > 0) registerDamageFeedback(targetPlayer, bonusActual, '#c084fc');
+                            laser.shooter.damageDealt = (laser.shooter.damageDealt || 0) + bonusActual;
                         }
                         if (laser.coinSteal && laser.shooter.isHuman && actualDamage > 0) {
                             playerCoins += laser.coinSteal;
@@ -5986,7 +6161,7 @@
             if (currentGameMode === 'zoneCapture') return;
 
             // Fail-safe: in Showdown, if human is dead, end immediately.
-            if (currentGameMode === 'showdown' && player && player.currentHp <= 0) {
+            if ((currentGameMode === 'showdown' || currentGameMode === 'easyStage') && player && player.currentHp <= 0) {
                 endGame('Game Over! You were defeated!', false);
                 return;
             }
@@ -7601,6 +7776,10 @@
             if (!gameStarted) return; // Guard against double calls
 
             gameStarted = false;
+            if (gameLoopRequestId !== null) {
+                cancelAnimationFrame(gameLoopRequestId);
+                gameLoopRequestId = null;
+            }
 
             // Show game over overlay
             const overlay = document.getElementById('game-over-overlay');
@@ -7624,6 +7803,9 @@
                 title.style.color = '#ffcc00';
                 messageEl.textContent = message;
 
+                const humanMatchKills = Math.max(0, Math.floor((player && player.kills) || 0));
+                const survivedSeconds = Math.max(0, Math.floor((Date.now() - (matchStartedAt || Date.now())) / 1000));
+
                 playerCoins += winCoins;
                 playerCredits += winCredits;
                 energySparks += winSparks;
@@ -7645,6 +7827,7 @@
                 progressDaily('games', 1);
                 progressDaily('coins', winCoins);
                 progressDaily('winstreak', 1);
+                evaluateDailyMatchChallenges(humanMatchKills, survivedSeconds);
                 
                 // Update win streak
                 currentWinStreak++;
@@ -7655,6 +7838,9 @@
                 title.textContent = 'Game Over';
                 title.style.color = '#ff4444';
                 messageEl.textContent = message;
+
+                const humanMatchKills = Math.max(0, Math.floor((player && player.kills) || 0));
+                const survivedSeconds = Math.max(0, Math.floor((Date.now() - (matchStartedAt || Date.now())) / 1000));
 
                 playerCoins += loseCoins;
                 playerCredits += loseCredits;
@@ -7668,6 +7854,7 @@
                 const humanPlayer2 = matchStatsList.find(s => s.isHuman) || { kills: 0, damageDealt: 0 };
                 progressDaily('games', 1);
                 progressDaily('coins', loseCoins);
+                evaluateDailyMatchChallenges(humanMatchKills, survivedSeconds);
                 
                 // Reset win streak on loss
                 currentWinStreak = 0;
@@ -7676,6 +7863,9 @@
             }
             // Reset streak on game end
             currentStreak = 0; streakTimer = 0;
+
+            playerMatchesPlayed = Math.max(0, (Number.isFinite(playerMatchesPlayed) ? playerMatchesPlayed : 0) + 1);
+            storageSetItem('playerMatchesPlayed', String(playerMatchesPlayed));
 
             // Snapshot surviving players before clearing
             for (const p of players) {
@@ -7913,29 +8103,8 @@
             chest.onmouseleave = () => { if (clicksLeft > 0) chest.style.transform = `scale(${1 + (5 - clicksLeft) * 0.02})`; };
         }
 
-        // Also update the return to menu button handler to properly reset the game
-        document.getElementById('return-to-menu').addEventListener('click', () => {
-            // Hide game over overlay
-            document.getElementById('game-over-overlay').style.display = 'none';
-            document.getElementById('leaderboard').style.display = 'none';
-            document.getElementById('stardrop-overlay').style.display = 'none';
+        let gameLoopRequestId = null;
 
-            // Show main menu UI
-            document.querySelector('.guide').style.display = 'block';
-            document.querySelector('.menu').style.display = 'flex';
-            // coins-display is merged into account chip; keep hidden in menu
-
-            // Reset camera
-            camera = { x: 0, y: 0, width: gameCanvas.width, height: gameCanvas.height };
-
-            // Clear the canvas
-            ctx.clearRect(0, 0, gameCanvas.width, gameCanvas.height);
-
-            // Show queued chests now that we're back at the menu
-            if (pendingStarDrops > 0) {
-                setTimeout(() => showStarDrop(), 400);
-            }
-        });
         // Game loop
         function updatePlayerRegen() {
             if (!player || player.currentHp <= 0 || player.currentHp >= player.maxHp) return;
@@ -7948,7 +8117,10 @@
         }
 
         function gameLoop() {
-            if (!gameStarted) return;
+            if (!gameStarted) {
+                gameLoopRequestId = null;
+                return;
+            }
 
             ctx.clearRect(0, 0, gameCanvas.width, gameCanvas.height);
 
@@ -8008,7 +8180,7 @@
                 if (uibEl) uibEl.textContent = (player.items && player.items.length > 0) ? PICKUP_ICONS[player.items[0]] + (player.items.length > 1 ? ` ×${player.items.length}` : '') : '🎒';
             }
 
-            requestAnimationFrame(gameLoop);
+            gameLoopRequestId = requestAnimationFrame(gameLoop);
         }
 
         // ── DAILY CHALLENGES ─────────────────────────────────────────────────────
@@ -8018,12 +8190,14 @@
             { id: 'win3',      desc: 'Win 3 matches',             type: 'wins',   target: 3,    reward: { type:'sparks', amount: 400 },  icon: '🏆' },
             { id: 'kill8',     desc: 'Get 8 kills in total',      type: 'kills',  target: 8,    reward: { type:'sparks', amount: 300 },  icon: '⚡' },
             { id: 'kill12',    desc: 'Get 12 kills in total',     type: 'kills',  target: 12,   reward: { type:'sparks', amount: 450 },  icon: '⚡' },
+            { id: 'kill5match',desc: 'Get 5 kills in one match',  type: 'matchKills', target: 5, reward: { type:'sparks', amount: 360 }, icon: '🎯' },
             { id: 'play3',     desc: 'Play 3 matches',            type: 'games',  target: 3,    reward: { type:'sparks', amount: 220 },  icon: '🎮' },
             { id: 'play5',     desc: 'Play 5 matches',            type: 'games',  target: 5,    reward: { type:'sparks', amount: 380 },  icon: '🎮' },
             { id: 'streak3',   desc: 'Get a 3-kill streak',       type: 'streak', target: 3,    reward: { type:'sparks', amount: 360 },  icon: '🔥' },
             { id: 'streak5',   desc: 'Reach RAMPAGE (5 streak)',  type: 'streak', target: 5,    reward: { type:'sparks', amount: 650 },  icon: '💥' },
             { id: 'damage1200',desc: 'Deal 1200 total damage',    type: 'damage', target: 1200, reward: { type:'sparks', amount: 320 },  icon: '💣' },
             { id: 'damage2000',desc: 'Deal 2000 total damage',    type: 'damage', target: 2000, reward: { type:'sparks', amount: 520 },  icon: '💥' },
+            { id: 'survive120',desc: 'Survive 2 minutes in one match', type: 'survive', target: 120, reward: { type:'sparks', amount: 320 }, icon: '⏱️' },
             { id: 'winstreak2',desc: 'Win 2 matches in a row',    type: 'winstreak', target: 2, reward: { type:'coins', amount: 150 }, icon: '🔴' },
             { id: 'winstreak3',desc: 'Win 3 matches in a row',    type: 'winstreak', target: 3, reward: { type:'sparks', amount: 400 }, icon: '🎯' },
             { id: 'coins200',  desc: 'Earn 200 coins total',      type: 'coins',  target: 200, reward: { type:'sparks', amount: 280 }, icon: '💰' },
@@ -8035,8 +8209,7 @@
             return `daily_${d.getFullYear()}_${d.getMonth()}_${d.getDate()}`;
         }
 
-        function loadDailyChallenges() {
-            const key = getDailyKey();
+        function loadDailyChallenges(key = getDailyKey()) {
             const saved = readStorageJson(key, null);
             if (saved) return saved;
             // Pick 3 random challenges for today
@@ -8044,15 +8217,24 @@
             const picked = shuffled.slice(0, 3).map(c => ({
                 id: c.id, progress: 0, claimed: false
             }));
-            localStorage.setItem(key, JSON.stringify(picked));
+            storageSetItem(key, JSON.stringify(picked));
             return picked;
         }
 
-        let dailyState = loadDailyChallenges();
+        let activeDailyKey = getDailyKey();
+        let dailyState = loadDailyChallenges(activeDailyKey);
+
+        function ensureDailyChallengesCurrent() {
+            const todayKey = getDailyKey();
+            if (todayKey === activeDailyKey) return;
+            activeDailyKey = todayKey;
+            dailyState = loadDailyChallenges(activeDailyKey);
+        }
 
         function getDailyDef(id) { return DAILY_CHALLENGE_DEFS.find(d => d.id === id); }
 
         function progressDaily(type, amount = 1) {
+            ensureDailyChallengesCurrent();
             let changed = false;
             for (const s of dailyState) {
                 if (s.claimed) continue;
@@ -8062,12 +8244,32 @@
                 changed = true;
             }
             if (changed) {
-                localStorage.setItem(getDailyKey(), JSON.stringify(dailyState));
+                storageSetItem(activeDailyKey, JSON.stringify(dailyState));
+                updateDailyBadge();
+            }
+        }
+
+        function progressDailyBest(type, bestValue = 0) {
+            ensureDailyChallengesCurrent();
+            let changed = false;
+            for (const s of dailyState) {
+                if (s.claimed) continue;
+                const def = getDailyDef(s.id);
+                if (!def || def.type !== type) continue;
+                const capped = Math.min(def.target, Math.max(0, Math.floor(bestValue)));
+                if (capped > (s.progress || 0)) {
+                    s.progress = capped;
+                    changed = true;
+                }
+            }
+            if (changed) {
+                storageSetItem(activeDailyKey, JSON.stringify(dailyState));
                 updateDailyBadge();
             }
         }
 
         function updateDailyBadge() {
+            ensureDailyChallengesCurrent();
             const badge = document.getElementById('daily-badge');
             if (!badge) return;
             const claimable = dailyState.filter(s => {
@@ -8079,11 +8281,13 @@
         }
 
         function openDailyChallenges() {
+            ensureDailyChallengesCurrent();
             renderDailyChallenges();
             document.getElementById('daily-panel').style.display = 'block';
         }
 
         function renderDailyChallenges() {
+            ensureDailyChallengesCurrent();
             const list = document.getElementById('daily-list');
             const label = document.getElementById('daily-reset-label');
             // Time until midnight
@@ -8122,6 +8326,7 @@
         }
 
         function claimDaily(id) {
+            ensureDailyChallengesCurrent();
             const s = dailyState.find(x => x.id === id);
             const def = getDailyDef(id);
             if (!s || !def || s.claimed || s.progress < def.target) return;
@@ -8131,7 +8336,7 @@
             else if (def.reward.type === 'credits') { playerCredits += def.reward.amount; }
             saveProgress();
             showCoins();
-            localStorage.setItem(getDailyKey(), JSON.stringify(dailyState));
+            storageSetItem(activeDailyKey, JSON.stringify(dailyState));
             updateDailyBadge();
             renderDailyChallenges();
         }
@@ -8151,6 +8356,7 @@
         };
 
         function registerKill() {
+            ensureDailyChallengesCurrent();
             streakTimer = 0;
             currentStreak++;
             showStreakBanner(currentStreak);
@@ -8162,10 +8368,17 @@
                 if (!def || def.type !== 'streak') continue;
                 if (currentStreak >= def.target) {
                     s.progress = def.target;
-                    localStorage.setItem(getDailyKey(), JSON.stringify(dailyState));
+                    storageSetItem(activeDailyKey, JSON.stringify(dailyState));
                     updateDailyBadge();
                 }
             }
+        }
+
+        let matchStartedAt = 0;
+
+        function evaluateDailyMatchChallenges(matchKills, survivedSeconds) {
+            progressDailyBest('matchKills', matchKills);
+            progressDailyBest('survive', survivedSeconds);
         }
 
         let streakBannerTimeout = null;
@@ -8294,6 +8507,125 @@
             { title: '🌟 Tips for Victory', text: 'Stay mobile, use cover, focus fire with teammates, manage your health, and upgrade your favorite characters. Good luck!' },
         ];
 
+        const ONBOARDING_STEPS = [
+            {
+                title: '🎮 Move Like a Pro',
+                body: 'Move with WASD / Arrow Keys. On mobile, use the left joystick. Keep moving and strafe so enemy shots miss.',
+                hint: 'Tip: Standing still is the fastest way to lose a duel.'
+            },
+            {
+                title: '🔫 Aim and Shoot',
+                body: 'Click or tap to fire. Hold and drag to track moving enemies. On mobile, use the right joystick for aiming.',
+                hint: 'Tip: Aim a bit ahead of moving targets for cleaner hits.'
+            },
+            {
+                title: '⚡ Super Ability',
+                body: 'Deal damage to charge your Super. Use E (or the Super button) when the meter is full to swing fights.',
+                hint: 'Tip: Save Super for pushes, clutch defenses, or finishing low enemies.'
+            },
+            {
+                title: '🧰 Gadget and Items',
+                body: 'Use Space (or gadget button) for your gadget. Break crates for drops and press F to use your first item.',
+                hint: 'Tip: Good gadget timing wins more fights than raw aim.'
+            },
+            {
+                title: '🏆 Win the Match',
+                body: 'Try Easy Stage first, then jump into Showdown or Team modes. Earn coins, medals, sparks, and Hero Marks after each game.',
+                hint: 'Ready? Tap Start Playing and go battle.'
+            }
+        ];
+
+        let onboardingStepIndex = 0;
+
+        function renderOnboardingStep() {
+            const overlay = document.getElementById('onboarding-overlay');
+            if (!overlay) return;
+            const step = ONBOARDING_STEPS[Math.max(0, Math.min(ONBOARDING_STEPS.length - 1, onboardingStepIndex))];
+            const titleEl = document.getElementById('onboarding-title');
+            const bodyEl = document.getElementById('onboarding-body');
+            const hintEl = document.getElementById('onboarding-hint');
+            const stepEl = document.getElementById('onboarding-step');
+            const dotsEl = document.getElementById('onboarding-dots');
+            const prevBtn = document.getElementById('onboarding-prev');
+            const nextBtn = document.getElementById('onboarding-next');
+
+            if (!titleEl || !bodyEl || !hintEl || !stepEl || !dotsEl || !prevBtn || !nextBtn) return;
+
+            titleEl.textContent = step.title;
+            bodyEl.textContent = step.body;
+            hintEl.textContent = step.hint;
+            stepEl.textContent = `Step ${onboardingStepIndex + 1}/${ONBOARDING_STEPS.length}`;
+
+            dotsEl.innerHTML = ONBOARDING_STEPS.map((_, i) => `<span class="onboarding-dot${i === onboardingStepIndex ? ' active' : ''}"></span>`).join('');
+            prevBtn.disabled = onboardingStepIndex === 0;
+            nextBtn.textContent = onboardingStepIndex === ONBOARDING_STEPS.length - 1 ? 'Start Playing' : 'Next';
+        }
+
+        function finishOnboarding(markSeen = true) {
+            const overlay = document.getElementById('onboarding-overlay');
+            if (overlay) overlay.style.display = 'none';
+            if (markSeen) storageSetItem('tutorialSeen', 'true');
+            showAllUI();
+            updateCharShowcase();
+            renderDailyWinsWidget();
+        }
+
+        function startOnboardingFlow() {
+            const overlay = document.getElementById('onboarding-overlay');
+            if (!overlay) {
+                showAllUI();
+                updateCharShowcase();
+                renderDailyWinsWidget();
+                storageSetItem('tutorialSeen', 'true');
+                return;
+            }
+            onboardingStepIndex = 0;
+            hideAllUI();
+            overlay.style.display = 'flex';
+            renderOnboardingStep();
+        }
+
+        function ensureMainMenuVisible() {
+            const overlay = document.getElementById('onboarding-overlay');
+            const menuEl = document.querySelector('.menu');
+            const isOnboardingVisible = !!overlay && overlay.style.display === 'flex';
+            const isMenuHidden = !menuEl || getComputedStyle(menuEl).display === 'none';
+            if (!isOnboardingVisible && isMenuHidden && !gameStarted) {
+                showAllUI();
+                updateCharShowcase();
+                renderDailyWinsWidget();
+            }
+        }
+
+        function initOnboardingFlow() {
+            const overlay = document.getElementById('onboarding-overlay');
+            const prevBtn = document.getElementById('onboarding-prev');
+            const nextBtn = document.getElementById('onboarding-next');
+            const skipBtn = document.getElementById('onboarding-skip');
+            if (!overlay || !prevBtn || !nextBtn || !skipBtn) return;
+            if (overlay.dataset.bound === '1') return;
+
+            prevBtn.addEventListener('click', () => {
+                onboardingStepIndex = Math.max(0, onboardingStepIndex - 1);
+                renderOnboardingStep();
+            });
+
+            nextBtn.addEventListener('click', () => {
+                if (onboardingStepIndex >= ONBOARDING_STEPS.length - 1) {
+                    finishOnboarding(true);
+                    return;
+                }
+                onboardingStepIndex = Math.min(ONBOARDING_STEPS.length - 1, onboardingStepIndex + 1);
+                renderOnboardingStep();
+            });
+
+            skipBtn.addEventListener('click', () => {
+                finishOnboarding(true);
+            });
+
+            overlay.dataset.bound = '1';
+        }
+
         function openTutorial() {
             renderTutorial();
             document.getElementById('tutorial-panel').style.display = 'block';
@@ -8397,7 +8729,6 @@
             { level: 16, type:'sparks',  amount: 700,   icon: '⚡', reward: '700 energy sparks',   claimed: false },
             { level: 17, type:'unlock',  playerId: 'kleftros',        icon: '🔓', reward: 'Unlock Kleftros (Rare)', claimed: false },
             { level: 18, type:'sparks',  amount: 800,   icon: '⚡', reward: '800 energy sparks',   claimed: false },
-            { level: 51, type:'credits', amount: 100, icon: '🎖️', reward: '100 Hero Marks',  claimed: false },
             { level: 19, type:'coins',   amount: 900,   icon: '💰', reward: '900 coins',           claimed: false },
             { level: 20, type:'sparks',  amount: 1000,  icon: '⚡', reward: '1000 energy sparks',  claimed: false },
             { level: 21, type:'coins',   amount: 1000,  icon: '💰', reward: '1000 coins',          claimed: false },
@@ -8430,6 +8761,7 @@
             { level: 48, type:'sparks',  amount: 4500,  icon: '⚡', reward: '4500 energy sparks',  claimed: false },
             { level: 49, type:'coins',   amount: 4500,  icon: '💰', reward: '4500 coins',          claimed: false },
             { level: 50, type:'credits', amount: 50,    icon: '🎖️', reward: '50 Hero Marks',          claimed: false },
+            { level: 51, type:'credits', amount: 100,   icon: '🎖️', reward: '100 Hero Marks',      claimed: false },
         ];
         // Restore claimed state from localStorage
         const _claimedLevels = readStorageJson('claimedLevelRewards', []);
@@ -8509,32 +8841,51 @@
             });
         }
 
+        function setDisplayById(id, value) {
+            const el = document.getElementById(id);
+            if (el) el.style.display = value;
+            return el;
+        }
+
+        function setDisplayBySelector(selector, value) {
+            const el = document.querySelector(selector);
+            if (el) el.style.display = value;
+            return el;
+        }
+
         function initLevelRewards() {
-            document.getElementById('coins-display').addEventListener('click', () => {
+            const coinsDisplay = document.getElementById('coins-display');
+            if (coinsDisplay) coinsDisplay.addEventListener('click', () => {
                 renderLevelRewards();
-                document.getElementById('level-rewards-panel').style.display = 'block';
+                setDisplayById('level-rewards-panel', 'block');
             });
-            document.getElementById('close-level-rewards').addEventListener('click', () => {
-                document.getElementById('level-rewards-panel').style.display = 'none';
+            const closeLevelRewards = document.getElementById('close-level-rewards');
+            if (closeLevelRewards) closeLevelRewards.addEventListener('click', () => {
+                setDisplayById('level-rewards-panel', 'none');
             });
-            document.getElementById('close-daily-panel').addEventListener('click', () => {
-                document.getElementById('daily-panel').style.display = 'none';
+            const closeDailyPanel = document.getElementById('close-daily-panel');
+            if (closeDailyPanel) closeDailyPanel.addEventListener('click', () => {
+                setDisplayById('daily-panel', 'none');
             });
-            document.getElementById('close-history-panel').addEventListener('click', () => {
-                document.getElementById('history-panel').style.display = 'none';
-            });
-            
-            document.getElementById('close-tutorial-panel').addEventListener('click', () => {
-                document.getElementById('tutorial-panel').style.display = 'none';
-            });
-            
-            document.getElementById('mark-tips-seen-btn').addEventListener('click', () => {
-                localStorage.setItem('tutorialSeen', 'true');
-                document.getElementById('tutorial-panel').style.display = 'none';
+            const closeHistoryPanel = document.getElementById('close-history-panel');
+            if (closeHistoryPanel) closeHistoryPanel.addEventListener('click', () => {
+                setDisplayById('history-panel', 'none');
             });
             
-            document.getElementById('close-medal-road-panel').addEventListener('click', () => {
-                document.getElementById('medal-road-panel').style.display = 'none';
+            const closeTutorialPanel = document.getElementById('close-tutorial-panel');
+            if (closeTutorialPanel) closeTutorialPanel.addEventListener('click', () => {
+                setDisplayById('tutorial-panel', 'none');
+            });
+            
+            const markTipsSeenBtn = document.getElementById('mark-tips-seen-btn');
+            if (markTipsSeenBtn) markTipsSeenBtn.addEventListener('click', () => {
+                storageSetItem('tutorialSeen', 'true');
+                setDisplayById('tutorial-panel', 'none');
+            });
+            
+            const closeMedalRoadPanel = document.getElementById('close-medal-road-panel');
+            if (closeMedalRoadPanel) closeMedalRoadPanel.addEventListener('click', () => {
+                setDisplayById('medal-road-panel', 'none');
             });
             
             // Show badge if claimable on load
@@ -8544,41 +8895,41 @@
         }
 
         function hideAllUI() {
-            document.querySelector('.guide').style.display = 'none';
-            document.querySelector('.menu').style.display = 'none';
-            document.getElementById('char-showcase').style.display = 'none';
-            document.getElementById('account-chip').style.display = 'none';
-            document.getElementById('joystick-container').style.display = 'none';
-            document.getElementById('shoot-joystick-container').style.display = 'none';
-            document.getElementById('game-modes-container').style.display = 'none';
-            document.getElementById('map-select-panel').style.display = 'none';
-            document.getElementById('player-menu').style.display = 'none';
-            document.getElementById('profile-panel').style.display = 'none';
-            document.getElementById('game-over-overlay').style.display = 'none';
-            document.getElementById('stardrop-overlay').style.display = 'none';
-            document.getElementById('daily-btn').style.display = 'none';
-            document.getElementById('history-btn').style.display = 'none';
-            document.getElementById('tutorial-btn').style.display = 'none';
-            document.getElementById('daily-wins-tracker').style.display = 'none';
-            document.getElementById('medal-road-btn').style.display = 'none';
+            setDisplayBySelector('.guide', 'none');
+            setDisplayBySelector('.menu', 'none');
+            setDisplayById('char-showcase', 'none');
+            setDisplayById('account-chip', 'none');
+            setDisplayById('joystick-container', 'none');
+            setDisplayById('shoot-joystick-container', 'none');
+            setDisplayById('game-modes-container', 'none');
+            setDisplayById('map-select-panel', 'none');
+            setDisplayById('player-menu', 'none');
+            setDisplayById('profile-panel', 'none');
+            setDisplayById('game-over-overlay', 'none');
+            setDisplayById('stardrop-overlay', 'none');
+            setDisplayById('daily-btn', 'none');
+            setDisplayById('history-btn', 'none');
+            setDisplayById('tutorial-btn', 'none');
+            setDisplayById('daily-wins-tracker', 'none');
+            setDisplayById('medal-road-btn', 'none');
         }
 
         function showAllUI() {
-            document.querySelector('.guide').style.display = 'none';
-            document.querySelector('.menu').style.display = 'flex';
-            document.getElementById('char-showcase').style.display = 'flex';
-            document.getElementById('account-chip').style.display = 'flex';
-            document.getElementById('daily-btn').style.display = 'block';
-            document.getElementById('history-btn').style.display = 'block';
-            document.getElementById('tutorial-btn').style.display = 'block';
-            document.getElementById('daily-wins-tracker').style.display = 'block';
-            document.getElementById('medal-road-btn').style.display = 'block';
+            setDisplayBySelector('.guide', 'none');
+            setDisplayBySelector('.menu', 'flex');
+            setDisplayById('char-showcase', 'flex');
+            setDisplayById('account-chip', 'flex');
+            setDisplayById('daily-btn', 'block');
+            setDisplayById('history-btn', 'block');
+            setDisplayById('tutorial-btn', 'block');
+            setDisplayById('daily-wins-tracker', 'block');
+            setDisplayById('medal-road-btn', 'block');
             if (window.innerWidth <= 1024 || ('ontouchstart' in window)) {
-                document.getElementById('joystick-container').style.display = 'block';
-                document.getElementById('shoot-joystick-container').style.display = 'block';
+                setDisplayById('joystick-container', 'block');
+                setDisplayById('shoot-joystick-container', 'block');
             }
-            document.getElementById('game-over-overlay').style.display = 'none';
-            document.getElementById('stardrop-overlay').style.display = 'none';
+            setDisplayById('game-over-overlay', 'none');
+            setDisplayById('stardrop-overlay', 'none');
         }
 
         function openMapSelect() {
@@ -8586,18 +8937,20 @@
         }
 
         function startGame() {
+            if (gameStarted) return;
             hideAllUI();
             setupGameMode(currentGameMode);
             gameStarted = true;
-            document.getElementById('coins-display').style.display = 'none';
+            matchStartedAt = Date.now();
+            setDisplayById('coins-display', 'none');
 
             // Add game-active class to body to show joysticks
             document.body.classList.add('game-active');
 
             // Show joysticks when game starts (if on mobile/tablet)
             if (window.innerWidth <= 1024 || ('ontouchstart' in window)) {
-                document.getElementById('joystick-container').style.display = 'block';
-                document.getElementById('shoot-joystick-container').style.display = 'block';
+                setDisplayById('joystick-container', 'block');
+                setDisplayById('shoot-joystick-container', 'block');
             }
 
             gameLoop();
@@ -9697,26 +10050,43 @@
             const rl = rarityLabels[pd.rarity] || 'Common';
             const bonus = getStatBonus(selectedNexusId);
             const imgEl = document.getElementById('char-showcase-img');
+            const imgWrapEl = document.getElementById('char-showcase-img-wrap');
+            const nameEl = document.getElementById('char-showcase-name');
+            const rarityEl = document.getElementById('char-showcase-rarity');
+            const statsEl = document.getElementById('char-showcase-stats');
+            if (!imgEl || !imgWrapEl || !nameEl || !rarityEl || !statsEl) return;
             const showcaseSrc = getPlayerPreferredImageSrc(pd);
             imgEl.src = showcaseSrc || '';
             imgEl.style.display = showcaseSrc ? 'block' : 'none';
-            document.getElementById('char-showcase-img-wrap').style.borderColor = rc;
-            document.getElementById('char-showcase-name').textContent = pd.name;
-            const rarityEl = document.getElementById('char-showcase-rarity');
+            imgWrapEl.style.borderColor = rc;
+            nameEl.textContent = pd.name;
             rarityEl.textContent = rl;
             rarityEl.style.color = rc;
-            document.getElementById('char-showcase-stats').innerHTML =
+            statsEl.innerHTML =
                 `❤️ ${Math.round(pd.hp * bonus * COMBAT_STAT_SCALE)}<br>⚔️ ${Math.round(pd.laserDamage * bonus * COMBAT_STAT_SCALE)} &nbsp;💨 ${pd.speed} &nbsp;🎯 ${pd.laserRange}`;
         }
 
         function initGame() {
+            const runInitStep = (name, fn) => {
+                try {
+                    fn();
+                } catch (err) {
+                    console.error(`Init step failed: ${name}`, err);
+                    const debugEl = document.getElementById('debug-status');
+                    if (debugEl) {
+                        debugEl.style.display = 'block';
+                        debugEl.textContent = `Init warning (${name}): ${err && err.message ? err.message : 'unknown error'}`;
+                    }
+                }
+            };
+
             resizeCanvas();
             window.addEventListener('resize', resizeCanvas);
             preloadImages(); // Preload images first
-            initJoysticks(); // Add this line to initialize joysticks
-            initGameModes();
-            initMouseShooting();
-            initSuperButton();
+            runInitStep('joysticks', () => initJoysticks());
+            runInitStep('game modes', () => initGameModes());
+            runInitStep('mouse shooting', () => initMouseShooting());
+            runInitStep('super button', () => initSuperButton());
 
             // Mobile gadget button
             (function initGadgetButton() {
@@ -9735,54 +10105,86 @@
                     }
                 });
             })();
-            initBazaar();
-            initModalCloseXButtons();
-            initCreditsPanel();
-            initPlayerMenu();
-            initProfilePanel();
-            discoverMaps();
-            initLevelRewards();
-            initAccountSystem();
-            showCoins();
-            updateCharShowcase();
+            runInitStep('bazaar', () => initBazaar());
+            runInitStep('modal close buttons', () => initModalCloseXButtons());
+            runInitStep('credits panel', () => initCreditsPanel());
+            runInitStep('player menu', () => initPlayerMenu());
+            runInitStep('profile panel', () => initProfilePanel());
+            runInitStep('discover maps', () => discoverMaps());
+            runInitStep('level rewards', () => initLevelRewards());
+            runInitStep('onboarding flow', () => initOnboardingFlow());
+            runInitStep('account system', () => initAccountSystem());
+            runInitStep('show coins', () => showCoins());
+            runInitStep('character showcase', () => updateCharShowcase());
+
+            if (storageGetItem('tutorialSeen') !== 'true') {
+                setTimeout(() => {
+                    if (!gameStarted) startOnboardingFlow();
+                    ensureMainMenuVisible();
+                }, 150);
+            } else {
+                showAllUI();
+            }
+            ensureMainMenuVisible();
             //hide joystick on first screen
-            document.getElementById('joystick-container').style.display = 'none';
-            document.getElementById('shoot-joystick-container').style.display = 'none';
+            const moveJoy = document.getElementById('joystick-container');
+            const shootJoy = document.getElementById('shoot-joystick-container');
+            if (moveJoy) moveJoy.style.display = 'none';
+            if (shootJoy) shootJoy.style.display = 'none';
 
             // Mobile use-item button
             const useItemBtn = document.getElementById('use-item-btn');
-            useItemBtn.addEventListener('touchstart', (e) => {
-                e.preventDefault();
-                if (player && player.items && player.items.length > 0) useItem(player);
-            });
+            if (useItemBtn) {
+                useItemBtn.addEventListener('touchstart', (e) => {
+                    e.preventDefault();
+                    if (player && player.items && player.items.length > 0) useItem(player);
+                });
+            }
 
             // Start game button
-            document.getElementById('start-btn').addEventListener('click', startGame);
-            document.getElementById('close-map-select').addEventListener('click', () => {
-                document.getElementById('map-select-panel').style.display = 'none';
-            });
+            const startBtn = document.getElementById('start-btn');
+            if (startBtn) startBtn.addEventListener('click', startGame);
+
+            const closeMapSelectBtn = document.getElementById('close-map-select');
+            const mapSelectPanel = document.getElementById('map-select-panel');
+            if (closeMapSelectBtn && mapSelectPanel) {
+                closeMapSelectBtn.addEventListener('click', () => {
+                    mapSelectPanel.style.display = 'none';
+                });
+            }
 
             // Return to menu button
-            document.getElementById('return-to-menu').addEventListener('click', () => {
+            const returnToMenuBtn = document.getElementById('return-to-menu');
+            if (returnToMenuBtn) returnToMenuBtn.addEventListener('click', () => {
                 // Hide game over overlay
-                document.getElementById('game-over-overlay').style.display = 'none';
-                document.getElementById('stardrop-overlay').style.display = 'none';
+                const gameOverOverlay = document.getElementById('game-over-overlay');
+                const leaderboard = document.getElementById('leaderboard');
+                const stardropOverlay = document.getElementById('stardrop-overlay');
+                if (gameOverOverlay) gameOverOverlay.style.display = 'none';
+                if (leaderboard) leaderboard.style.display = 'none';
+                if (stardropOverlay) stardropOverlay.style.display = 'none';
 
                 // Remove game-active class to hide joysticks
                 document.body.classList.remove('game-active');
 
                 // Show main menu UI
-                document.querySelector('.guide').style.display = 'block';
-                document.querySelector('.menu').style.display = 'flex';
+                const guideEl = document.querySelector('.guide');
+                const menuEl = document.querySelector('.menu');
+                if (guideEl) guideEl.style.display = 'block';
+                if (menuEl) menuEl.style.display = 'flex';
 
                 // Hide joysticks explicitly
-                document.getElementById('joystick-container').style.display = 'none';
-                document.getElementById('shoot-joystick-container').style.display = 'none';
+                if (moveJoy) moveJoy.style.display = 'none';
+                if (shootJoy) shootJoy.style.display = 'none';
+
+                // Reset camera and clear frame so stale battle visuals are not left on menu.
+                camera = { x: 0, y: 0, width: gameCanvas.width, height: gameCanvas.height };
+                ctx.clearRect(0, 0, gameCanvas.width, gameCanvas.height);
 
                 showAllUI();
                 updateCharShowcase();
                 renderDailyWinsWidget();
-                if (pendingStarDrops > 0 && document.getElementById('stardrop-overlay').style.display !== 'flex') {
+                if (pendingStarDrops > 0 && (!stardropOverlay || stardropOverlay.style.display !== 'flex')) {
                     setTimeout(() => showStarDrop(), 350);
                 }
             });

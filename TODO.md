@@ -122,12 +122,29 @@ Last reviewed: 2026-05-10 (session 11)
 
 ## Next Sprint Features (Organized by Difficulty)
 
+## Content & Growth Features (Organized by Difficulty)
+
+### Easy
+- [ ] **Tutorial/Tips Panel** — In-game tooltips explaining mechanics (crates drop items, strafe to dodge, use F key for gadgets, super meter). Reduces learning curve for new players *(modal panel with animated tips, triggered on first-time or via help button)*
+
+### Medium
+- [ ] **Quick Highlight System** — Auto-mark key moments (triple kills, 1 HP survival, overtime clutch) and expose one-tap metadata for clip creation *(event hooks in kill/super/win logic, lightweight timeline buffer, export action)*
+- [ ] **Daily Rotating Mutator** — Add a daily gameplay modifier (low gravity shots, fast respawn, only supers, fog map) with clear HUD banner so each day feels fresh *(daily seed + mutator registry + rules toggles + HUD card)*
+- [ ] **Daily Quest Variety** — Expand beyond "play X matches" to skill-based quests: "Get 5 kills in one match", "Survive 2 minutes", "Win 3 in a row", "Earn 100 coins" *(quest definition array, progress tracking, completion rewards)*
+
+### Hard
+- [ ] **Match Replay Seed + Event Log** — Save per-match seed + compact event timeline so matches can be replayed deterministically for highlights and debugging *(seeded RNG standardization, event serialization, replay runner, storage slots)*
+- [ ] **Ranked Seasonal Ladder + Cosmetic Rewards** — Add seasonal ranking resets with exclusive rewards (titles, badges, kill effects) to increase retention and long-term goals *(season state, rank progression tuning, reward track, reset/migration logic)*
+
+### Hardest
+- [ ] **Shareable Challenge Cards** — Generate and import challenge codes (mode + map + mutator + constraints) so creators can publish "beat this run" challenges *(challenge schema, code encode/decode, validation, UI flow, anti-cheat checks)*
+
 ### Easy
 - [ ] **Tutorial/Tips Panel** — In-game tooltips explaining mechanics (crates drop items, strafe to dodge, use F key for gadgets, super meter). Reduces learning curve for new players *(modal panel with animated tips, triggered on first-time or via help button)*
 
 ### Medium
 - [ ] **Daily Quest Variety** — Expand beyond "play X matches" to skill-based quests: "Get 5 kills in one match", "Survive 2 minutes", "Win 3 in a row", "Earn 100 coins". Tracks progress per-quest *(quest definition array, progress tracking, completion rewards)*
-- [ ] **Leaderboards** — Track player stats globally (total kills, wins, winrate, matches played) and display top 10 players. Shows session-local rankings *(stats aggregation per-account, sorting, leaderboard panel UI)*
+- [ ] **Leaderboards** *(deferred: requires backend/server)* — Not feasible right now since the game is not multiplayer and has no server authority. Revisit after backend/multiplayer foundation *(current local-only stats can stay as profile history)*
 
 ### Hard
 - [ ] **Seasonal Battle Pass** — Tiered progression system (50 tiers) with cosmetics/coins/sparks as rewards. Resets monthly. Free + Premium tracks *(tier tracking, reward definitions, seasonal timer, monthly reset logic)*

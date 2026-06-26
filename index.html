@@ -59,6 +59,21 @@
         </p>
     </div>
 
+    <div id="onboarding-overlay" class="onboarding-overlay" style="display:none;">
+        <div class="onboarding-card">
+            <div id="onboarding-step" class="onboarding-step">Step 1/5</div>
+            <h2 id="onboarding-title">Welcome to Atackers</h2>
+            <p id="onboarding-body"></p>
+            <p id="onboarding-hint" class="onboarding-hint"></p>
+            <div id="onboarding-dots" class="onboarding-dots"></div>
+            <div class="onboarding-actions">
+                <button id="onboarding-prev" class="btn" style="background:#2b2b2b;">Back</button>
+                <button id="onboarding-next" class="btn" style="background:#ffcc00; color:#111;">Next</button>
+            </div>
+            <button id="onboarding-skip" class="btn" style="margin-top:10px; background:#444;">Skip Tutorial</button>
+        </div>
+    </div>
+
     <div id="lootbox-popup">
         <h2 style="color:#FFF; text-shadow:2px 2px 4px #000;">Reward</h2>
         <div id="lootbox-content" style="font-size:24px; margin:20px 0;"></div>
@@ -293,6 +308,11 @@
     <div id="game-modes-container" class="modal-panel">
         <h2>🎮 Select Game Mode</h2>
         <div class="game-modes-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin: 20px 0;">
+            <div class="mode-card" data-mode="easyStage">
+                <h3>🌱 Easy Stage</h3>
+                <p>Beginner mode with fewer, weaker bots.</p>
+                <div style="background: rgba(255, 204, 0, 0.2); padding: 5px 10px; border-radius: 20px; font-size: 12px; font-weight: bold;">4 Players (1v3)</div>
+            </div>
             <div class="mode-card" data-mode="showdown">
                 <h3>👑 Showdown</h3>
                 <p>Battle Royale - Last player standing wins!</p>
