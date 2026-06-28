@@ -1,0 +1,581 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+        <title>Atackers - Sotiris Game | Atackers Browser Battle Game</title>
+        <meta name="description" content="Play Atackers, Sotiris Game: a fast HTML5 browser battle game with unique heroes, super abilities, team modes, and Hero Marks progression.">
+        <meta name="keywords" content="Atackers, Sotiris Game, Atackers game, browser game, HTML5 game, online battle game, hero shooter, Cyprus Brainrots Game">
+        <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1">
+        <link rel="canonical" href="https://codevoyager100.github.io/Atackers/">
+
+        <meta property="og:type" content="website">
+        <meta property="og:url" content="https://codevoyager100.github.io/Atackers/">
+        <meta property="og:site_name" content="Atackers">
+        <meta property="og:title" content="Atackers - Sotiris Game | Atackers Browser Battle Game">
+        <meta property="og:description" content="Fast-paced browser battles with unique heroes, supers, team modes, and progression.">
+        <meta property="og:image" content="https://codevoyager100.github.io/Atackers/images/background.png">
+
+        <meta name="twitter:card" content="summary_large_image">
+        <meta name="twitter:title" content="Atackers - Sotiris Game | Atackers Browser Battle Game">
+        <meta name="twitter:description" content="Play Atackers in your browser: heroes, supers, team battles, and Hero Marks progression.">
+        <meta name="twitter:image" content="https://codevoyager100.github.io/Atackers/images/background.png">
+
+        <script type="application/ld+json">
+        {
+            "@context": "https://schema.org",
+            "@type": "VideoGame",
+            "name": "Atackers",
+            "alternateName": ["Sotiris Game", "Atackers Striker"],
+            "url": "https://codevoyager100.github.io/Atackers/",
+            "description": "Atackers is a fast-paced HTML5 browser battle game with hero selection, super abilities, and multiple team game modes.",
+            "genre": ["Action", "Shooter", "Battle"],
+            "applicationCategory": "GameApplication",
+            "operatingSystem": "Web Browser",
+            "inLanguage": "en"
+        }
+        </script>
+        <!-- Google tag (gtag.js) -->
+        <script async src="https://www.googletagmanager.com/gtag/js?id=G-T403T6D16C"></script>
+        <script>
+            window.dataLayer = window.dataLayer || [];
+            function gtag(){dataLayer.push(arguments);}
+            gtag('js', new Date());
+
+            gtag('config', 'G-T403T6D16C');
+        </script>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="guide">
+        <h3 style="color: #ffcc00; margin: 0 0 4px;">Welcome to Atackers!</h3>
+        <p style="margin: 0; line-height: 1.6;">
+            🎮 Arrow keys / WASD / white joystick to move<br>
+            🖱️ Click / red joystick / tap to shoot<br>
+            📦 Shoot crates to break them — collect the drop!<br>
+            🎒 Press F (or the item button) to use your first item<br>
+            ⚔️ Press "Battle!" to start<br>
+            🎖️ Earn Hero Marks &amp; unlock players in the Bazaar
+        </p>
+    </div>
+
+    <div id="onboarding-overlay" class="onboarding-overlay" style="display:none;">
+        <div class="onboarding-card">
+            <div id="onboarding-step" class="onboarding-step">Step 1/5</div>
+            <h2 id="onboarding-title">Welcome to Atackers</h2>
+            <p id="onboarding-body"></p>
+            <p id="onboarding-hint" class="onboarding-hint"></p>
+            <div id="onboarding-arena" class="onboarding-arena">
+                <div id="onboarding-target-bot" class="onboarding-target-bot">
+                    <div id="onboarding-target-bot-hp" class="onboarding-target-bot-hp">
+                        <div id="onboarding-target-bot-hp-fill" class="onboarding-target-bot-hp-fill"></div>
+                    </div>
+                    <img id="onboarding-target-bot-img" alt="tutorial bot" />
+                </div>
+                <div id="onboarding-player" class="onboarding-player">
+                    <img id="onboarding-player-img" alt="soublakiscorpio" />
+                </div>
+            </div>
+            <p id="onboarding-objective" class="onboarding-objective"></p>
+            <div id="onboarding-practice" class="onboarding-practice" style="display:none;">
+                <button id="onboarding-target-btn" class="btn onboarding-practice-btn" style="display:none;">🎯 Hit Target</button>
+                <button id="onboarding-super-btn" class="btn onboarding-practice-btn" style="display:none;">⚡ Use Super</button>
+                <button id="onboarding-gadget-btn" class="btn onboarding-practice-btn" style="display:none;">🧰 Use Gadget</button>
+                <button id="onboarding-item-btn" class="btn onboarding-practice-btn" style="display:none;">🎒 Use Item</button>
+            </div>
+            <div id="onboarding-dots" class="onboarding-dots"></div>
+            <div class="onboarding-actions">
+                <button id="onboarding-prev" class="btn" style="background:#2b2b2b;">Back</button>
+                <button id="onboarding-next" class="btn" style="background:#ffcc00; color:#111;">Next</button>
+            </div>
+            <button id="onboarding-skip" class="btn" style="margin-top:10px; background:#444;">Skip Tutorial</button>
+        </div>
+    </div>
+
+    <div id="lootbox-popup">
+        <h2 style="color:#FFF; text-shadow:2px 2px 4px #000;">Reward</h2>
+        <div id="lootbox-content" style="font-size:24px; margin:20px 0;"></div>
+        <button id="lootbox-ok" style="background:#FFF; border:none; padding:10px 20px; border-radius:10px; font-weight:bold;">OK</button>
+    </div>
+
+    <div id="game-over-overlay" class="game-overlay">
+        <div style="background: rgba(0,0,0,0.9); padding: 40px; border-radius: 20px; border: 3px solid #ffcc00; max-width: 500px; width: 90%;">
+            <h2 id="game-over-title" style="color: #ffcc00;">Game Over</h2>
+            <p id="game-over-message" style="margin: 20px 0;"></p>
+            <div id="leaderboard" style="display:none; margin: 16px 0; max-height: 220px; overflow-y: auto;"></div>
+            <button id="return-to-menu" class="btn" style="background: #ffcc00; color: black; font-size: 18px; padding: 10px 20px;">
+                Return to Menu
+            </button>
+        </div>
+    </div>
+
+    <!-- Star Drop / Loot Box overlay -->
+    <div id="stardrop-overlay" class="game-overlay" style="display:none;">
+        <div id="stardrop-box" style="padding: 40px 50px; border-radius: 20px; border: 3px solid #b0b0b0; max-width: 500px; width: 90%; text-align:center; transition: border-color 0.4s, box-shadow 0.4s, background 0.5s; background: rgba(30,30,30,0.97);">
+            <h2 id="stardrop-title" style="color: #ffcc00; font-size: 28px; text-shadow: 0 0 10px rgba(0,0,0,0.8);">⭐ Star Drop!</h2>
+            <p id="stardrop-rarity-label" style="font-weight:bold; font-size: 22px; margin: 4px 0 12px; color: #b0b0b0; text-shadow: 0 0 8px rgba(0,0,0,0.6);">Common</p>
+            <p id="stardrop-hint" style="color: #ddd; margin: 8px 0 16px; font-size: 14px; text-shadow: 0 0 4px rgba(0,0,0,0.5);">Tap the chest 5 times to open! It might upgrade...</p>
+            <img id="stardrop-chest" src="images/chestclose.png" style="width: 280px; height: 280px; cursor: pointer; transition: transform 0.15s;" />
+            <div id="stardrop-clicks" style="margin-top: 12px; font-size: 18px; color: #ddd;"></div>
+            <div id="stardrop-reward" style="display:none; margin-top: 20px;">
+                <p id="stardrop-reward-text" style="font-size: 24px; color: #fff; margin: 10px 0; text-shadow: 0 0 8px rgba(0,0,0,0.5);"></p>
+            </div>
+            <button id="stardrop-collect" class="btn" style="display:none; background: #ffcc00; color: black; font-size: 18px; padding: 12px 24px; margin-top: 16px;">
+                Collect
+            </button>
+        </div>
+    </div>
+
+    <div id="coins-display" style="display:none;">💰 Coins: 0<br>🏅 Medals: 0<br>🎖️ Hero Marks: 0</div>
+
+    <div id="account-chip" style="position:absolute; top:10px; left:10px; z-index:11; background:rgba(0,0,0,0.82); border:1px solid #44ccff; border-radius:12px; padding:10px 16px; display:flex; flex-direction:column; gap:5px; min-width:170px;">
+        <span id="account-chip-name" style="font-size:20px; font-weight:bold; color:#9fe9ff; cursor:pointer; text-decoration:underline; text-underline-offset:3px; user-select:none;">Guest</span>
+        <span id="account-chip-stats" style="font-size:12px; color:#c8e8ff; line-height:1.65;"></span>
+    </div>
+
+    <div id="account-auth-overlay" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.88); z-index:1400; align-items:center; justify-content:center;">
+        <div style="width:min(420px,92vw); background:#121724; border:2px solid #2b8bb8; border-radius:16px; padding:18px 18px 14px; color:#fff;">
+            <p style="margin:0 0 4px; color:#9fe9ff; font-size:22px; font-weight:bold; text-align:center; letter-spacing:0.5px;">Log in or Sign up</p>
+            <h2 style="margin:0 0 6px; color:#8de3ff; text-align:center; font-size:15px; font-weight:normal;">Account</h2>
+            <p style="margin:0 0 12px; color:#9aa8b6; font-size:12px; text-align:center;">Use your name + password (local-only, no email required).</p>
+
+            <div style="display:flex; gap:8px; margin-bottom:10px;">
+                <button id="account-tab-login" class="btn" style="flex:1; background:#2b8bb8; color:#001822;">Login</button>
+                <button id="account-tab-register" class="btn" style="flex:1; background:#203040; color:#9fe9ff;">Register</button>
+            </div>
+
+            <div id="account-auth-msg" style="min-height:18px; color:#ff9da0; font-size:12px; text-align:center; margin-bottom:8px;"></div>
+
+            <input id="account-username" type="text" maxlength="20" placeholder="Your name" style="width:100%; margin:5px 0; padding:9px 10px; border-radius:9px; border:1px solid #3c4a60; background:#0f1520; color:#fff; box-sizing:border-box;" />
+            <input id="account-password" type="password" maxlength="40" placeholder="Password" style="width:100%; margin:5px 0; padding:9px 10px; border-radius:9px; border:1px solid #3c4a60; background:#0f1520; color:#fff; box-sizing:border-box;" />
+
+            <button id="account-submit-btn" class="btn" style="width:100%; margin-top:10px; background:#39b7e6; color:#042033;">Login</button>
+        </div>
+    </div>
+
+    <div id="profile-panel" class="modal-panel" style="width:800px; max-width:95vw; max-height:85vh; overflow-y:auto;">
+        <h2 style="margin-bottom:16px;">👤 Profile</h2>
+        
+        <!-- ═══ ACCOUNT INFO SECTION ═══ -->
+        <div style="background:linear-gradient(135deg, rgba(74,232,216,0.08) 0%, rgba(68,204,255,0.04) 100%); border:2px solid #4ae8d8; border-radius:12px; padding:16px; margin-bottom:16px;">
+            <div style="display:grid; grid-template-columns: 2fr 1fr; gap:16px; align-items:center;">
+                <div>
+                    <div id="profile-username" style="font-size:24px; color:#8de3ff; font-weight:bold; margin-bottom:4px;"></div>
+                    <div id="profile-ranked-info" style="font-size:12px; color:#4ae8d8; font-weight:600;"></div>
+                </div>
+                <div style="text-align:right;">
+                    <div style="font-size:12px; color:#9ab0c9; margin-bottom:2px;">Hottest Streak</div>
+                    <div id="profile-max-winstreak" style="font-size:18px; color:#ffcc00; font-weight:bold;"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ═══ QUICK RESOURCES ═══ -->
+        <div style="display:grid; grid-template-columns: 1fr 1fr 1fr 1fr; gap:8px; margin-bottom:16px;">
+            <div style="background:rgba(255,204,0,0.12); border:1px solid #b8860b; border-radius:8px; padding:10px; text-align:center;">
+                <div style="font-size:11px; color:#9ab0c9; margin-bottom:4px;">💰 Coins</div>
+                <div id="profile-coins-display" style="font-size:16px; color:#ffcc00; font-weight:bold;"></div>
+            </div>
+            <div style="background:rgba(74,232,216,0.12); border:1px solid #4ae8d8; border-radius:8px; padding:10px; text-align:center;">
+                <div style="font-size:11px; color:#9ab0c9; margin-bottom:4px;">⚡ Sparks</div>
+                <div id="profile-sparks-display" style="font-size:16px; color:#4ae8d8; font-weight:bold;"></div>
+            </div>
+            <div style="background:rgba(255,170,0,0.12); border:1px solid #ffaa00; border-radius:8px; padding:10px; text-align:center;">
+                <div style="font-size:11px; color:#9ab0c9; margin-bottom:4px;">🏅 Medals</div>
+                <div id="profile-medals-display" style="font-size:16px; color:#ffaa00; font-weight:bold;"></div>
+            </div>
+            <div style="background:rgba(147,112,219,0.12); border:1px solid #9370db; border-radius:8px; padding:10px; text-align:center;">
+                <div style="font-size:11px; color:#9ab0c9; margin-bottom:4px;">🎖️ Marks</div>
+                <div id="profile-credits-display" style="font-size:16px; color:#c9a0ff; font-weight:bold;"></div>
+            </div>
+        </div>
+
+        <!-- ═══ LEVEL PROGRESS WITH MEDAL TIMELINE ═══ -->
+        <div style="background:rgba(255,255,255,0.02); border:1px solid #384a5a; border-radius:10px; padding:12px; margin-bottom:16px;">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
+                <div style="font-size:12px; color:#9fdfff; font-weight:600;">📈 Level Progress</div>
+                <div id="profile-level-display" style="font-size:13px; color:#4ae8d8; font-weight:bold;"></div>
+            </div>
+            <div style="background:#0a1428; border-radius:6px; height:8px; overflow:hidden; border:1px solid #2a3a4a; margin-bottom:12px;">
+                <div id="profile-level-bar" style="height:100%; background:linear-gradient(90deg, #4ae8d8, #44ccff); width:0%; transition:width 0.3s ease;"></div>
+            </div>
+            <div style="font-size:11px; color:#9ab0c9; margin-bottom:8px; font-weight:600;">Medal Roadmap (scroll to see ahead)</div>
+            <div id="profile-medal-timeline" style="display:flex; gap:6px; overflow-x:auto; padding:8px 0; scroll-behavior:smooth; -webkit-overflow-scrolling:touch;">
+                <!-- Dynamic milestones will be inserted here -->
+            </div>
+        </div>
+
+        <!-- ═══ PERFORMANCE STATS ═══ -->
+        <div style="background:rgba(255,255,255,0.02); border:1px solid #384a5a; border-radius:10px; padding:14px; margin-bottom:16px;">
+            <h3 style="margin:0 0 12px; color:#9fdfff; font-size:14px; font-weight:600; text-transform:uppercase; letter-spacing:0.5px;">📊 Performance</h3>
+            <div id="profile-performance-stats" style="display:grid; grid-template-columns: 1fr 1fr 1fr; gap:8px; font-size:12px;">
+                <div style="background:rgba(255,255,255,0.04); padding:8px; border-radius:6px; border-left:3px solid #4ae8d8;">
+                    <div style="color:#9ab0c9; margin-bottom:2px;">Wins</div>
+                    <div style="font-size:16px; color:#7df7ab; font-weight:bold;">0</div>
+                </div>
+                <div style="background:rgba(255,255,255,0.04); padding:8px; border-radius:6px; border-left:3px solid #ff6666;">
+                    <div style="color:#9ab0c9; margin-bottom:2px;">Losses</div>
+                    <div style="font-size:16px; color:#ff9999; font-weight:bold;">0</div>
+                </div>
+                <div style="background:rgba(255,255,255,0.04); padding:8px; border-radius:6px; border-left:3px solid #ffcc00;">
+                    <div style="color:#9ab0c9; margin-bottom:2px;">Winrate</div>
+                    <div style="font-size:16px; color:#ffcc00; font-weight:bold;">0%</div>
+                </div>
+                <div style="background:rgba(255,255,255,0.04); padding:8px; border-radius:6px; border-left:3px solid #ff44ff;">
+                    <div style="color:#9ab0c9; margin-bottom:2px;">Total Kills</div>
+                    <div style="font-size:16px; color:#ff88ff; font-weight:bold;">0</div>
+                </div>
+                <div style="background:rgba(255,255,255,0.04); padding:8px; border-radius:6px; border-left:3px solid #44ff88;">
+                    <div style="color:#9ab0c9; margin-bottom:2px;">Avg Survival</div>
+                    <div style="font-size:16px; color:#7df7ab; font-weight:bold;">0s</div>
+                </div>
+                <div style="background:rgba(255,255,255,0.04); padding:8px; border-radius:6px; border-left:3px solid #ff8844;">
+                    <div style="color:#9ab0c9; margin-bottom:2px;">Total Damage</div>
+                    <div style="font-size:16px; color:#ffaa66; font-weight:bold;">0</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ═══ TOP CHARACTERS ═══ -->
+        <div style="background:rgba(255,255,255,0.02); border:1px solid #384a5a; border-radius:10px; padding:14px; margin-bottom:16px;">
+            <h3 style="margin:0 0 12px; color:#9fdfff; font-size:14px; font-weight:600; text-transform:uppercase; letter-spacing:0.5px;">🎯 Best Characters</h3>
+            <div id="profile-top-chars" style="display:flex; flex-direction:column; gap:8px;"></div>
+        </div>
+
+        <!-- ═══ CUSTOMIZATION SECTION ═══ -->
+        <div style="background:rgba(255,255,255,0.02); border:1px solid #384a5a; border-radius:10px; padding:14px; margin-bottom:16px;">
+            <h3 style="margin:0 0 12px; color:#9fdfff; font-size:14px; font-weight:600; text-transform:uppercase; letter-spacing:0.5px;">⭐ Customization</h3>
+            
+            <div style="display:grid; grid-template-columns: 1fr 1fr; gap:12px;">
+                <!-- Avatar -->
+                <div style="background:rgba(255,255,255,0.02); border:1px solid #2e3a4a; border-radius:8px; padding:10px;">
+                    <div style="font-size:11px; color:#9ab0c9; margin-bottom:8px; font-weight:600;">Avatar Icon</div>
+                    <div id="profile-avatar-options" style="display:flex; flex-wrap:wrap; gap:5px;"></div>
+                </div>
+
+                <!-- Kill Feed Color -->
+                <div style="background:rgba(255,255,255,0.02); border:1px solid #2e3a4a; border-radius:8px; padding:10px;">
+                    <div style="font-size:11px; color:#9ab0c9; margin-bottom:8px; font-weight:600;">Kill Feed Color</div>
+                    <div id="profile-killfeed-colors" style="display:flex; flex-wrap:wrap; gap:5px;"></div>
+                </div>
+
+                <!-- Favorite Player (full width) -->
+                <div style="background:rgba(255,255,255,0.02); border:1px solid #2e3a4a; border-radius:8px; padding:10px; grid-column: 1 / -1;">
+                    <div style="font-size:11px; color:#9ab0c9; margin-bottom:8px; font-weight:600;">Favorite Character</div>
+                    <div style="display:flex; align-items:center; gap:10px;">
+                        <select id="profile-favorite-player" style="flex:1; background:#121a2a; color:#fff; border:1px solid #36465f; border-radius:6px; padding:8px; font-size:13px;"></select>
+                        <img id="profile-fav-player-img" src="" style="width:60px; height:60px; border-radius:8px; border:2px solid #4ae8d8; background:#0a1428; object-fit:cover; flex-shrink:0;" />
+                    </div>
+                </div>
+
+                <!-- Title & Kill Effect -->
+                <div style="background:rgba(255,255,255,0.02); border:1px solid #2e3a4a; border-radius:8px; padding:10px;">
+                    <div style="font-size:11px; color:#9ab0c9; margin-bottom:6px; font-weight:600;">Title</div>
+                    <select id="profile-title" style="width:100%; background:#121a2a; color:#fff; border:1px solid #36465f; border-radius:6px; padding:6px; font-size:12px;"></select>
+                </div>
+
+                <div style="background:rgba(255,255,255,0.02); border:1px solid #2e3a4a; border-radius:8px; padding:10px;">
+                    <div style="font-size:11px; color:#9ab0c9; margin-bottom:6px; font-weight:600;">Kill Effect</div>
+                    <select id="profile-kill-effect" style="width:100%; background:#121a2a; color:#fff; border:1px solid #36465f; border-radius:6px; padding:6px; font-size:12px;"></select>
+                </div>
+
+                <!-- Pompakis Bomb Variant -->
+                <div style="background:rgba(255,255,255,0.02); border:1px solid #2e3a4a; border-radius:8px; padding:10px; grid-column: 1 / -1;">
+                    <div style="font-size:11px; color:#9ab0c9; margin-bottom:6px; font-weight:600;">💣 Pompakis Bomb Variant</div>
+                    <select id="profile-bomb-variant" style="width:100%; background:#121a2a; color:#fff; border:1px solid #36465f; border-radius:6px; padding:8px; font-size:13px;">
+                        <option value="classic">Classic Bomb</option>
+                        <option value="sticky">Sticky Bomb</option>
+                        <option value="impact">Impact Bomb</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+
+        <!-- ═══ CLAN SECTION ═══ -->
+        <div style="background:rgba(255,255,255,0.02); border:1px solid #384a5a; border-radius:10px; padding:14px; margin-bottom:16px;">
+            <h3 style="margin:0 0 12px; color:#9fdfff; font-size:14px; font-weight:600; text-transform:uppercase; letter-spacing:0.5px;">🏰 Clan</h3>
+            <div id="profile-clan-info" style="font-size:13px; color:#d8e7ff; margin-bottom:10px; padding:8px; background:rgba(255,255,255,0.04); border-radius:6px; border-left:3px solid #4ae8d8;"></div>
+            <div style="display:flex; gap:8px;">
+                <button id="profile-clan-create" class="btn" style="flex:1; padding:8px; font-size:12px; background:#24445a; border:1px solid #36657a; color:#9fe9ff; border-radius:6px; font-weight:600;">⚔️ Create/Join</button>
+                <button id="profile-clan-leave" class="btn" style="flex:1; padding:8px; font-size:12px; background:#442424; border:1px solid #6a3a3a; color:#ffaaaa; border-radius:6px; font-weight:600;">🚪 Leave</button>
+            </div>
+        </div>
+
+        <!-- ═══ CHARACTER MEDALS SECTION ═══ -->
+        <div style="background:linear-gradient(135deg, rgba(255,204,0,0.08) 0%, rgba(255,170,0,0.04) 100%); border:2px solid #ffaa00; border-radius:10px; padding:14px; margin-bottom:16px;">
+            <h3 style="margin:0 0 12px; color:#ffcc00; font-size:14px; font-weight:600; text-transform:uppercase; letter-spacing:0.5px;">🏅 Character Medals</h3>
+            <div style="font-size:11px; color:#aaa; margin-bottom:10px;">Medals earned per character - progress toward unlocking special rewards</div>
+            <div id="profile-medals-list" style="max-height:280px; overflow-y:auto; padding:4px;"></div>
+        </div>
+
+        <!-- ═══ ACTION BUTTONS ═══ -->
+        <div style="display:flex; gap:8px;">
+            <button class="btn modal-close" id="close-profile-panel" style="flex:1; padding:10px; border-radius:6px; background:#24445a; border:1px solid #36657a; color:#9fe9ff; font-weight:600;">Close</button>
+            <button id="profile-logout-btn" class="btn" style="flex:1; padding:10px; border-radius:6px; background:transparent; border:2px solid #c84545; color:#ff8080; font-weight:600; display:none;">🚪 Logout</button>
+        </div>
+    </div>
+
+    <!-- Daily Challenges button -->
+    <button id="daily-btn" onclick="openDailyChallenges()">📋 Daily <span class="badge" id="daily-badge" style="display:none">!</span></button>
+
+    <!-- Match History button -->
+    <button id="history-btn" onclick="openMatchHistory()">📊 History</button>
+
+    <!-- Medal Road button -->
+    <button id="medal-road-btn" onclick="openMedalRoad()">🏅 Medal Road</button>
+
+    <!-- Kill Streak banner (in-game, canvas-overlay) -->
+    <div id="streak-banner"></div>
+
+    <div id="level-rewards-panel" class="modal-panel" style="width:420px;">
+        <h2>🏆 Level Rewards</h2>
+        <p style="color:#aaa; text-align:center; margin-top:-10px; font-size:13px;">Click your level badge anytime to check progress</p>
+        <div id="level-rewards-list" style="margin: 16px 0;"></div>
+        <button class="btn modal-close" id="close-level-rewards">Close</button>
+    </div>
+
+    <!-- Daily Challenges panel -->
+    <div id="daily-panel" class="modal-panel" style="width:440px; display:none;">
+        <h2>📋 Daily Challenges</h2>
+        <p id="daily-reset-label" style="color:#aaa; text-align:center; margin-top:-10px; font-size:12px;"></p>
+        <div id="daily-list" style="margin: 14px 0;"></div>
+        <button class="btn modal-close" id="close-daily-panel">Close</button>
+    </div>
+
+    <!-- Match History panel -->
+    <div id="history-panel" class="modal-panel" style="width:520px; display:none;">
+        <h2>📊 Match History & Stats</h2>
+        <div id="history-stats" class="history-stats-grid"></div>
+        <div id="history-list" style="margin: 14px 0; max-height: 360px; overflow-y: auto;"></div>
+        <button class="btn modal-close" id="close-history-panel">Close</button>
+    </div>
+
+    <div id="tutorial-panel" class="modal-panel" style="width:600px; display:none;">
+        <h2>📖 How To Play</h2>
+        <div id="tutorial-content" style="max-height:420px; overflow-y:auto; font-size:14px; line-height:1.7; color:#ccc;"></div>
+        <div style="display:flex; gap:8px; margin-top:12px;">
+            <button class="btn modal-close" id="close-tutorial-panel" style="flex:1;">Close</button>
+            <button class="btn" id="mark-tips-seen-btn" style="flex:1;">Got it!</button>
+        </div>
+    </div>
+
+    <div id="medal-road-panel" class="modal-panel" style="width:700px; display:none;">
+        <h2>🏅 Medal Road</h2>
+        <p style="color:#aaa; text-align:center; margin-top:-10px; font-size:12px;">Level <span id="medal-road-level" style="color:#ffcc00;">1</span> • Unlock exclusive rewards as you progress</p>
+        <div id="medal-road-container" style="margin:14px 0; max-height:420px; overflow-y:auto; background:#0a1a1a; border:1px solid #1a5544; border-radius:8px; padding:12px;">
+            <div id="medal-road-timeline" style="display:flex; flex-direction:column; gap:8px;"></div>
+        </div>
+        <button class="btn modal-close" id="close-medal-road-panel">Close</button>
+    </div>
+
+    <div id="credits-panel" class="modal-panel" style="width:700px;">
+        <h2 style="color:#4ae8d8;">🎖️ Hero Marks Progression</h2>
+        <p style="text-align:center; color:#aaa; margin-top:-10px; font-size:13px;">Earn Hero Marks in battles, then choose which player to unlock.</p>
+        <div id="credits-progress-bar" style="margin:10px auto 18px; max-width:420px;"></div>
+        <div id="credits-tier-list"></div>
+        <button class="btn modal-close" id="close-credits-panel" style="margin-top:12px;">Close</button>
+    </div>
+
+    <div id="bazzar-overlay" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.72); z-index:1200; justify-content:center; align-items:center;">
+        <div id="bazzar-panel" style="position:relative; background:#12192a; border:2px solid #ffcc66; border-radius:16px; padding:28px 24px 22px; width:min(500px,92vw); max-height:min(420px,88vh); overflow-y:auto; box-shadow:0 0 40px rgba(255,204,102,0.18);">
+            <button id="close-bazzar-panel" aria-label="Close Bazzar" style="position:sticky; float:right; top:0; width:32px; height:32px; border-radius:50%; border:1px solid #ff7b7b; background:#3a1414; color:#ff4d4d; font-weight:bold; font-size:18px; cursor:pointer; z-index:10;">✕</button>
+            <h2 style="color:#ffcc66; margin:0 0 6px;">🛒 Bazzar</h2>
+            <p style="text-align:center; color:#aaa; margin:0 0 14px; font-size:13px;">Redeem developer codes for testing rewards.</p>
+
+            <div style="background:#101726; border:1px solid #2f3b52; border-radius:10px; padding:12px;">
+                <input id="bazzar-redeem-input" placeholder="Enter code" autocomplete="off" style="width:100%; padding:9px; border-radius:8px; border:1px solid #394760; background:#0b1322; color:#fff; margin-bottom:8px; box-sizing:border-box;" />
+                <button class="btn" id="bazzar-redeem-btn" style="width:100%;">Redeem Code</button>
+            </div>
+
+            <p id="bazzar-status" style="text-align:center; color:#9aa8bf; font-size:12px; min-height:18px; margin:10px 0 0;"></p>
+        </div>
+    </div>
+
+    <div id="player-menu" class="modal-panel">
+        <h2>Players</h2>
+        <div id="player-list" style="display:flex; flex-wrap:wrap; gap:10px; justify-content:center;"></div>
+        <button class="btn modal-close" id="close-player-menu">Close</button>
+    </div>
+
+    <!-- Player Detail Popup -->
+    <div id="player-detail-popup" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.7); z-index:1100; justify-content:center; align-items:center; overflow-y:auto;">
+        <div id="player-detail-box" style="background:#1a1a2e; border-radius:16px; border:3px solid #ffcc00; padding:24px; max-width:340px; width:90%; text-align:center; color:#fff; max-height:88vh; overflow-y:auto; position:relative;">
+            <img id="pd-img" src="" style="width:120px; height:120px; object-fit:cover; border-radius:12px; border:3px solid #ccc;" />
+            <h2 id="pd-name" style="margin:8px 0 4px; color:#fff;"></h2>
+            <p id="pd-rarity" style="font-weight:bold; margin:2px 0;"></p>
+            <p id="pd-level" style="color:#44ccff; margin:4px 0;"></p>
+            <div style="display:flex; justify-content:space-around; margin:10px 0;">
+                <div><span style="color:#aaa;">HP</span><br><span id="pd-hp" style="font-size:18px; font-weight:bold;"></span></div>
+                <div><span style="color:#aaa;">Damage</span><br><span id="pd-dmg" style="font-size:18px; font-weight:bold;"></span></div>
+                <div><span style="color:#aaa;">Speed</span><br><span id="pd-spd" style="font-size:18px; font-weight:bold;"></span></div>
+                <div><span style="color:#aaa;">Range</span><br><span id="pd-rng" style="font-size:18px; font-weight:bold;"></span></div>
+            </div>
+            <div id="pd-super-section" style="margin:12px 0; padding:10px; background:rgba(255,200,0,0.1); border-left:3px solid #ffcc00; text-align:left; border-radius:6px;"></div>
+            <div id="pd-upgrade-section" style="margin:10px 0;"></div>
+            <div style="display:flex; gap:8px; justify-content:center; margin-top:12px;">
+                <button id="pd-select-btn" class="btn" style="background:#ffcc00; color:#000; padding:8px 20px;">Select</button>
+                <button id="pd-close-btn" class="btn" style="background:#555; color:#fff; padding:8px 20px;">Close</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="map-select-panel" class="modal-panel" style="width:680px; max-width:95vw;">
+        <h2 style="color:#ffcc00;">🗺️ Choose a Map</h2>
+        <p style="text-align:center; color:#aaa; font-size:13px; margin-top:-8px;">Pick a map or let the game choose one randomly.</p>
+        <div id="map-select-grid" style="display:flex; flex-wrap:wrap; gap:14px; justify-content:center; margin:16px 0;"></div>
+        <button class="btn modal-close" id="close-map-select">Back</button>
+    </div>
+
+    <div id="game-modes-container" class="modal-panel">
+        <h2>🎮 Select Game Mode</h2>
+        <div class="game-modes-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin: 20px 0;">
+            <div class="mode-card" data-mode="easyStage">
+                <h3>🌱 Easy Stage</h3>
+                <p>Beginner mode with fewer, weaker bots.</p>
+                <div style="background: rgba(255, 204, 0, 0.2); padding: 5px 10px; border-radius: 20px; font-size: 12px; font-weight: bold;">4 Players (1v3)</div>
+            </div>
+            <div class="mode-card" data-mode="showdown">
+                <h3>👑 Showdown</h3>
+                <p>Battle Royale - Last standing!</p>
+                <div style="background: rgba(255, 204, 0, 0.2); padding: 5px 10px; border-radius: 20px; font-size: 12px; font-weight: bold;">1-4 Players</div>
+            </div>
+            <div class="mode-card" data-mode="3v3">
+                <h3>⚔️ 3v3 Team Battle</h3>
+                <p>4 teams of 3 — last team standing wins!</p>
+                <div style="background: rgba(255, 204, 0, 0.2); padding: 5px 10px; border-radius: 20px; font-size: 12px; font-weight: bold;">12 Players</div>
+            </div>
+            <div class="mode-card" data-mode="2v2">
+                <h3>⚔️ 2v2 Team Battle</h3>
+                <p>4 teams of 2 — duo showdown!</p>
+                <div style="background: rgba(255, 204, 0, 0.2); padding: 5px 10px; border-radius: 20px; font-size: 12px; font-weight: bold;">8 Players</div>
+            </div>
+            <div class="mode-card" data-mode="ballGoal">
+                <h3>⚽ Ball-Goal</h3>
+                <p>Score goals! First team to 2 wins!</p>
+                <div style="background: rgba(255, 204, 0, 0.2); padding: 5px 10px; border-radius: 20px; font-size: 12px; font-weight: bold;">6 Players (3v3)</div>
+            </div>
+            <div class="mode-card" data-mode="bounty">
+                <h3>⭐ Bounty</h3>
+                <p>Kill enemies to earn stars! Most stars when time runs out wins!</p>
+                <div style="background: rgba(255, 204, 0, 0.2); padding: 5px 10px; border-radius: 20px; font-size: 12px; font-weight: bold;">6 Players (3v3) · 2 min</div>
+            </div>
+            <div class="mode-card" data-mode="elimination">
+                <h3>🥊 Elimination</h3>
+                <p>Small map. No respawns. Eliminate the enemy team!</p>
+                <div style="background: rgba(255, 204, 0, 0.2); padding: 5px 10px; border-radius: 20px; font-size: 12px; font-weight: bold;">6 Players (3v3) · No Respawn</div>
+            </div>
+            <div class="mode-card" data-mode="kingTown">
+                <h3>🚩 King of the Town</h3>
+                <p>Carry the flag to your base and hold it for 10s. Timer: 3 min!</p>
+                <div style="background: rgba(255, 204, 0, 0.2); padding: 5px 10px; border-radius: 20px; font-size: 12px; font-weight: bold;">6 Players (3v3) · 3 min</div>
+            </div>
+            <div class="mode-card" data-mode="zoneCapture">
+                <h3>⭕ Zone Capture</h3>
+                <p>Stand in capture circles. Capture all zones to win!</p>
+                <div style="background: rgba(255, 204, 0, 0.2); padding: 5px 10px; border-radius: 20px; font-size: 12px; font-weight: bold;">6 Players (3v3) · 1-2 Zones</div>
+            </div>
+            <!-- TODO(next): Re-enable Ranked Showdown card after ranked flow is fully implemented/fixed. -->
+        </div>
+        <button class="btn modal-close" id="close-modes-btn">Close</button>
+    </div>
+
+    <div class="menu">
+        <button class="btn" id="game-mode-btn">🎮 Game Modes</button>
+        <button class="btn" id="start-btn">⚔️ Battle!</button>
+        <button class="btn" id="credits-btn" style="background:#1a3a3a; border:1px solid #4ae8d8; color:#4ae8d8;">🎖️ Hero Marks</button>
+        <button class="btn" id="bazzar-btn" style="background:#3a2a14; border:1px solid #ffcc66; color:#ffcc66;">🛒 Bazzar</button>
+        <button class="btn" id="switch-player-btn"> Players</button>
+    </div>
+
+    <!-- Character showcase - centered independently on screen -->
+    <div id="char-showcase" style="display:flex; flex-direction:column; align-items:center; gap:10px; background:rgba(255,255,255,0.04); border:1px solid #333; border-radius:16px; padding:12px 18px; min-width:320px; position:fixed; left:50%; top:50%; transform:translate(-50%, -50%); z-index:12; pointer-events:none;">
+        <button id="tutorial-btn" onclick="openTutorial()">📖 How to Play</button>
+        <div id="char-showcase-img-wrap" style="width:96px; height:96px; flex-shrink:0; border-radius:12px; overflow:hidden; border:2px solid #555; background:#111;">
+            <img id="char-showcase-img" src="" style="width:100%; height:100%; object-fit:cover; animation: showcasePulse 2s ease-in-out infinite;" />
+        </div>
+        <div style="text-align:center;">
+            <div id="char-showcase-name" style="font-size:22px; font-weight:bold; color:#fff;"></div>
+            <div id="char-showcase-rarity" style="font-size:14px; font-weight:bold; margin:3px 0;"></div>
+            <div id="char-showcase-stats" style="font-size:13px; color:#aaa; line-height:1.55;"></div>
+        </div>
+        <div id="daily-wins-tracker">
+            <div id="daily-wins-label">🎁 Daily Wins: 0/8</div>
+            <div id="daily-wins-fx"></div>
+            <div id="daily-wins-slots"></div>
+        </div>
+    </div>
+
+    <canvas id="gameCanvas"></canvas>
+
+    <div id="joystick-container">
+        <div id="joystick-base">
+            <div id="joystick-stick"></div>
+        </div>
+    </div>
+
+    <div id="shoot-joystick-container">
+        <div id="shoot-joystick-base">
+            <div id="shoot-joystick-stick"></div>
+        </div>
+    </div>
+
+    <!-- Super ability button (mobile) -->
+    <div id="super-btn-container">
+        <div id="super-btn">
+            <div id="super-btn-fill"></div>
+            <span id="super-btn-label">E</span>
+        </div>
+    </div>
+
+    <!-- Gadget button (mobile) -->
+    <div id="gadget-btn-container">
+        <div id="gadget-btn">
+            <div id="gadget-btn-fill"></div>
+            <span id="gadget-btn-label">G</span>
+        </div>
+    </div>
+
+    <!-- Super aim overlay (shown when dragging a directional super) -->
+    <canvas id="super-aim-canvas" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; z-index:250; pointer-events:none;"></canvas>
+
+    <!-- Use item button (mobile) — shown via .game-active class -->
+    <div id="use-item-btn-container">
+        <div id="use-item-btn">
+            <span id="use-item-icon">🎒</span>
+        </div>
+    </div>
+
+    <div id="debug-status" style="display:none"></div>
+
+    <button id="dev-sandbox-toggle" type="button" title="Developer sandbox">🧪</button>
+
+    <div id="dev-sandbox-panel" class="modal-panel" style="width:520px; display:none; border-color:#44e0b2;">
+        <h2 style="color:#44e0b2;">🧪 Balance Sandbox</h2>
+        <p style="margin-top:-8px; color:#9ab8b1; font-size:12px; text-align:center;">Tune bot behavior and run quick in-browser regression checks.</p>
+        <div class="dev-sandbox-grid">
+            <label>Bot super min ms
+                <input id="dev-bot-super-min" type="number" min="200" max="5000" step="50" />
+            </label>
+            <label>Bot super max ms
+                <input id="dev-bot-super-max" type="number" min="300" max="7000" step="50" />
+            </label>
+            <label>Bot shoot chance x
+                <input id="dev-bot-shoot-mult" type="number" min="0.2" max="2.5" step="0.05" />
+            </label>
+            <label>Bot cooldown x
+                <input id="dev-bot-cooldown-mult" type="number" min="0.5" max="2.5" step="0.05" />
+            </label>
+        </div>
+        <div class="dev-sandbox-actions">
+            <button id="dev-sandbox-apply" class="btn" style="background:#1b8a70;">Apply</button>
+            <button id="dev-sandbox-reset" class="btn" style="background:#4b5563;">Reset</button>
+            <button id="dev-run-regression" class="btn" style="background:#374151;">Run Checks</button>
+        </div>
+        <pre id="dev-regression-output" class="dev-regression-output">Checks will appear here.</pre>
+        <button class="btn modal-close" id="close-dev-sandbox-panel">Close</button>
+    </div>
+
+    <script src="game-data.js"></script>
+    <script src="game.js"></script>
+</body>
+</html>

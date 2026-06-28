@@ -367,6 +367,75 @@
             margin-top: 2px;
         }
 
+        #dev-sandbox-toggle {
+            position: fixed;
+            right: 10px;
+            bottom: 10px;
+            z-index: 1400;
+            width: 34px;
+            height: 34px;
+            border-radius: 50%;
+            border: 1px solid rgba(68, 224, 178, 0.45);
+            background: rgba(9, 18, 24, 0.78);
+            color: #66f2cb;
+            font-size: 17px;
+            cursor: pointer;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.2s ease;
+        }
+
+        #dev-sandbox-toggle.visible {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .dev-sandbox-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin: 12px 0;
+        }
+
+        .dev-sandbox-grid label {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+            font-size: 12px;
+            color: #9cc9bf;
+        }
+
+        .dev-sandbox-grid input {
+            background: #0f1b20;
+            color: #ddfff4;
+            border: 1px solid #2a5247;
+            border-radius: 6px;
+            padding: 7px 8px;
+        }
+
+        .dev-sandbox-actions {
+            display: flex;
+            gap: 8px;
+            justify-content: center;
+            margin: 8px 0 12px;
+            flex-wrap: wrap;
+        }
+
+        .dev-regression-output {
+            margin: 0;
+            background: #091215;
+            border: 1px solid #1f3a33;
+            border-radius: 8px;
+            padding: 10px;
+            min-height: 120px;
+            max-height: 220px;
+            overflow: auto;
+            color: #99f4d5;
+            font-size: 11px;
+            line-height: 1.45;
+            white-space: pre-wrap;
+        }
+
         .skin-card {
             display: inline-block;
             background-color: #f4f4f4;
@@ -577,6 +646,15 @@
                 font-size: 11px;
                 padding: 4px 8px;
                 width: 118px;
+            }
+
+            #dev-sandbox-toggle {
+                right: 8px;
+                bottom: 8px;
+            }
+
+            .dev-sandbox-grid {
+                grid-template-columns: 1fr;
             }
 
             #account-chip {
@@ -877,7 +955,7 @@
 
         .onboarding-step {
             color: #9fdfff;
-            font-size: 12px;
+            font-size: 11px;
             letter-spacing: 0.8px;
             text-transform: uppercase;
             margin-bottom: 8px;
@@ -886,22 +964,132 @@
         .onboarding-card h2 {
             margin: 0 0 12px;
             color: #ffcc00;
-            font-size: 26px;
+            font-size: 22px;
         }
 
         #onboarding-body {
             margin: 0;
             color: #e8f4ff;
-            line-height: 1.6;
-            font-size: 15px;
-            min-height: 68px;
+            line-height: 1.45;
+            font-size: 13px;
+            min-height: 56px;
         }
 
         .onboarding-hint {
             margin: 12px 0 0;
             color: #9dd3ff;
-            font-size: 13px;
+            font-size: 12px;
             min-height: 20px;
+        }
+
+        .onboarding-arena {
+            position: relative;
+            height: 140px;
+            margin: 10px 0 0;
+            border-radius: 12px;
+            border: 1px solid rgba(103, 184, 255, 0.45);
+            background:
+                radial-gradient(circle at 20% 25%, rgba(35, 72, 110, 0.55), transparent 45%),
+                radial-gradient(circle at 78% 75%, rgba(53, 105, 160, 0.45), transparent 45%),
+                rgba(12, 22, 38, 0.9);
+            overflow: hidden;
+        }
+
+        .onboarding-player {
+            position: absolute;
+            width: 40px;
+            height: 40px;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%);
+            border-radius: 10px;
+            border: 2px solid #ffcc00;
+            box-shadow: 0 0 14px rgba(255, 204, 0, 0.4);
+            background: rgba(0, 0, 0, 0.45);
+            overflow: hidden;
+        }
+
+        .onboarding-player img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+        }
+
+        .onboarding-target-bot {
+            position: absolute;
+            width: 34px;
+            height: 34px;
+            right: 26px;
+            top: 50%;
+            transform: translateY(-50%);
+            border-radius: 9px;
+            border: 2px solid #ef4444;
+            box-shadow: 0 0 14px rgba(239, 68, 68, 0.42);
+            background: rgba(0, 0, 0, 0.45);
+            overflow: hidden;
+            pointer-events: none;
+        }
+
+        .onboarding-target-bot-hp {
+            position: absolute;
+            left: 50%;
+            top: -10px;
+            transform: translateX(-50%);
+            width: 42px;
+            height: 6px;
+            border-radius: 999px;
+            border: 1px solid rgba(0, 0, 0, 0.55);
+            background: rgba(15, 23, 42, 0.85);
+            overflow: hidden;
+        }
+
+        .onboarding-target-bot-hp-fill {
+            width: 100%;
+            height: 100%;
+            border-radius: 999px;
+            background: linear-gradient(90deg, #ef4444 0%, #f59e0b 45%, #22c55e 100%);
+            transform-origin: left center;
+            transition: width 140ms ease;
+        }
+
+        .onboarding-target-bot img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+        }
+
+        .onboarding-objective {
+            margin: 12px 0 0;
+            color: #ffefad;
+            font-size: 12px;
+            line-height: 1.45;
+            min-height: 24px;
+            background: rgba(255, 204, 0, 0.1);
+            border: 1px solid rgba(255, 204, 0, 0.3);
+            border-radius: 10px;
+            padding: 8px 10px;
+        }
+
+        .onboarding-practice {
+            margin: 12px 0 4px;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .onboarding-practice-btn {
+            background: #1d3550;
+            border: 1px solid #67b8ff;
+            color: #bfe6ff;
+            font-size: 12px;
+            padding: 8px 12px;
+        }
+
+        .onboarding-practice-btn:hover {
+            background: #29527a;
         }
 
         .onboarding-dots {
