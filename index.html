@@ -3,21 +3,21 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
-        <title>Atackers - Sotiris Game | Atackers Browser Battle Game</title>
-        <meta name="description" content="Play Atackers, Sotiris Game: a fast HTML5 browser battle game with unique heroes, super abilities, team modes, and Hero Marks progression.">
-        <meta name="keywords" content="Atackers, Sotiris Game, Atackers game, browser game, HTML5 game, online battle game, hero shooter, Cyprus Brainrots Game">
+        <title>Atackers Battle Game</title>
+        <meta name="description" content="Play Atackers Battle Game: a fast HTML5 browser battle game with unique heroes, super abilities, team modes, and Hero Marks progression.">
+        <meta name="keywords" content="Atackers, Battle Game, Atackers game, browser game, HTML5 game, online battle game, hero shooter, Cyprus Brainrots Game">
         <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1">
         <link rel="canonical" href="https://codevoyager100.github.io/Atackers/">
 
         <meta property="og:type" content="website">
         <meta property="og:url" content="https://codevoyager100.github.io/Atackers/">
         <meta property="og:site_name" content="Atackers">
-        <meta property="og:title" content="Atackers - Sotiris Game | Atackers Browser Battle Game">
+        <meta property="og:title" content="Atackers Battle Game">
         <meta property="og:description" content="Fast-paced browser battles with unique heroes, supers, team modes, and progression.">
         <meta property="og:image" content="https://codevoyager100.github.io/Atackers/images/background.png">
 
         <meta name="twitter:card" content="summary_large_image">
-        <meta name="twitter:title" content="Atackers - Sotiris Game | Atackers Browser Battle Game">
+        <meta name="twitter:title" content="Atackers Battle Game">
         <meta name="twitter:description" content="Play Atackers in your browser: heroes, supers, team battles, and Hero Marks progression.">
         <meta name="twitter:image" content="https://codevoyager100.github.io/Atackers/images/background.png">
 
@@ -130,6 +130,7 @@
 
     <div id="account-chip" style="position:absolute; top:10px; left:10px; z-index:11; background:rgba(0,0,0,0.82); border:1px solid #44ccff; border-radius:12px; padding:10px 16px; display:flex; flex-direction:column; gap:5px; min-width:170px;">
         <span id="account-chip-name" style="font-size:20px; font-weight:bold; color:#9fe9ff; cursor:pointer; text-decoration:underline; text-underline-offset:3px; user-select:none;">Guest</span>
+        <div id="account-chip-level" style="display:none;"></div>
         <span id="account-chip-stats" style="font-size:12px; color:#c8e8ff; line-height:1.65;"></span>
     </div>
 
@@ -187,21 +188,6 @@
             <div style="background:rgba(147,112,219,0.12); border:1px solid #9370db; border-radius:8px; padding:10px; text-align:center;">
                 <div style="font-size:11px; color:#9ab0c9; margin-bottom:4px;">🎖️ Marks</div>
                 <div id="profile-credits-display" style="font-size:16px; color:#c9a0ff; font-weight:bold;"></div>
-            </div>
-        </div>
-
-        <!-- ═══ LEVEL PROGRESS WITH MEDAL TIMELINE ═══ -->
-        <div style="background:rgba(255,255,255,0.02); border:1px solid #384a5a; border-radius:10px; padding:12px; margin-bottom:16px;">
-            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
-                <div style="font-size:12px; color:#9fdfff; font-weight:600;">📈 Level Progress</div>
-                <div id="profile-level-display" style="font-size:13px; color:#4ae8d8; font-weight:bold;"></div>
-            </div>
-            <div style="background:#0a1428; border-radius:6px; height:8px; overflow:hidden; border:1px solid #2a3a4a; margin-bottom:12px;">
-                <div id="profile-level-bar" style="height:100%; background:linear-gradient(90deg, #4ae8d8, #44ccff); width:0%; transition:width 0.3s ease;"></div>
-            </div>
-            <div style="font-size:11px; color:#9ab0c9; margin-bottom:8px; font-weight:600;">Medal Roadmap (scroll to see ahead)</div>
-            <div id="profile-medal-timeline" style="display:flex; gap:6px; overflow-x:auto; padding:8px 0; scroll-behavior:smooth; -webkit-overflow-scrolling:touch;">
-                <!-- Dynamic milestones will be inserted here -->
             </div>
         </div>
 
@@ -400,6 +386,7 @@
     <!-- Player Detail Popup -->
     <div id="player-detail-popup" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.7); z-index:1100; justify-content:center; align-items:center; overflow-y:auto;">
         <div id="player-detail-box" style="background:#1a1a2e; border-radius:16px; border:3px solid #ffcc00; padding:24px; max-width:340px; width:90%; text-align:center; color:#fff; max-height:88vh; overflow-y:auto; position:relative;">
+            <button id="pd-back-btn" class="menu-back-btn" style="position:absolute; left:12px; top:12px;">← Back</button>
             <img id="pd-img" src="" style="width:120px; height:120px; object-fit:cover; border-radius:12px; border:3px solid #ccc;" />
             <h2 id="pd-name" style="margin:8px 0 4px; color:#fff;"></h2>
             <p id="pd-rarity" style="font-weight:bold; margin:2px 0;"></p>
@@ -777,6 +764,7 @@
         let killCamSeenTs = 0;
         let activeMapEvent = null;
         let mapEventCooldown = 480;
+        let currentBotDifficultyInfo = { skillPct: 0, label: 'starter' };
 
         // ─── ACCOUNT & PROFILE SYSTEM ───────────────────────────────────────────────
         let accountAuthMode = 'login';
@@ -991,16 +979,87 @@
             return currentAccount?.profile || guestProfile || null;
         }
 
+        let accountChipLevelExpanded = false;
+
+        function toggleAccountChipLevel() {
+            accountChipLevelExpanded = !accountChipLevelExpanded;
+            updateAccountChip();
+        }
+
         function updateAccountChip() {
             const chipName = document.getElementById('account-chip-name');
+            const chipLevel = document.getElementById('account-chip-level');
             const chipStats = document.getElementById('account-chip-stats');
             const profile = getCurrentProfile();
             const avatar = profile?.avatarIcon || '👤';
             const title = getEquippedTitle(profile);
             chipName.textContent = profile ? `${avatar} [${title}] ${profile.username}` : 'Guest';
+            if (chipLevel) {
+                if (profile) {
+                    const medalsIntoLevel = ((playerMedals % 10) + 10) % 10;
+                    const pct = Math.max(0, Math.min(100, Math.round((medalsIntoLevel / 10) * 100)));
+                    const roadmapItems = [];
+                    const roadMaxMedals = 1000;
+                    const rewardMilestones = Array.from(new Set(levelRewards.map(r => (r.level - 1) * 10))).sort((a, b) => a - b);
+                    const roadMilestoneSet = new Set(rewardMilestones);
+                    roadMilestoneSet.add(roadMaxMedals);
+                    const roadMilestones = Array.from(roadMilestoneSet).sort((a, b) => a - b);
+                    for (const medal of roadMilestones) {
+                        const shownReward = levelRewards.find(r => ((r.level - 1) * 10) === medal) || null;
+                        if (!shownReward && medal !== roadMaxMedals) continue;
+                        const isReached = playerMedals >= medal;
+                        const nextCheckpoint = roadMilestones.find(m => m > medal);
+                        const isCurrentWindow = playerMedals >= medal && (nextCheckpoint === undefined || playerMedals < nextCheckpoint);
+                        const medalsNeeded = Math.max(0, medal - playerMedals);
+                        const unlockPlayer = shownReward && shownReward.type === 'unlock' && shownReward.playerId
+                            ? playersData[shownReward.playerId]
+                            : null;
+                        const rewardValue = shownReward
+                            ? shownReward.type === 'unlock'
+                                ? (unlockPlayer?.name || 'Hero')
+                                : String(shownReward.amount || '')
+                            : '1000';
+                        const rewardIcon = shownReward ? shownReward.icon : '🏁';
+                        const rewardIconHtml = unlockPlayer
+                            ? `<img class="account-chip-milestone-hero-icon" src="${unlockPlayer.icon || unlockPlayer.img || ''}" alt="${unlockPlayer.name || 'Hero'}">`
+                            : `<div class="account-chip-milestone-icon">${rewardIcon}</div>`;
+                        const rewardTitle = shownReward ? (shownReward.reward || 'Reward') : 'Goal checkpoint';
+                        roadmapItems.push(
+                            `<div class="account-chip-milestone${isCurrentWindow ? ' current' : isReached ? ' unlocked' : ''}" title="${medal} medals • ${rewardTitle}">
+                                <div class="account-chip-milestone-tile">
+                                    <div class="account-chip-milestone-mark">${isReached ? '✓' : isCurrentWindow ? '★' : '•'}</div>
+                                    ${rewardIconHtml}
+                                    <div class="account-chip-milestone-value${unlockPlayer ? ' hero-name' : ''}">${rewardValue}</div>
+                                </div>
+                                <div class="account-chip-milestone-target">${medal}</div>
+                                <div class="account-chip-milestone-needed">${medalsNeeded === 0 ? 'Ready' : `${medalsNeeded} needed`}</div>
+                            </div>`
+                        );
+                    }
+                    chipLevel.style.display = 'block';
+                    chipLevel.innerHTML =
+                        `<button type="button" class="account-chip-level-toggle" onclick="toggleAccountChipLevel()">
+                            <span class="account-chip-level-main">🎁 Reward Track</span>
+                            <span class="account-chip-level-action">${accountChipLevelExpanded ? 'Hide ▲' : 'Show ▼'}</span>
+                        </button>
+                        <div class="account-chip-level-body${accountChipLevelExpanded ? ' open' : ''}">
+                            <div class="account-chip-level-track"><div class="account-chip-level-fill" style="width:${pct}%"></div></div>
+                            <div class="account-chip-roadmap-label">Reward road 0 → ${roadMaxMedals} medals (scroll)</div>
+                            <div class="account-chip-roadmap-shell">
+                                <div class="account-chip-roadmap-rail"></div>
+                                <div class="account-chip-roadmap">${roadmapItems.join('')}</div>
+                            </div>
+                        </div>`;
+                } else {
+                    chipLevel.style.display = 'none';
+                    chipLevel.innerHTML = '';
+                    accountChipLevelExpanded = false;
+                }
+            }
             if (chipStats) {
                 chipStats.innerHTML = profile
-                    ? `💰 ${playerCoins}&nbsp;&nbsp;🏅 ${playerMedals}<br>⚡ ${energySparks}&nbsp;&nbsp;🎖️ ${playerCredits}`
+                    ? `<div class="account-chip-stat coins">💰 Coins<span class="v">${playerCoins}</span></div>
+                       <div class="account-chip-stat sparks">⚡ Sparks<span class="v">${energySparks}</span></div>`
                     : '';
             }
         }
@@ -1898,6 +1957,8 @@
             loadImage('images/chestopen.png');
             loadImage('images/freze.png');
             loadImage('images/kara.png');
+            loadImage('images/brick new.png');
+            loadImage('images/water new.png');
 
             // Preload player images
             Object.values(playersData).forEach(player => {
@@ -2528,14 +2589,15 @@
             camera.x = Math.max(0, Math.min(camera.x, MAP_WIDTH - camera.width));
             camera.y = Math.max(0, Math.min(camera.y, MAP_HEIGHT - camera.height));
 
-            // Small hit-shake when the human player takes damage.
+            // Hit-shake when the human player takes or deals damage.
             if (screenShakeTimer > 0) {
-                camera.x += (Math.random() * 2 - 1) * screenShakeStrength;
-                camera.y += (Math.random() * 2 - 1) * screenShakeStrength;
-                camera.x = Math.max(0, Math.min(camera.x, MAP_WIDTH - camera.width));
-                camera.y = Math.max(0, Math.min(camera.y, MAP_HEIGHT - camera.height));
+                const shakeX = (Math.random() * 2 - 1) * screenShakeStrength;
+                const shakeY = (Math.random() * 2 - 1) * screenShakeStrength;
+                // Apply shake without re-clamping so it is always visible
+                camera.x += shakeX;
+                camera.y += shakeY;
                 screenShakeTimer--;
-                screenShakeStrength = Math.max(1.2, screenShakeStrength * 0.9);
+                screenShakeStrength = Math.max(1.5, screenShakeStrength * 0.82);
             }
         }
 
@@ -2565,13 +2627,18 @@
             if (damagePopups.length > 80) damagePopups.shift();
 
             if (target === player || target.isHuman) {
-                screenShakeTimer = Math.max(screenShakeTimer, 14);
-                screenShakeStrength = Math.min(18, Math.max(screenShakeStrength, 6 + Math.sqrt(amount) * 0.08));
+                // Taking damage — strong shake, scales with hit size
+                screenShakeTimer = Math.max(screenShakeTimer, 28);
+                screenShakeStrength = Math.min(36, Math.max(screenShakeStrength, 14 + Math.sqrt(amount) * 0.22));
             }
         }
 
+        function isKnockoutTeamMode(mode = currentGameMode) {
+            return mode === '2v2' || mode === '3v3' || mode === 'elimination';
+        }
+
         function getRespawnFramesForMode() {
-            if (currentGameMode === 'elimination' || currentGameMode === 'showdown' || currentGameMode === 'easyStage') return 0;
+            if (isKnockoutTeamMode() || currentGameMode === 'showdown' || currentGameMode === 'easyStage') return 0;
             return currentGameMode === 'bounty' ? 300 : 900;
         }
 
@@ -2915,6 +2982,7 @@
             for (let i = obstacles.length - 1; i >= 0; i--) {
                 const obs = obstacles[i];
                 if (obs.type === 'invisible') continue;
+                if (obs.type === 'water') continue; // Attacks are allowed to travel over water.
 
                 if (maxX >= obs.x && minX <= obs.x + obs.width &&
                     maxY >= obs.y && minY <= obs.y + obs.height) {
@@ -2928,17 +2996,8 @@
                 }
             }
 
-            // Check bushes (separate array) — lasers break and stop at bushes
-            for (let i = bushes.length - 1; i >= 0; i--) {
-                const bush = bushes[i];
-                const bw = bush.width || bush.size || 40;
-                const bh = bush.height || bush.size || 40;
-                if (maxX >= bush.x && minX <= bush.x + bw &&
-                    maxY >= bush.y && minY <= bush.y + bh) {
-                    if (canBreakEnvironment) bushes.splice(i, 1);
-                    return true;
-                }
-            }
+            // Bushes no longer block lasers — attacks pass through freely.
+            // (Environment-breaking supers still destroy bushes on direct hit.)
 
             return false;
         }
@@ -3485,13 +3544,62 @@
             }
         ];
 
+        function getPlayerSkillScore() {
+            const clamp01 = (v) => Math.max(0, Math.min(1, v));
+            const matches = Math.max(0, Number.isFinite(playerMatchesPlayed) ? playerMatchesPlayed : 0);
+            const medals = Math.max(0, Number.isFinite(playerMedals) ? playerMedals : 0);
+            const streak = Math.max(0, Number.isFinite(currentWinStreak) ? currentWinStreak : 0);
+
+            const medalsScore = clamp01(medals / 320);
+            const matchesScore = clamp01(matches / 220);
+            const streakScore = clamp01(streak / 6);
+
+            const recentHistory = loadMatchHistory().slice(0, 12);
+            let winRateScore = 0.35;
+            if (recentHistory.length >= 4) {
+                const wins = recentHistory.filter(h => h.result === 'win').length;
+                const winRate = wins / recentHistory.length;
+                // 35% WR starts baseline, 75%+ means highly consistent player.
+                winRateScore = clamp01((winRate - 0.35) / 0.4);
+            }
+
+            // Weighted mix: medals and win consistency dominate, but experience still matters.
+            const raw = (medalsScore * 0.45) + (winRateScore * 0.3) + (matchesScore * 0.15) + (streakScore * 0.1);
+            return clamp01(raw);
+        }
+
         function getBotDifficultyProfile() {
             if (currentGameMode === 'easyStage') return BOT_DIFFICULTY_PROFILES[0];
-            const matches = Math.max(0, Number.isFinite(playerMatchesPlayed) ? playerMatchesPlayed : 0);
-            for (const profile of BOT_DIFFICULTY_PROFILES) {
-                if (matches <= profile.maxMatches) return profile;
+
+            const clamp01 = (v) => Math.max(0, Math.min(1, v));
+            const lerp = (a, b, t) => a + (b - a) * t;
+            const skill = clamp01(getPlayerSkillScore());
+            const maxIndex = BOT_DIFFICULTY_PROFILES.length - 1;
+            const scaled = skill * maxIndex;
+            const lowIdx = Math.floor(scaled);
+            const highIdx = Math.min(maxIndex, lowIdx + 1);
+            const t = scaled - lowIdx;
+
+            const low = BOT_DIFFICULTY_PROFILES[lowIdx];
+            const high = BOT_DIFFICULTY_PROFILES[highIdx];
+
+            const raritySet = new Set(low.rarities || []);
+            if (t > 0.35) {
+                for (const r of (high.rarities || [])) raritySet.add(r);
             }
-            return BOT_DIFFICULTY_PROFILES[BOT_DIFFICULTY_PROFILES.length - 1];
+
+            return {
+                id: t > 0 ? `${low.id}_to_${high.id}` : low.id,
+                maxMatches: Infinity,
+                rarities: Array.from(raritySet),
+                hpMult: lerp(low.hpMult, high.hpMult, t),
+                damageMult: lerp(low.damageMult, high.damageMult, t),
+                speedMult: lerp(low.speedMult, high.speedMult, t),
+                shootChanceMult: lerp(low.shootChanceMult, high.shootChanceMult, t),
+                cooldownMult: lerp(low.cooldownMult, high.cooldownMult, t),
+                spreadMult: lerp(low.spreadMult, high.spreadMult, t),
+                aimLeadMult: lerp(low.aimLeadMult, high.aimLeadMult, t)
+            };
         }
 
         function pickBotIdForDifficulty(excludedId, profile) {
@@ -3520,6 +3628,80 @@
         function assignRandomBotTactic(bot) {
             if (!bot) return;
             bot.aiTactic = BOT_TACTIC_POOL[Math.floor(Math.random() * BOT_TACTIC_POOL.length)] || 'balanced';
+        }
+
+        function isBotEnemyTargetCandidate(bot, target) {
+            if (!bot || !target) return false;
+            if (target === bot) return false;
+            if ((target.currentHp || 0) <= 0) return false;
+            if (bot.team && target.team === bot.team) return false;
+            if (target.inBush && !(target.bushRevealTimer > 0)) return false;
+            if (target.gadgetInvisibleTimer > 0) return false;
+            return true;
+        }
+
+        function getBotTargetScore(bot, target) {
+            const botCx = bot.x + bot.size / 2;
+            const botCy = bot.y + bot.size / 2;
+            const tx = target.x + target.size / 2;
+            const ty = target.y + target.size / 2;
+            const dist = Math.hypot(tx - botCx, ty - botCy);
+            let score = dist;
+
+            if (target === player) score *= 0.9;
+
+            const hpRatio = (target.maxHp > 0) ? (target.currentHp / target.maxHp) : 1;
+            if (hpRatio < 0.35) score *= 0.75;
+
+            if ((currentGameMode === 'ballGoal' || currentGameMode === 'kingTown') && target.hasBall) {
+                score *= 0.52;
+            }
+
+            if (!hasLineOfSight(bot, target)) score *= 1.12;
+
+            return score;
+        }
+
+        function findIncomingProjectileThreat(bot) {
+            const botCx = bot.x + bot.size / 2;
+            const botCy = bot.y + bot.size / 2;
+            const nearbyRadius = Math.max(140, bot.size * 4.8);
+            const allProjectiles = [];
+            if (lasers && lasers.length) allProjectiles.push(...lasers);
+            if (aiLasers && aiLasers.length) allProjectiles.push(...aiLasers);
+
+            let nearest = null;
+            let nearestDist = Infinity;
+
+            for (const l of allProjectiles) {
+                if (!l || !l.shooter || (l.life || 0) <= 0) continue;
+                if (l.shooter === bot) continue;
+                if (bot.team && l.shooter.team === bot.team) continue;
+
+                const lx = l.x;
+                const ly = l.y;
+                const dx = botCx - lx;
+                const dy = botCy - ly;
+                const dist = Math.hypot(dx, dy);
+                if (dist > nearbyRadius || dist >= nearestDist) continue;
+
+                const speed = Math.hypot(l.vx || 0, l.vy || 0) || 1;
+                const pvx = (l.vx || 0) / speed;
+                const pvy = (l.vy || 0) / speed;
+                const toBotX = dx / (dist || 1);
+                const toBotY = dy / (dist || 1);
+                const headingDot = pvx * toBotX + pvy * toBotY;
+                if (headingDot < 0.74) continue;
+
+                const cross = Math.abs(pvx * dy - pvy * dx);
+                const hitWidth = (bot.size * 0.6) + (l.radius || 0) + 10;
+                if (cross > hitWidth) continue;
+
+                nearest = l;
+                nearestDist = dist;
+            }
+
+            return nearest;
         }
 
         // IMPROVED AI SYSTEM - Bots fight each other and don't always chase player
@@ -3703,8 +3885,25 @@
                         const dx = closestTarget.x - bot.x;
                         const dy = closestTarget.y - bot.y;
                         const distance = Math.sqrt(dx * dx + dy * dy);
+                        const targetCx = closestTarget.x + closestTarget.size / 2;
+                        const targetCy = closestTarget.y + closestTarget.size / 2;
 
-                        if (distance > 0) {
+                        const incomingThreat = findIncomingProjectileThreat(bot);
+                        if (incomingThreat && (!bot.hasBall || currentGameMode === 'showdown')) {
+                            const pvx = incomingThreat.vx || 0;
+                            const pvy = incomingThreat.vy || 0;
+                            const pLen = Math.hypot(pvx, pvy) || 1;
+                            if (!bot._dodgeDir || Math.random() < 0.035) {
+                                bot._dodgeDir = Math.random() < 0.5 ? -1 : 1;
+                            }
+                            const dodgeX = (-pvy / pLen) * bot._dodgeDir;
+                            const dodgeY = (pvx / pLen) * bot._dodgeDir;
+                            const dodgeMult = Math.max(0.9, tactic.strafeSpeedMult * 1.55);
+                            bot.vx = dodgeX * bot.speed * dodgeMult;
+                            bot.vy = dodgeY * bot.speed * dodgeMult;
+                        }
+
+                        if (distance > 0 && !incomingThreat) {
                             const optimalDistance = bot.laserRange * tactic.optimalRangeRatio;
 
                             if (distance > optimalDistance + 20) {
@@ -3721,6 +3920,17 @@
                                 const strafeAngle = Math.atan2(dy, dx) + Math.PI / 2;
                                 bot.vx = Math.cos(strafeAngle) * bot.speed * tactic.strafeSpeedMult * bot.strafeDir;
                                 bot.vy = Math.sin(strafeAngle) * bot.speed * tactic.strafeSpeedMult * bot.strafeDir;
+                            }
+                        }
+
+                        // Use gadget in meaningful moments (engage or low HP panic).
+                        const gadgetInfo = getEquippedGadgetInfo(bot);
+                        if (gadgetInfo && bot.gadgetCooldown <= 0) {
+                            const hpRatio = (bot.maxHp > 0) ? (bot.currentHp / bot.maxHp) : 1;
+                            const engageRange = bot.laserRange * 0.72;
+                            const shouldUseGadget = (distance <= engageRange && Math.random() < 0.018) || (hpRatio < 0.38 && Math.random() < 0.06);
+                            if (shouldUseGadget) {
+                                activateGadget(bot, targetCx, targetCy);
                             }
                         }
 
@@ -3819,27 +4029,21 @@
         // NEW: Find closest target (player OR other bots in showdown)
         function findClosestTarget(bot) {
             let closest = null;
-            let minDistance = Infinity;
+            let bestScore = Infinity;
+
+            if (bot._preferredTargetId) {
+                const preferred = players.find(p => p.id === bot._preferredTargetId);
+                if (preferred && isBotEnemyTargetCandidate(bot, preferred)) {
+                    bestScore = getBotTargetScore(bot, preferred) * 0.88;
+                    closest = preferred;
+                }
+            }
 
             players.forEach(other => {
-                if (other === bot || other.currentHp <= 0) return;
-
-                // In team modes, don't target teammates
-                if (bot.team && other.team === bot.team) return;
-
-                // Can't see players hiding in bushes (unless revealed)
-                if (other.inBush && !(other.bushRevealTimer > 0)) return;
-
-                // Can't target cloaked (invisible) players
-                if (other.gadgetInvisibleTimer > 0) return;
-
-                const dist = getDistance(bot.x, bot.y, other.x, other.y);
-
-                // Prefer closer targets, slight randomness so they don't all fixate on same target
-                const weightedDistance = dist * (0.8 + Math.random() * 0.4);
-
-                if (weightedDistance < minDistance) {
-                    minDistance = weightedDistance;
+                if (!isBotEnemyTargetCandidate(bot, other)) return;
+                const score = getBotTargetScore(bot, other);
+                if (score < bestScore) {
+                    bestScore = score;
                     closest = other;
                 }
             });
@@ -3847,12 +4051,17 @@
             for (const { owner, companion } of getLivingMagnetsCompanions()) {
                 if (owner === bot || companion === bot) continue;
                 if (bot.team && companion.team === bot.team) continue;
-                const dist = getDistance(bot.x, bot.y, companion.x, companion.y);
-                const weightedDistance = dist * (0.8 + Math.random() * 0.4);
-                if (weightedDistance < minDistance) {
-                    minDistance = weightedDistance;
+                const score = getBotTargetScore(bot, companion);
+                if (score < bestScore) {
+                    bestScore = score;
                     closest = companion;
                 }
+            }
+
+            if (closest && !closest.isMagnetClone && closest.id) {
+                bot._preferredTargetId = closest.id;
+            } else if (!closest) {
+                bot._preferredTargetId = null;
             }
 
             return closest;
@@ -3863,17 +4072,16 @@
             const distance = getDistance(shooter.x, shooter.y, target.x, target.y);
             if (distance > shooter.laserRange) return false;
 
-            // Check if there are any brown brick obstacles between shooter and target
+            // Check if there are any blocking obstacles between shooter and target.
             for (let obs of obstacles) {
-                if (obs.type === 'brick') {
-                    // Simple line of sight check using line-rectangle intersection
-                    if (lineIntersectsRect(
-                        shooter.x + shooter.size / 2, shooter.y + shooter.size / 2,
-                        target.x + target.size / 2, target.y + target.size / 2,
-                        obs
-                    )) {
-                        return false;
-                    }
+                if (!isBlockingObstacleForEntity(shooter, obs)) continue;
+                // Simple line of sight check using line-rectangle intersection.
+                if (lineIntersectsRect(
+                    shooter.x + shooter.size / 2, shooter.y + shooter.size / 2,
+                    target.x + target.size / 2, target.y + target.size / 2,
+                    obs
+                )) {
+                    return false;
                 }
             }
             return true;
@@ -3882,8 +4090,21 @@
         // NEW: Improved wandering behavior
         function wanderBehavior(bot) {
             if (!bot.wanderTarget || getDistance(bot.x, bot.y, bot.wanderTarget.x, bot.wanderTarget.y) < 30) {
-                // Set new wander target
-                bot.wanderTarget = getSpawnPosition(10);
+                // Set a random walk point that is not inside a wall.
+                let bestTarget = null;
+                for (let i = 0; i < 8; i++) {
+                    const candidate = {
+                        x: 40 + Math.random() * Math.max(40, MAP_WIDTH - 80),
+                        y: 40 + Math.random() * Math.max(40, MAP_HEIGHT - 80),
+                        size: bot.size
+                    };
+                    const blocked = obstacles.some(obs => isBlockingObstacleForEntity(bot, obs) && checkCollisionWithRect(candidate, obs));
+                    if (!blocked) {
+                        bestTarget = { x: candidate.x, y: candidate.y };
+                        break;
+                    }
+                }
+                bot.wanderTarget = bestTarget || getSpawnPosition(10);
                 bot.wanderTimer = 60 + Math.floor(Math.random() * 60);
             }
 
@@ -4061,6 +4282,10 @@
             // Create bots
             const botCount = modeConfig.maxPlayers - 1;
             const botDifficultyProfile = getBotDifficultyProfile();
+            currentBotDifficultyInfo = {
+                skillPct: currentGameMode === 'easyStage' ? 0 : Math.round(getPlayerSkillScore() * 100),
+                label: botDifficultyProfile?.id || 'starter'
+            };
             for (let i = 0; i < botCount; i++) {
                 const botPlayerId = pickBotIdForDifficulty(selectedNexusId, botDifficultyProfile);
                 const botData = playersData[botPlayerId];
@@ -4297,15 +4522,26 @@
 
         function drawObstacles() {
             ctx.save();
+            const brickTexture = loadImage('images/brick new.png');
+            const waterTexture = loadImage('images/water new.png');
             for (let obs of obstacles) {
                 if (obs.type === 'water') {
-                    ctx.fillStyle = '#0077aa';
-                    ctx.fillRect(obs.x - camera.x, obs.y - camera.y, obs.width, obs.height);
-
-                    // Water effect
-                    ctx.strokeStyle = '#00aaff';
-                    ctx.lineWidth = 2;
-                    ctx.strokeRect(obs.x - camera.x, obs.y - camera.y, obs.width, obs.height);
+                    const ox = obs.x - camera.x;
+                    const oy = obs.y - camera.y;
+                    if (waterTexture && waterTexture.complete && !waterTexture._failed && waterTexture.naturalWidth > 0) {
+                        ctx.drawImage(waterTexture, ox, oy, obs.width, obs.height);
+                        ctx.fillStyle = 'rgba(0, 90, 140, 0.12)';
+                        ctx.fillRect(ox, oy, obs.width, obs.height);
+                        ctx.strokeStyle = 'rgba(0, 190, 255, 0.45)';
+                        ctx.lineWidth = 1.5;
+                        ctx.strokeRect(ox, oy, obs.width, obs.height);
+                    } else {
+                        ctx.fillStyle = '#0077aa';
+                        ctx.fillRect(ox, oy, obs.width, obs.height);
+                        ctx.strokeStyle = '#00aaff';
+                        ctx.lineWidth = 2;
+                        ctx.strokeRect(ox, oy, obs.width, obs.height);
+                    }
                 } else if (obs.type === 'metal') {
                     // Metal wall style (unbreakable)
                     ctx.fillStyle = '#6b7280';
@@ -4321,23 +4557,31 @@
                         ctx.stroke();
                     }
                 } else {
-                    // Brick pattern
-                    ctx.fillStyle = '#8B4513';
-                    ctx.fillRect(obs.x - camera.x, obs.y - camera.y, obs.width, obs.height);
-
-                    ctx.strokeStyle = '#654321';
-                    ctx.lineWidth = 1;
-                    for (let i = 0; i < obs.width; i += 10) {
-                        ctx.beginPath();
-                        ctx.moveTo(obs.x - camera.x + i, obs.y - camera.y);
-                        ctx.lineTo(obs.x - camera.x + i, obs.y - camera.y + obs.height);
-                        ctx.stroke();
-                    }
-                    for (let i = 0; i < obs.height; i += 10) {
-                        ctx.beginPath();
-                        ctx.moveTo(obs.x - camera.x, obs.y - camera.y + i);
-                        ctx.lineTo(obs.x - camera.x + obs.width, obs.y - camera.y + i);
-                        ctx.stroke();
+                    const ox = obs.x - camera.x;
+                    const oy = obs.y - camera.y;
+                    if (brickTexture && brickTexture.complete && !brickTexture._failed && brickTexture.naturalWidth > 0) {
+                        ctx.drawImage(brickTexture, ox, oy, obs.width, obs.height);
+                        ctx.strokeStyle = 'rgba(70, 35, 18, 0.55)';
+                        ctx.lineWidth = 1.2;
+                        ctx.strokeRect(ox, oy, obs.width, obs.height);
+                    } else {
+                        // Fallback brick pattern
+                        ctx.fillStyle = '#8B4513';
+                        ctx.fillRect(ox, oy, obs.width, obs.height);
+                        ctx.strokeStyle = '#654321';
+                        ctx.lineWidth = 1;
+                        for (let i = 0; i < obs.width; i += 10) {
+                            ctx.beginPath();
+                            ctx.moveTo(ox + i, oy);
+                            ctx.lineTo(ox + i, oy + obs.height);
+                            ctx.stroke();
+                        }
+                        for (let i = 0; i < obs.height; i += 10) {
+                            ctx.beginPath();
+                            ctx.moveTo(ox, oy + i);
+                            ctx.lineTo(ox + obs.width, oy + i);
+                            ctx.stroke();
+                        }
                     }
                 }
             }
@@ -5000,6 +5244,12 @@
             ctx.fillStyle = 'white';
             ctx.fillText(`HP: ${player.currentHp}/${player.maxHp}`, 20, 30);
             ctx.fillText(`Mode: ${gameModes[currentGameMode].name}`, 20, 50);
+            const botDiffLabel = `Bot AI: ${Math.max(0, Math.min(100, currentBotDifficultyInfo.skillPct || 0))}%`;
+            ctx.font = 'bold 11px Arial';
+            ctx.fillStyle = '#ffcc66';
+            ctx.textAlign = 'right';
+            ctx.fillText(botDiffLabel, 10 + hudWidth - 8, 30);
+            ctx.textAlign = 'left';
 
             if (isBounty) {
                 // Bounty: show countdown + team star counts
@@ -5287,7 +5537,7 @@
                 ctx.fill();
                 ctx.globalAlpha = Math.min(1, alpha + 0.15);
                 ctx.font = 'bold 12px Arial';
-                ctx.fillText('❤', sx, sy - 1);
+                ctx.fillText('+HP', sx, sy - 1);
                 ctx.globalAlpha = 1;
                 ctx.shadowBlur = 0;
                 if (fx.timer <= 0) healPickupEffects.splice(i, 1);
@@ -5350,8 +5600,8 @@
             if (!player.respawnTimer || player.respawnTimer <= 0) return;
 
             ctx.save();
-            // Dark screen overlay
-            ctx.fillStyle = 'rgba(0, 0, 0, 0.5)';
+            // Keep gameplay visible while waiting to respawn.
+            ctx.fillStyle = 'rgba(0, 0, 0, 0.28)';
             ctx.fillRect(0, 0, gameCanvas.width, gameCanvas.height);
 
             // "YOU DIED" text
@@ -6263,6 +6513,11 @@
                         if (actualDamage > 0) registerDamageFeedback(targetPlayer, actualDamage);
                         laser.shooter.damageDealt += actualDamage;
                         if (laser.shooter.isHuman && actualDamage > 0) progressDaily('damage', actualDamage);
+                        // Dealing damage — light hit-confirm shake
+                        if (laser.shooter.isHuman && actualDamage > 0) {
+                            screenShakeTimer = Math.max(screenShakeTimer, 8);
+                            screenShakeStrength = Math.min(10, Math.max(screenShakeStrength, 3 + Math.sqrt(actualDamage) * 0.06));
+                        }
                         // Charge super bar (4 damage = 1 charge point, capped at 100)
                         if (laser.shooter.superCharge !== undefined)
                             laser.shooter.superCharge = Math.min(100, laser.shooter.superCharge + actualDamage * 4);
@@ -7104,12 +7359,25 @@
 
             if (gameModes[currentGameMode].teams) {
                 const teams = gameModes[currentGameMode].teamNames;
+                const knockoutMode = isKnockoutTeamMode();
+
+                // If your team is wiped, end immediately as defeat instead of locking the camera in a dark respawn view.
+                if (player && player.currentHp <= 0) {
+                    const livingTeammate = players.some(p => p !== player && p.team === player.team && p.currentHp > 0);
+                    const pendingTeammateRespawn = !knockoutMode && players.some(p => p.team === player.team && p.currentHp <= 0 && p.respawnTimer > 0);
+                    if (!livingTeammate && !pendingTeammateRespawn && (!player.respawnTimer || player.respawnTimer <= 0)) {
+                        endGame('Game Over! Your team was eliminated.', false);
+                        return;
+                    }
+                }
+
                 // A team is eliminated only when everyone is dead AND no respawns are pending.
                 const teamsAlive = teams.filter(t => {
                     const teamMembers = players.filter(p => p.team === t);
                     if (teamMembers.length === 0) return false;
                     const hasAliveMember = teamMembers.some(p => p.currentHp > 0);
                     if (hasAliveMember) return true;
+                    if (knockoutMode) return false;
                     return teamMembers.some(p => p.respawnTimer > 0);
                 });
 
@@ -9234,6 +9502,23 @@
             document.getElementById('daily-panel').style.display = 'block';
         }
 
+        function getDailyChallengeIcon(def) {
+            if (!def) return '🎯';
+            const iconByType = {
+                wins: '🏆',
+                kills: '⚔️',
+                matchKills: '🎯',
+                games: '🎮',
+                streak: '🔥',
+                damage: '💥',
+                survive: '⏱️',
+                winstreak: '📈',
+                coins: '💰'
+            };
+            if (iconByType[def.type]) return iconByType[def.type];
+            return def.icon || '🎯';
+        }
+
         function renderDailyChallenges() {
             ensureDailyChallengesCurrent();
             const list = document.getElementById('daily-list');
@@ -9249,10 +9534,11 @@
                 if (!def) continue;
                 const pct = Math.min(100, Math.round(s.progress / def.target * 100));
                 const ready = s.progress >= def.target && !s.claimed;
+                const challengeIcon = getDailyChallengeIcon(def);
                 const row = document.createElement('div');
                 row.className = 'challenge-row' + (s.claimed ? ' done' : '');
                 row.innerHTML = `
-                    <span style="font-size:20px">${def.icon}</span>
+                    <span style="font-size:20px">${challengeIcon}</span>
                     <div style="flex:1">
                         <div style="font-size:13px;margin-bottom:4px">${def.desc}
                             <span style="color:#aaa;font-size:11px;margin-left:6px">(${s.progress}/${def.target})</span>
@@ -9444,7 +9730,7 @@
                     </div>
                     <div style="text-align:right;font-size:12px;color:#ccc">
                         ⚔️ ${m.kills} kills<br>
-                        💥 ${m.damageDealt || 0} dmg · ❤️ ${m.healingReceived || 0}<br>
+                        DMG ${m.damageDealt || 0} · HEAL ${m.healingReceived || 0}<br>
                         ⏱️ ${m.survivedSeconds || 0}s · 🔥 x${m.peakStreak || 0}<br>
                         <span style="color:#ffcc00">💰 +${m.coinsEarned || 0}</span><br>
                         <span style="${m.medals >= 0 ? 'color:#ffcc00' : 'color:#ff6666'}">🏅 ${m.medals >= 0 ? '+' : ''}${m.medals}</span>
@@ -9978,31 +10264,35 @@
             timeline.innerHTML = levelRewards.map((reward, idx) => {
                 const isReached = playerLevel >= reward.level;
                 const isClaimed = reward.claimed;
-                const rewardColor = reward.type === 'sparks' ? '#7dd3fc' : 
-                                   reward.type === 'credits' ? '#fbbf24' :
-                                   reward.type === 'unlock' ? '#86efac' : '#60a5fa';
-                
-                const statusBg = isClaimed ? '#1a5544' : isReached ? '#3a3a1a' : '#2a1a1a';
-                const statusBorder = isClaimed ? '#16a34a' : isReached ? '#7c6b1a' : '#6b1a1a';
-                const statusText = isClaimed ? '✓ Claimed' : isReached ? '🔓 Ready' : '🔒 Locked';
-                const statusColor = isClaimed ? '#86efac' : isReached ? '#ffcc00' : '#8f8f8f';
-                
-                let rewardLabel = reward.reward;
-                if (reward.type === 'unlock' && playersData[reward.playerId]) {
-                    rewardLabel = `Unlock ${playersData[reward.playerId].name}`;
-                }
+                const statusText = isClaimed ? 'Claimed' : isReached ? 'Ready' : 'Locked';
+                const rewardPlayer = reward.type === 'unlock' && playersData[reward.playerId]
+                    ? playersData[reward.playerId]
+                    : null;
+                const rewardLabel = rewardPlayer ? rewardPlayer.name : reward.reward;
+                const rewardMeta = rewardPlayer ? 'Hero unlock' : reward.type.charAt(0).toUpperCase() + reward.type.slice(1);
+                const rewardVisual = rewardPlayer
+                    ? `<div class="medal-road-reward-icon-wrap"><img class="medal-road-reward-hero-icon" src="${rewardPlayer.icon || rewardPlayer.img || ''}" alt="${rewardPlayer.name}"></div>`
+                    : `<div class="medal-road-reward-icon">${reward.icon}</div>`;
+                const rewardNeed = (reward.level - 1) * 10;
                 
                 return `
-                    <div style="display:flex; align-items:center; padding:10px; background:${statusBg}; border:1px solid ${statusBorder}; border-radius:6px; gap:12px;">
-                        <div style="font-size:20px; font-weight:bold; color:${rewardColor}; min-width:60px; text-align:center;">
-                            Level ${reward.level}
+                    <div class="medal-road-row ${isClaimed ? 'claimed' : isReached ? 'ready' : 'locked'}">
+                        <div class="medal-road-level-pill">
+                            <span class="medal-road-level-main">Lv ${reward.level}</span>
+                            <span class="medal-road-level-medals">${rewardNeed} medals</span>
                         </div>
-                        <div style="flex:1;">
-                            <div style="color:#ccc; font-size:13px; margin-bottom:2px;"><strong>${reward.icon} ${rewardLabel}</strong></div>
-                            <div style="color:${statusColor}; font-size:11px;">${statusText}</div>
+                        <div class="medal-road-reward-block">
+                            <div class="medal-road-reward-top">
+                                ${rewardVisual}
+                                <div class="medal-road-reward-copy">
+                                    <div class="medal-road-reward-title">${rewardLabel}</div>
+                                    <div class="medal-road-reward-meta">${rewardMeta}</div>
+                                </div>
+                            </div>
+                            <div class="medal-road-status">${statusText}</div>
                         </div>
-                        <div style="font-size:14px; color:#ccc; text-align:right; min-width:120px;">
-                            Current: Lvl ${playerLevel}
+                        <div class="medal-road-progress-tag">
+                            ${Math.max(0, rewardNeed - playerMedals)} left
                         </div>
                     </div>
                 `;
@@ -10016,14 +10306,14 @@
             { level:  4, type:'coins',   amount: 200,   icon: '💰', reward: '200 coins',           claimed: false },
             { level:  5, type:'unlock',  playerId: 'lazerman',        icon: '🔓', reward: 'Unlock Lazerman (Rare)', claimed: false },
             { level:  6, type:'coins',   amount: 300,   icon: '💰', reward: '300 coins',           claimed: false },
-            { level:  7, type:'credits', amount: 5,     icon: '🎖️', reward: '5 Hero Marks',           claimed: false },
+            { level:  7, type:'medals',  amount: 5,     icon: '🏅', reward: '5 medals',               claimed: false },
             { level:  8, type:'unlock',  playerId: 'fournakis',       icon: '🔓', reward: 'Unlock Fournakis (Rare)', claimed: false },
             { level:  9, type:'coins',   amount: 400,   icon: '💰', reward: '400 coins',           claimed: false },
             { level: 10, type:'unlock',  playerId: 'firekoupepy',     icon: '🔓', reward: 'Unlock Firekoupepy (Rare)', claimed: false },
             { level: 11, type:'sparks',  amount: 500,   icon: '⚡', reward: '500 energy sparks',   claimed: false },
             { level: 12, type:'unlock',  playerId: 'baklavasbazookos',icon: '🔓', reward: 'Unlock Baklavasbazookos (Rare)', claimed: false },
             { level: 13, type:'sparks',  amount: 600,   icon: '⚡', reward: '600 energy sparks',   claimed: false },
-            { level: 14, type:'credits', amount: 10,    icon: '🎖️', reward: '10 Hero Marks',          claimed: false },
+            { level: 14, type:'medals',  amount: 10,    icon: '🏅', reward: '10 medals',              claimed: false },
             { level: 15, type:'unlock',  playerId: 'timor',           icon: '🔓', reward: 'Unlock Timor (Rare)',    claimed: false },
             { level: 16, type:'sparks',  amount: 700,   icon: '⚡', reward: '700 energy sparks',   claimed: false },
             { level: 17, type:'unlock',  playerId: 'kleftros',        icon: '🔓', reward: 'Unlock Kleftros (Rare)', claimed: false },
@@ -10033,13 +10323,13 @@
             { level: 21, type:'coins',   amount: 1000,  icon: '💰', reward: '1000 coins',          claimed: false },
             { level: 22, type:'sparks',  amount: 1100,  icon: '⚡', reward: '1100 energy sparks',  claimed: false },
             { level: 23, type:'coins',   amount: 1100,  icon: '💰', reward: '1100 coins',          claimed: false },
-            { level: 24, type:'credits', amount: 15,    icon: '🎖️', reward: '15 Hero Marks',          claimed: false },
+            { level: 24, type:'medals',  amount: 15,    icon: '🏅', reward: '15 medals',              claimed: false },
             { level: 25, type:'coins',   amount: 1500,  icon: '💰', reward: '1500 coins',          claimed: false },
             { level: 26, type:'sparks',  amount: 1200,  icon: '⚡', reward: '1200 energy sparks',  claimed: false },
             { level: 27, type:'coins',   amount: 1200,  icon: '💰', reward: '1200 coins',          claimed: false },
             { level: 28, type:'sparks',  amount: 1500,  icon: '⚡', reward: '1500 energy sparks',  claimed: false },
             { level: 29, type:'coins',   amount: 1500,  icon: '💰', reward: '1500 coins',          claimed: false },
-            { level: 30, type:'credits', amount: 20,    icon: '🎖️', reward: '20 Hero Marks',          claimed: false },
+            { level: 30, type:'medals',  amount: 20,    icon: '🏅', reward: '20 medals',              claimed: false },
             { level: 31, type:'sparks',  amount: 1800,  icon: '⚡', reward: '1800 energy sparks',  claimed: false },
             { level: 32, type:'coins',   amount: 1800,  icon: '💰', reward: '1800 coins',          claimed: false },
             { level: 33, type:'sparks',  amount: 2000,  icon: '⚡', reward: '2000 energy sparks',  claimed: false },
@@ -10048,19 +10338,19 @@
             { level: 36, type:'sparks',  amount: 2200,  icon: '⚡', reward: '2200 energy sparks',  claimed: false },
             { level: 37, type:'coins',   amount: 2200,  icon: '💰', reward: '2200 coins',          claimed: false },
             { level: 38, type:'sparks',  amount: 2500,  icon: '⚡', reward: '2500 energy sparks',  claimed: false },
-            { level: 39, type:'credits', amount: 25,    icon: '🎖️', reward: '25 Hero Marks',          claimed: false },
+            { level: 39, type:'medals',  amount: 25,    icon: '🏅', reward: '25 medals',              claimed: false },
             { level: 40, type:'coins',   amount: 3000,  icon: '💰', reward: '3000 coins',          claimed: false },
             { level: 41, type:'sparks',  amount: 3000,  icon: '⚡', reward: '3000 energy sparks',  claimed: false },
             { level: 42, type:'coins',   amount: 3000,  icon: '💰', reward: '3000 coins',          claimed: false },
             { level: 43, type:'sparks',  amount: 3500,  icon: '⚡', reward: '3500 energy sparks',  claimed: false },
             { level: 44, type:'coins',   amount: 3500,  icon: '💰', reward: '3500 coins',          claimed: false },
-            { level: 45, type:'credits', amount: 30,    icon: '🎖️', reward: '30 Hero Marks',          claimed: false },
+            { level: 45, type:'medals',  amount: 30,    icon: '🏅', reward: '30 medals',              claimed: false },
             { level: 46, type:'sparks',  amount: 4000,  icon: '⚡', reward: '4000 energy sparks',  claimed: false },
             { level: 47, type:'coins',   amount: 4000,  icon: '💰', reward: '4000 coins',          claimed: false },
             { level: 48, type:'sparks',  amount: 4500,  icon: '⚡', reward: '4500 energy sparks',  claimed: false },
             { level: 49, type:'coins',   amount: 4500,  icon: '💰', reward: '4500 coins',          claimed: false },
-            { level: 50, type:'credits', amount: 50,    icon: '🎖️', reward: '50 Hero Marks',          claimed: false },
-            { level: 51, type:'credits', amount: 100,   icon: '🎖️', reward: '100 Hero Marks',      claimed: false },
+            { level: 50, type:'medals',  amount: 50,    icon: '🏅', reward: '50 medals',              claimed: false },
+            { level: 51, type:'medals',  amount: 100,   icon: '🏅', reward: '100 medals',             claimed: false },
         ];
         // Restore claimed state from localStorage
         const _claimedLevels = readStorageJson('claimedLevelRewards', []);
@@ -10074,6 +10364,9 @@
                         energySparks += milestone.amount;
                     } else if (milestone.type === 'credits') {
                         playerCredits += milestone.amount;
+                    } else if (milestone.type === 'medals') {
+                        playerMedals = Math.max(0, playerMedals + milestone.amount);
+                        playerLevel = Math.floor(playerMedals / 10) + 1;
                     } else if (milestone.type === 'unlock') {
                         if (!unlockedNexus.includes(milestone.playerId)) {
                             unlockedNexus.push(milestone.playerId);
@@ -10095,10 +10388,7 @@
             document.getElementById('coins-display').innerHTML =
                 `💰 Coins: ${playerCoins}<br>🏅 Medals: ${playerMedals} &nbsp;(Lv ${playerLevel})<br>📈 Next Level: ${medalsToNextLevel} medals left<br>⚡ Energy Sparks: ${energySparks}<br>🎖️ Hero Marks: ${playerCredits}`;
             // Keep account chip stats in sync
-            const chipStats = document.getElementById('account-chip-stats');
-            if (chipStats && currentAccount) {
-                chipStats.innerHTML = `💰 ${playerCoins}&nbsp;&nbsp;🏅 ${playerMedals}<br>📈 ${medalsToNextLevel} to Lv ${playerLevel + 1}<br>⚡ ${energySparks}&nbsp;&nbsp;🎖️ ${playerCredits}`;
-            }
+            updateAccountChip();
             const creditsPanel = document.getElementById('credits-panel');
             if ((creditsPanel && creditsPanel.style.display === 'block') || unlockedByCredits) {
                 renderCreditsPanel();
@@ -10627,8 +10917,8 @@
                     : '<p style="color:#999; font-size:11px; text-align:center; margin:6px 0 0;">Need ' + remaining + ' more marks for ' + target.name + '</p>');
 
             // Build scrollable card carousel (select target)
-            let cardsHtml = '<div style="width:100%; display:block; min-height:300px; margin:12px 0; background:linear-gradient(135deg, #0a0e1a 0%, #0f1323 100%); border-radius:12px; border:2px solid ' + rc + '40; padding:12px;">' +
-                '<div style="display:flex; gap:12px; overflow-x:auto; overflow-y:visible; padding:0; width:100%;">';
+            let cardsHtml = '<div class="credits-cards-shell" style="border-color:' + rc + '40;">' +
+                '<div class="credits-cards-strip">';
 
             lockedInTier.forEach(pd => {
                 const bBonus = getStatBonus(pd.id);
@@ -10647,17 +10937,17 @@
                 const selectedBadge = isSelected ? '<p style="margin:0 0 4px; font-size:11px; color:#ffcc00; font-weight:bold;">✓ Selected</p>' : '';
                 const actionText = isSelected ? (remaining > 0 ? ('Need ' + remaining) : 'Ready to unlock') : 'Select';
 
-                cardsHtml += '<div onclick="selectCreditTarget(\'' + pd.id + '\')" style="flex-shrink:0; width:200px; background:linear-gradient(135deg, #1a1a2e 0%, #242838 100%); border:3px solid ' + cardBorder + '; border-radius:14px; padding:12px; text-align:center; box-shadow:' + (isSelected ? '0 0 16px #ffcc00aa' : ('0 0 16px ' + rc + '50')) + '; cursor:pointer;">' +
+                cardsHtml += '<div class="credits-player-card' + (isSelected ? ' selected' : '') + '" onclick="selectCreditTarget(\'' + pd.id + '\')" style="border-color:' + cardBorder + '; box-shadow:' + (isSelected ? '0 0 16px #ffcc00aa' : ('0 0 16px ' + rc + '50')) + ';">' +
                     selectedBadge +
-                    '<div style="width:100%; height:150px; background:' + pd.color + '; border-radius:10px; display:flex; align-items:center; justify-content:center; margin-bottom:10px; overflow:hidden; border:2px solid rgba(255,255,255,0.15);">' +
+                    '<div class="credits-player-card-media" style="background:' + pd.color + ';">' +
                     cardImg +
                     '</div>' +
-                    '<h3 style="margin:6px 0 2px; font-size:13px; color:#fff; font-weight:bold;">' + pd.name + '</h3>' +
-                    '<p style="margin:0 0 6px; font-size:11px; color:' + (rarityColors[pd.rarity] || rc) + '; font-weight:bold;">' + rarityLabels[pd.rarity] + '</p>' +
-                    '<div style="font-size:10px; color:#ccc; margin-bottom:8px;">' +
-                    '<span>❤️ ' + hpVal + '</span>  <span>🔥 ' + dmgVal + '</span>' +
+                    '<h3 class="credits-player-card-name">' + pd.name + '</h3>' +
+                    '<p class="credits-player-card-rarity" style="color:' + (rarityColors[pd.rarity] || rc) + ';">' + rarityLabels[pd.rarity] + '</p>' +
+                    '<div class="credits-player-card-stats">' +
+                    '<span>HP ' + hpVal + '</span>  <span>DMG ' + dmgVal + '</span>' +
                     '</div>' +
-                    '<button style="width:100%; padding:8px 4px; font-size:12px; border-radius:6px; border:none; background:' + (isSelected ? '#ffcc00' : '#2a2a3a') + '; color:' + (isSelected ? '#000' : '#ddd') + '; font-weight:bold;">' + actionText + '</button>' +
+                    '<button class="credits-player-card-action" style="background:' + (isSelected ? '#ffcc00' : '#2a2a3a') + '; color:' + (isSelected ? '#000' : '#ddd') + ';">' + actionText + '</button>' +
                     '</div>';
             });
 
@@ -10762,12 +11052,11 @@
 
         function initModalCloseXButtons() {
             document.querySelectorAll('.modal-panel').forEach(panel => {
-                if (panel.querySelector('.modal-x-close')) return;
+                if (panel.querySelector('.modal-nav-back')) return;
                 const btn = document.createElement('button');
-                btn.className = 'modal-x-close';
-                btn.setAttribute('aria-label', 'Close');
-                btn.textContent = '\u2715';
-                btn.style.cssText = 'position:absolute; top:10px; right:10px; width:30px; height:30px; border-radius:50%; border:1px solid #ff7b7b; background:#3a1414; color:#ff4d4d; font-weight:bold; font-size:16px; cursor:pointer; z-index:10; line-height:1; padding:0; flex-shrink:0;';
+                btn.className = 'modal-nav-back';
+                btn.setAttribute('aria-label', 'Back');
+                btn.textContent = '\u2190 Back';
                 btn.addEventListener('click', () => {
                     const closer = panel.querySelector('.modal-close');
                     if (closer) { closer.click(); return; }
@@ -11175,6 +11464,12 @@
             document.getElementById('pd-close-btn').onclick = () => {
                 popup.style.display = 'none';
             };
+            const pdBackBtn = document.getElementById('pd-back-btn');
+            if (pdBackBtn) {
+                pdBackBtn.onclick = () => {
+                    popup.style.display = 'none';
+                };
+            }
             // Click backdrop to close
             popup.onclick = (e) => {
                 if (e.target === popup) popup.style.display = 'none';
@@ -11409,7 +11704,7 @@
             rarityEl.textContent = rl;
             rarityEl.style.color = rc;
             statsEl.innerHTML =
-                `❤️ ${Math.round(pd.hp * bonus * COMBAT_STAT_SCALE)}<br>⚔️ ${Math.round(pd.laserDamage * bonus * COMBAT_STAT_SCALE)} &nbsp;💨 ${pd.speed} &nbsp;🎯 ${pd.laserRange}`;
+                `HP ${Math.round(pd.hp * bonus * COMBAT_STAT_SCALE)}<br>DMG ${Math.round(pd.laserDamage * bonus * COMBAT_STAT_SCALE)} &nbsp;SPD ${pd.speed} &nbsp;RNG ${pd.laserRange}`;
         }
 
         function runRegressionChecks() {
@@ -11569,6 +11864,51 @@
             resetBalanceSandboxInputs();
         }
 
+        function initOutsideClickCloseMenus() {
+            if (document.body.dataset.outsideCloseBound === '1') return;
+
+            const closablePanelIds = [
+                'profile-panel',
+                'level-rewards-panel',
+                'daily-panel',
+                'history-panel',
+                'tutorial-panel',
+                'medal-road-panel',
+                'credits-panel',
+                'player-menu',
+                'map-select-panel',
+                'dev-sandbox-panel'
+            ];
+
+            document.addEventListener('pointerdown', (e) => {
+                const target = e.target;
+
+                for (const panelId of closablePanelIds) {
+                    const panel = document.getElementById(panelId);
+                    if (!panel) continue;
+                    if (getComputedStyle(panel).display === 'none') continue;
+                    if (panel.contains(target)) continue;
+                    panel.style.display = 'none';
+                }
+
+                const bazzarOverlay = document.getElementById('bazzar-overlay');
+                const bazzarPanel = document.getElementById('bazzar-panel');
+                if (bazzarOverlay && bazzarPanel && getComputedStyle(bazzarOverlay).display !== 'none') {
+                    if (!bazzarPanel.contains(target)) {
+                        bazzarOverlay.style.display = 'none';
+                    }
+                }
+
+                const accountChip = document.getElementById('account-chip');
+                if (accountChipLevelExpanded && accountChip && !accountChip.contains(target)) {
+                    accountChipLevelExpanded = false;
+                    updateAccountChip();
+                }
+            });
+
+            document.body.dataset.outsideCloseBound = '1';
+        }
+
         function initGame() {
             const runInitStep = (name, fn) => {
                 try {
@@ -11617,6 +11957,7 @@
             runInitStep('level rewards', () => initLevelRewards());
             runInitStep('onboarding flow', () => initOnboardingFlow());
             runInitStep('developer sandbox', () => initDevSandbox());
+            runInitStep('outside click close menus', () => initOutsideClickCloseMenus());
             runInitStep('account system', () => initAccountSystem());
             runInitStep('show coins', () => showCoins());
             runInitStep('character showcase', () => updateCharShowcase());

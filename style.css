@@ -1,10 +1,42 @@
-﻿        body, html {
+﻿        @import url('https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700&family=Teko:wght@500;600&display=swap');
+
+        :root {
+            --menu-cyan: #64e6ff;
+            --menu-gold: #ffcc66;
+            --menu-orange: #ff8f3a;
+            --menu-panel: rgba(8, 12, 22, 0.82);
+            --menu-border: rgba(126, 189, 255, 0.34);
+            --menu-shadow: 0 16px 42px rgba(0, 0, 0, 0.46);
+        }
+
+        body, html {
             margin: 0;
             padding: 0;
             overflow: hidden;
-            background-color: #000;
+            background:
+                radial-gradient(circle at 16% 14%, rgba(16, 155, 235, 0.2), transparent 34%),
+                radial-gradient(circle at 85% 88%, rgba(255, 174, 54, 0.14), transparent 36%),
+                linear-gradient(170deg, #020307 0%, #070d19 54%, #05070f 100%);
             color: white;
-            font-family: Arial, sans-serif;
+            font-family: 'Rajdhani', Arial, sans-serif;
+            letter-spacing: 0.2px;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            inset: 0;
+            pointer-events: none;
+            z-index: 0;
+            opacity: 0;
+            transition: opacity 0.4s ease;
+            background:
+                radial-gradient(circle at 50% 52%, rgba(97, 224, 255, 0.1), rgba(0, 0, 0, 0) 44%),
+                repeating-linear-gradient(125deg, rgba(140, 197, 255, 0.04) 0px, rgba(140, 197, 255, 0.04) 1px, transparent 1px, transparent 20px);
+        }
+
+        body:not(.game-active)::before {
+            opacity: 1;
         }
 
         .guide {
@@ -27,22 +59,25 @@
         }
 
         #coins-display {
-            font-size: 18px;
-            color: gold;
+            font-size: 16px;
+            color: #ffe08a;
             position: absolute;
             top: 10px;
             left: 10px;
             z-index: 10;
-            background: rgba(0,0,0,0.7);
+            background: linear-gradient(165deg, rgba(9, 15, 28, 0.88), rgba(7, 10, 18, 0.78));
+            border: 1px solid rgba(122, 196, 255, 0.4);
+            box-shadow: 0 10px 22px rgba(0, 0, 0, 0.45);
+            backdrop-filter: blur(6px);
             padding: 8px 12px;
-            border-radius: 8px;
+            border-radius: 12px;
             cursor: pointer;
             user-select: none;
         }
 
         #coins-display:hover {
-            background: rgba(40,30,0,0.9);
-            border: 1px solid gold;
+            background: linear-gradient(165deg, rgba(18, 28, 52, 0.92), rgba(11, 18, 30, 0.88));
+            border-color: rgba(255, 204, 102, 0.8);
         }
 
         .reward-row {
@@ -89,20 +124,26 @@
             top: 10px;
             right: 10px;
             z-index: 10;
-            background: rgba(0,0,0,0.75);
-            border: 1px solid #44aaff;
-            color: #44aaff;
-            font-size: 14px;
-            font-weight: bold;
-            padding: 7px 13px;
+            background: linear-gradient(150deg, rgba(10, 18, 34, 0.9), rgba(8, 14, 28, 0.78));
+            border: 1px solid rgba(86, 198, 255, 0.66);
+            color: #98e5ff;
+            font-size: 13px;
+            font-weight: 700;
+            padding: 8px 12px;
             width: 136px;
             text-align: center;
             box-sizing: border-box;
-            border-radius: 8px;
+            border-radius: 10px;
             cursor: pointer;
             user-select: none;
+            box-shadow: 0 8px 22px rgba(0, 0, 0, 0.42);
+            transition: transform 0.2s ease, border-color 0.2s ease, background 0.2s ease;
         }
-        #daily-btn:hover { background: rgba(0,40,80,0.9); }
+        #daily-btn:hover {
+            background: linear-gradient(150deg, rgba(18, 30, 54, 0.96), rgba(11, 20, 39, 0.9));
+            border-color: #95e8ff;
+            transform: translateX(-2px);
+        }
         #daily-btn .badge {
             display: inline-block;
             background: #e94560;
@@ -157,40 +198,52 @@
             top: 52px;
             right: 10px;
             z-index: 10;
-            background: rgba(0,0,0,0.75);
-            border: 1px solid #aaa;
-            color: #aaa;
+            background: linear-gradient(150deg, rgba(18, 18, 20, 0.92), rgba(12, 12, 14, 0.8));
+            border: 1px solid rgba(190, 198, 209, 0.52);
+            color: #c9d0db;
             font-size: 13px;
-            font-weight: bold;
-            padding: 5px 11px;
+            font-weight: 700;
+            padding: 7px 11px;
             width: 136px;
             text-align: center;
             box-sizing: border-box;
-            border-radius: 8px;
+            border-radius: 10px;
             cursor: pointer;
             user-select: none;
+            box-shadow: 0 8px 22px rgba(0, 0, 0, 0.38);
+            transition: transform 0.2s ease, border-color 0.2s ease, background 0.2s ease;
         }
-        #history-btn:hover { background: rgba(30,30,30,0.9); }
+        #history-btn:hover {
+            background: linear-gradient(150deg, rgba(30, 30, 34, 0.96), rgba(17, 17, 20, 0.9));
+            border-color: rgba(237, 243, 252, 0.8);
+            transform: translateX(-2px);
+        }
 
         #medal-road-btn {
             position: absolute;
             top: 94px;
             right: 10px;
             z-index: 10;
-            background: rgba(0,0,0,0.75);
-            border: 1px solid #ffcc66;
-            color: #ffcc66;
+            background: linear-gradient(150deg, rgba(34, 22, 8, 0.92), rgba(24, 16, 8, 0.82));
+            border: 1px solid rgba(255, 204, 102, 0.72);
+            color: #ffd68a;
             font-size: 13px;
-            font-weight: bold;
-            padding: 5px 11px;
+            font-weight: 700;
+            padding: 7px 11px;
             width: 136px;
             text-align: center;
             box-sizing: border-box;
-            border-radius: 8px;
+            border-radius: 10px;
             cursor: pointer;
             user-select: none;
+            box-shadow: 0 8px 22px rgba(0, 0, 0, 0.4);
+            transition: transform 0.2s ease, border-color 0.2s ease, background 0.2s ease;
         }
-        #medal-road-btn:hover { background: rgba(60,40,0,0.9); }
+        #medal-road-btn:hover {
+            background: linear-gradient(150deg, rgba(60, 38, 10, 0.95), rgba(32, 22, 8, 0.9));
+            border-color: #ffe3b3;
+            transform: translateX(-2px);
+        }
 
         /* ── Tips / Leaderboard quick buttons ── */
         #tutorial-btn {
@@ -469,28 +522,34 @@
             display: flex;
             flex-wrap: wrap;
             justify-content: center;
-            gap: 14px;
+            gap: 10px;
             z-index: 30;
-            background: rgba(0,0,0,0.7);
-            padding: 16px 18px;
-            border-radius: 10px;
+            background: linear-gradient(155deg, rgba(8, 14, 28, 0.9), rgba(6, 10, 18, 0.82));
+            border: 1px solid var(--menu-border);
+            box-shadow: var(--menu-shadow);
+            backdrop-filter: blur(7px);
+            padding: 12px 14px;
+            border-radius: 14px;
             max-width: min(96vw, 920px);
         }
 
         .btn {
-            background-color: #444;
-            color: #fff;
-            border: none;
+            background: linear-gradient(160deg, rgba(51, 55, 69, 0.95), rgba(35, 38, 49, 0.85));
+            color: #eef5ff;
+            border: 1px solid rgba(177, 197, 230, 0.35);
             padding: 10px 15px;
-            border-radius: 8px;
+            border-radius: 10px;
             cursor: pointer;
-            font-weight: bold;
-            transition: all 0.3s ease;
+            font-weight: 700;
+            font-family: 'Rajdhani', Arial, sans-serif;
+            transition: transform 0.24s ease, border-color 0.24s ease, box-shadow 0.24s ease, background 0.24s ease;
         }
 
             .btn:hover {
-                background-color: #666;
-                transform: scale(1.05);
+                background: linear-gradient(160deg, rgba(67, 74, 92, 0.98), rgba(44, 50, 64, 0.9));
+                border-color: rgba(182, 224, 255, 0.72);
+                box-shadow: 0 8px 20px rgba(6, 16, 28, 0.58);
+                transform: translateY(-2px);
             }
 
         @keyframes battle-pulse {
@@ -499,17 +558,548 @@
         }
 
         #start-btn {
-            background-color: #cc4400;
+            background: linear-gradient(165deg, #e55c1f 0%, #b93b12 58%, #7e250c 100%);
+            border-color: rgba(255, 179, 143, 0.68);
             font-size: 16px;
             padding: 12px 22px;
             animation: battle-pulse 1.5s ease-in-out infinite;
+            font-family: 'Teko', sans-serif;
+            letter-spacing: 0.8px;
         }
 
         #start-btn:hover {
-            background-color: #ff5500;
+            background: linear-gradient(165deg, #ff783a 0%, #d84a17 58%, #9f300f 100%);
             animation: none;
-            transform: scale(1.1);
+            transform: translateY(-2px) scale(1.03);
         }
+
+        #game-mode-btn {
+            background: linear-gradient(165deg, rgba(43, 37, 85, 0.95), rgba(32, 29, 60, 0.88));
+            border-color: rgba(178, 163, 255, 0.58);
+            color: #cec7ff;
+        }
+
+        #credits-btn {
+            background: linear-gradient(165deg, rgba(16, 50, 58, 0.95), rgba(10, 34, 40, 0.88)) !important;
+            border: 1px solid rgba(96, 236, 216, 0.72) !important;
+            color: #7ff4e2 !important;
+        }
+
+        #bazzar-btn {
+            background: linear-gradient(165deg, rgba(56, 34, 14, 0.95), rgba(36, 23, 10, 0.9)) !important;
+            border: 1px solid rgba(255, 209, 125, 0.72) !important;
+            color: #ffd695 !important;
+        }
+
+        #switch-player-btn {
+            background: linear-gradient(165deg, rgba(58, 63, 72, 0.92), rgba(40, 44, 52, 0.86));
+            border-color: rgba(191, 199, 214, 0.58);
+        }
+
+        #char-showcase {
+            background: linear-gradient(165deg, rgba(11, 17, 30, 0.9), rgba(7, 10, 20, 0.84)) !important;
+            border: 1px solid rgba(119, 181, 255, 0.36) !important;
+            border-radius: 18px !important;
+            box-shadow: 0 22px 48px rgba(0, 0, 0, 0.52), inset 0 0 20px rgba(102, 229, 255, 0.08);
+            backdrop-filter: blur(8px);
+            min-width: 340px !important;
+            padding: 14px 20px !important;
+        }
+
+        #char-showcase-name {
+            font-family: 'Teko', sans-serif;
+            letter-spacing: 0.6px;
+            line-height: 1;
+        }
+
+        #char-showcase-rarity {
+            text-transform: uppercase;
+            letter-spacing: 0.9px;
+        }
+
+        #char-showcase-stats {
+            color: #c6cfdd !important;
+            letter-spacing: 0.3px;
+        }
+
+        #char-showcase-img-wrap {
+            border-radius: 14px !important;
+            border: 2px solid rgba(131, 190, 255, 0.58) !important;
+            box-shadow: 0 8px 20px rgba(7, 10, 18, 0.56);
+            background: linear-gradient(150deg, rgba(13, 18, 28, 0.95), rgba(6, 8, 14, 0.95)) !important;
+        }
+
+        #account-chip {
+            position: fixed !important;
+            left: 10px !important;
+            top: 10px !important;
+            bottom: auto !important;
+            z-index: 40 !important;
+            background: linear-gradient(155deg, rgba(8, 14, 26, 0.9), rgba(5, 8, 16, 0.84)) !important;
+            border: 1px solid rgba(95, 223, 255, 0.62) !important;
+            border-radius: 14px !important;
+            box-shadow: 0 10px 22px rgba(0, 0, 0, 0.44);
+            backdrop-filter: blur(6px);
+            min-width: 210px;
+            max-width: 360px;
+            overflow: hidden;
+        }
+
+        #account-chip-level {
+            margin-top: 2px;
+            margin-bottom: 4px;
+            padding: 6px 7px;
+            border-radius: 9px;
+            background: linear-gradient(165deg, rgba(15, 24, 40, 0.96), rgba(10, 16, 29, 0.92));
+            border: 1px solid rgba(132, 197, 255, 0.42);
+            box-shadow: inset 0 1px 0 rgba(179, 228, 255, 0.12);
+        }
+
+        .account-chip-level-toggle {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 10px;
+            color: #9fd8ff;
+            font-weight: 700;
+            margin: 0;
+            padding: 4px 6px;
+            width: 100%;
+            border: 1px solid rgba(120, 184, 247, 0.38);
+            border-radius: 8px;
+            background:
+                linear-gradient(165deg, rgba(14, 28, 47, 0.94), rgba(8, 18, 32, 0.9));
+            cursor: pointer;
+            font-family: inherit;
+            transition: border-color 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease, background 0.2s ease;
+        }
+
+        .account-chip-level-toggle:hover {
+            color: #c8ecff;
+            border-color: rgba(150, 214, 255, 0.72);
+            box-shadow: 0 0 14px rgba(88, 183, 255, 0.28);
+            transform: translateY(-1px);
+            background: linear-gradient(165deg, rgba(18, 34, 58, 0.96), rgba(10, 21, 38, 0.94));
+        }
+
+        .account-chip-level-toggle:active {
+            transform: translateY(0);
+        }
+
+        .account-chip-level-main {
+            color: #bfe9ff;
+            letter-spacing: 0.2px;
+            text-shadow: 0 0 8px rgba(86, 197, 255, 0.2);
+            font-size: 9px;
+        }
+
+        .account-chip-level-action {
+            font-size: 9px;
+            color: #8ef2ff;
+            padding: 2px 7px;
+            border-radius: 999px;
+            border: 1px solid rgba(114, 236, 255, 0.55);
+            background: linear-gradient(180deg, rgba(9, 60, 80, 0.7), rgba(8, 36, 50, 0.72));
+            box-shadow: inset 0 1px 0 rgba(161, 245, 255, 0.18);
+            letter-spacing: 0.2px;
+            min-width: 56px;
+            text-align: center;
+        }
+
+        .account-chip-level-body {
+            display: none;
+            margin-top: 5px;
+        }
+
+        .account-chip-level-body.open {
+            display: block;
+        }
+
+        .account-chip-next-reward-hero {
+            border: 1px solid rgba(127, 208, 255, 0.62);
+            border-radius: 9px;
+            padding: 6px 8px;
+            margin-bottom: 6px;
+            background: linear-gradient(140deg, rgba(12, 42, 66, 0.94), rgba(9, 22, 38, 0.96));
+            box-shadow: 0 0 14px rgba(77, 195, 255, 0.2);
+        }
+
+        .account-chip-next-reward-hero.empty {
+            border-color: rgba(118, 149, 182, 0.52);
+            background: linear-gradient(140deg, rgba(18, 24, 35, 0.95), rgba(10, 15, 24, 0.95));
+            box-shadow: none;
+        }
+
+        .account-chip-next-reward-kicker {
+            font-size: 9px;
+            font-weight: 800;
+            letter-spacing: 0.8px;
+            color: #7ce7ff;
+            margin-bottom: 2px;
+        }
+
+        .account-chip-next-reward-name {
+            font-size: 12px;
+            font-weight: 700;
+            color: #ebf9ff;
+            line-height: 1.2;
+        }
+
+        .account-chip-next-reward-meta {
+            margin-top: 2px;
+            font-size: 10px;
+            color: #97c9ee;
+            font-weight: 600;
+        }
+
+        .account-chip-level-track {
+            height: 7px;
+            border-radius: 999px;
+            overflow: hidden;
+            background: linear-gradient(180deg, rgba(9, 18, 33, 0.96), rgba(7, 14, 26, 0.96));
+            border: 1px solid rgba(102, 165, 234, 0.42);
+            box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.42);
+        }
+
+        .account-chip-level-fill {
+            height: 100%;
+            border-radius: 999px;
+            background: linear-gradient(90deg, #3dd0ff 0%, #4ae8d8 55%, #ffcc66 100%);
+            box-shadow: 0 0 10px rgba(74, 232, 216, 0.45);
+            transition: width 0.25s ease;
+        }
+
+        .account-chip-level-next {
+            margin-top: 5px;
+            font-size: 10px;
+            color: #84afdb;
+            letter-spacing: 0.2px;
+            display: none;
+        }
+
+        .account-chip-roadmap-label {
+            margin-top: 5px;
+            font-size: 9px;
+            color: #7da8cf;
+            font-weight: 600;
+            letter-spacing: 0.2px;
+        }
+
+        .account-chip-reward-label {
+            margin-top: 7px;
+            font-size: 10px;
+            color: #7fd8ff;
+            font-weight: 700;
+            letter-spacing: 0.2px;
+        }
+
+        .account-chip-upcoming {
+            margin-top: 4px;
+            display: grid;
+            gap: 4px;
+        }
+
+        .account-chip-reward-step {
+            display: grid;
+            grid-template-columns: 18px 1fr auto;
+            align-items: center;
+            gap: 6px;
+            border: 1px solid rgba(115, 171, 233, 0.44);
+            border-radius: 8px;
+            padding: 5px 6px;
+            background: linear-gradient(165deg, rgba(11, 22, 38, 0.96), rgba(8, 14, 26, 0.94));
+        }
+
+        .account-chip-reward-step.ready {
+            border-color: rgba(94, 236, 162, 0.68);
+            background: linear-gradient(165deg, rgba(11, 45, 34, 0.95), rgba(7, 24, 20, 0.95));
+            box-shadow: 0 0 10px rgba(86, 224, 159, 0.18);
+        }
+
+        .account-chip-reward-step-index {
+            width: 18px;
+            height: 18px;
+            border-radius: 999px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 9px;
+            font-weight: 700;
+            color: #a8d9ff;
+            border: 1px solid rgba(121, 194, 255, 0.56);
+            background: rgba(15, 40, 63, 0.74);
+        }
+
+        .account-chip-reward-step-main {
+            min-width: 0;
+        }
+
+        .account-chip-reward-step-title {
+            font-size: 10px;
+            color: #e3f5ff;
+            font-weight: 600;
+            line-height: 1.2;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .account-chip-reward-step-sub {
+            margin-top: 1px;
+            font-size: 9px;
+            color: #86b5db;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .account-chip-reward-step-state {
+            font-size: 9px;
+            color: #9ed4ff;
+            font-weight: 700;
+            border: 1px solid rgba(114, 183, 240, 0.5);
+            border-radius: 999px;
+            padding: 1px 6px;
+            background: rgba(10, 28, 47, 0.62);
+            white-space: nowrap;
+        }
+
+        .account-chip-reward-step.ready .account-chip-reward-step-index {
+            color: #d6ffe7;
+            border-color: rgba(124, 244, 176, 0.74);
+            background: rgba(12, 55, 39, 0.76);
+        }
+
+        .account-chip-reward-step.ready .account-chip-reward-step-state {
+            color: #9bf6be;
+            border-color: rgba(126, 244, 181, 0.65);
+            background: rgba(8, 43, 32, 0.7);
+        }
+
+        .account-chip-reward-empty {
+            border: 1px dashed rgba(113, 161, 212, 0.45);
+            border-radius: 7px;
+            padding: 5px 6px;
+            font-size: 10px;
+            color: #9eb8d4;
+            text-align: center;
+            background: rgba(7, 13, 24, 0.75);
+        }
+
+        .account-chip-roadmap-shell {
+            position: relative;
+            margin-top: 3px;
+            width: min(320px, 100%);
+            overflow: hidden;
+        }
+
+        .account-chip-roadmap-rail {
+            position: absolute;
+            left: 0;
+            right: 0;
+            top: 29px;
+            height: 6px;
+            border-radius: 999px;
+            background: linear-gradient(90deg, #ff7f2a 0%, #ff5425 48%, #7f0f4e 100%);
+            box-shadow: 0 0 8px rgba(255, 109, 39, 0.35);
+            pointer-events: none;
+        }
+
+        .account-chip-roadmap {
+            position: relative;
+            margin-top: 0;
+            display: flex;
+            gap: 7px;
+            overflow-x: auto;
+            overflow-y: hidden;
+            padding: 2px 2px 3px;
+            width: 100%;
+            max-width: 100%;
+            flex-wrap: nowrap;
+            scroll-snap-type: x proximity;
+            scrollbar-width: thin;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        .account-chip-roadmap::-webkit-scrollbar {
+            height: 5px;
+            background: rgba(7, 16, 29, 0.82);
+        }
+
+        .account-chip-roadmap::-webkit-scrollbar-thumb {
+            background: rgba(255, 151, 72, 0.7);
+            border-radius: 999px;
+        }
+
+        .account-chip-milestone {
+            flex: 0 0 66px;
+            min-width: 66px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
+            flex-shrink: 0;
+            scroll-snap-align: start;
+            opacity: 0.68;
+            transition: transform 0.16s ease, opacity 0.16s ease;
+        }
+
+        .account-chip-milestone-tile {
+            width: 62px;
+            height: 46px;
+            border-radius: 8px;
+            border: 2px solid rgba(121, 222, 255, 0.88);
+            background: linear-gradient(165deg, #19a9ef 0%, #0f76d8 100%);
+            color: #ecf8ff;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            line-height: 1;
+            position: relative;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.35);
+        }
+
+        .account-chip-milestone-mark {
+            position: absolute;
+            left: -6px;
+            top: -6px;
+            width: 13px;
+            height: 13px;
+            border-radius: 999px;
+            font-size: 9px;
+            font-weight: 800;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #09222e;
+            background: #9cf6ff;
+            border: 1px solid rgba(255, 255, 255, 0.7);
+        }
+
+        .account-chip-milestone-icon {
+            font-size: 11px;
+        }
+
+        .account-chip-milestone-hero-icon {
+            width: 14px;
+            height: 14px;
+            border-radius: 5px;
+            object-fit: cover;
+            border: 1px solid rgba(255, 255, 255, 0.65);
+            background: rgba(4, 18, 29, 0.7);
+        }
+
+        .account-chip-milestone-value {
+            margin-top: 3px;
+            font-size: 10px;
+            font-weight: 800;
+            letter-spacing: 0.2px;
+        }
+
+        .account-chip-milestone-value.hero-name {
+            font-size: 7px;
+            margin-top: 3px;
+            max-width: 54px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            letter-spacing: 0.1px;
+        }
+
+        .account-chip-milestone-target {
+            font-size: 7px;
+            color: #86bde8;
+            font-weight: 800;
+            letter-spacing: 0.25px;
+        }
+
+        .account-chip-milestone-needed {
+            font-size: 7px;
+            color: #9bcff3;
+            font-weight: 700;
+            border: 1px solid rgba(97, 151, 204, 0.5);
+            border-radius: 999px;
+            padding: 1px 4px;
+            background: rgba(8, 26, 45, 0.68);
+            line-height: 1.2;
+        }
+
+        .account-chip-milestone.current,
+        .account-chip-milestone.unlocked {
+            opacity: 1;
+        }
+
+        .account-chip-milestone.current {
+            transform: translateY(-1px);
+        }
+
+        .account-chip-milestone.unlocked .account-chip-milestone-tile {
+            border-color: rgba(124, 255, 165, 0.9);
+            background: linear-gradient(165deg, #1db98d 0%, #118769 100%);
+        }
+
+        .account-chip-milestone.unlocked .account-chip-milestone-mark {
+            background: #94ffbc;
+        }
+
+        .account-chip-milestone.current .account-chip-milestone-tile {
+            border-color: rgba(255, 243, 132, 0.95);
+            background: linear-gradient(165deg, #ffd84a 0%, #ffb512 100%);
+            color: #1f1708;
+            box-shadow: 0 0 14px rgba(255, 208, 76, 0.48);
+        }
+
+        .account-chip-milestone.current .account-chip-milestone-mark {
+            background: #fff6c7;
+            color: #4a2f07;
+        }
+
+        .account-chip-milestone.current .account-chip-milestone-target {
+            color: #ffe090;
+        }
+
+        .account-chip-milestone.current .account-chip-milestone-needed {
+            color: #fff0b4;
+            border-color: rgba(255, 226, 129, 0.72);
+            background: rgba(98, 70, 11, 0.64);
+        }
+
+        .account-chip-milestone.unlocked .account-chip-milestone-needed {
+            color: #c9ffd9;
+            border-color: rgba(127, 244, 167, 0.62);
+            background: rgba(10, 59, 43, 0.65);
+        }
+
+        #account-chip-stats {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(66px, 1fr));
+            gap: 6px;
+            margin-top: 2px;
+            font-size: 11px !important;
+            line-height: 1.2 !important;
+        }
+
+        .account-chip-stat {
+            background: linear-gradient(165deg, rgba(13, 19, 34, 0.95), rgba(8, 13, 24, 0.92));
+            border: 1px solid rgba(110, 155, 215, 0.45);
+            border-radius: 8px;
+            padding: 5px 6px;
+            min-width: 0;
+        }
+
+        .account-chip-stat .v {
+            display: block;
+            margin-top: 2px;
+            font-size: 16px;
+            font-weight: 700;
+            color: #cfefff;
+        }
+
+        .account-chip-stat.coins .v { color: #ffd166; }
+        .account-chip-stat.sparks .v { color: #66f4e3; }
+        .account-chip-stat.medals .v { color: #ffbf4d; }
+        .account-chip-stat.marks .v { color: #caa8ff; }
 
             .btn:disabled {
                 background-color: #777;
@@ -519,29 +1109,31 @@
 
         .modal-panel {
             display: none;
-            position: absolute;
-            left: 50%;
-            top: 50%;
-            transform: translate(-50%, -50%);
-            background: rgba(0,0,0,0.95);
+            position: fixed;
+            inset: 0;
+            transform: none;
+            background:
+                radial-gradient(circle at 15% 12%, rgba(54, 196, 255, 0.12), transparent 32%),
+                radial-gradient(circle at 86% 86%, rgba(255, 177, 66, 0.1), transparent 34%),
+                rgba(5, 10, 19, 0.98);
             color: #fff;
-            padding: 20px;
-            border-radius: 12px;
-            z-index: 1000;
-            max-width: 90vw;
-            width: 800px;
-            max-height: 80vh;
-            overflow: auto;
-            border: 2px solid #ffcc00;
-            box-shadow: 0 0 30px rgba(255, 204, 0, 0.3);
+            padding: 76px 26px 26px;
+            border-radius: 0;
+            z-index: 1300;
+            max-width: none;
+            width: 100vw;
+            max-height: none;
+            height: 100vh;
+            overflow-y: auto;
+            border: none;
+            box-shadow: none;
         }
 
         @media (max-width: 600px) {
             .modal-panel {
-                padding: 14px 10px;
-                max-height: 85vh;
-                width: 96vw !important;
-                top: 48% !important;
+                padding: 68px 14px 16px;
+                width: 100vw !important;
+                height: 100vh;
             }
         }
 
@@ -549,17 +1141,299 @@
                 margin-top: 0;
                 color: #ffcc00;
                 text-align: center;
-                font-size: 24px;
+                font-size: clamp(30px, 4.2vw, 46px);
+                line-height: 1;
+                letter-spacing: 0.6px;
+                font-family: 'Teko', sans-serif;
             }
+
+        .modal-nav-back,
+        .menu-back-btn {
+            position: fixed;
+            left: 16px;
+            top: 14px;
+            z-index: 1400;
+            background: linear-gradient(160deg, rgba(20, 30, 49, 0.96), rgba(10, 18, 32, 0.95));
+            color: #bfe7ff;
+            border: 1px solid rgba(124, 203, 255, 0.62);
+            border-radius: 11px;
+            padding: 8px 14px;
+            font-size: 14px;
+            font-weight: 700;
+            cursor: pointer;
+            box-shadow: 0 6px 16px rgba(0, 0, 0, 0.36);
+        }
+
+        .modal-nav-back:hover,
+        .menu-back-btn:hover {
+            border-color: rgba(174, 227, 255, 0.9);
+            color: #e6f6ff;
+            transform: translateY(-1px);
+        }
 
         .modal-close {
             display: block;
-            margin: 15px auto 0;
+            margin: 24px auto 0;
             background: #ff4444;
+            min-width: 180px;
+            font-size: 16px;
+            padding: 10px 18px;
         }
 
             .modal-close:hover {
                 background: #ff6666;
+            }
+
+            #medal-road-panel,
+            #credits-panel {
+                background: linear-gradient(170deg, rgba(6, 13, 27, 0.97), rgba(9, 16, 33, 0.95));
+                border: none;
+                box-shadow: none;
+                border-radius: 0;
+            }
+
+            #medal-road-container {
+                background: linear-gradient(170deg, rgba(7, 18, 32, 0.96), rgba(8, 14, 26, 0.93)) !important;
+                border: 1px solid rgba(95, 186, 255, 0.42) !important;
+                border-radius: 10px !important;
+                max-height: min(74vh, 860px);
+                overflow-y: auto;
+            }
+
+            #medal-road-timeline {
+                display: flex;
+                flex-direction: column;
+                gap: 8px;
+            }
+
+            .medal-road-row {
+                display: grid;
+                grid-template-columns: 96px 1fr auto;
+                gap: 10px;
+                align-items: center;
+                border-radius: 10px;
+                padding: 10px;
+                border: 1px solid rgba(114, 170, 228, 0.5);
+                background: linear-gradient(165deg, rgba(12, 24, 40, 0.95), rgba(8, 14, 27, 0.94));
+            }
+
+            .medal-road-row.ready {
+                border-color: rgba(255, 212, 95, 0.72);
+                background: linear-gradient(165deg, rgba(51, 39, 15, 0.92), rgba(20, 17, 10, 0.94));
+            }
+
+            .medal-road-row.claimed {
+                border-color: rgba(120, 241, 176, 0.7);
+                background: linear-gradient(165deg, rgba(11, 44, 35, 0.92), rgba(8, 24, 20, 0.94));
+            }
+
+            .medal-road-level-pill {
+                display: flex;
+                flex-direction: column;
+                gap: 2px;
+                padding: 6px 7px;
+                border-radius: 8px;
+                border: 1px solid rgba(111, 169, 233, 0.56);
+                background: rgba(11, 29, 50, 0.66);
+                text-align: center;
+            }
+
+            .medal-road-level-main {
+                color: #d8f5ff;
+                font-weight: 800;
+                font-size: 14px;
+            }
+
+            .medal-road-level-medals {
+                color: #88b8dd;
+                font-size: 10px;
+                font-weight: 700;
+            }
+
+            .medal-road-reward-block {
+                min-width: 0;
+            }
+
+            .medal-road-reward-top {
+                display: flex;
+                align-items: center;
+                gap: 8px;
+            }
+
+            .medal-road-reward-icon,
+            .medal-road-reward-icon-wrap {
+                width: 28px;
+                height: 28px;
+                border-radius: 8px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                background: rgba(14, 33, 54, 0.74);
+                border: 1px solid rgba(120, 179, 236, 0.5);
+                flex-shrink: 0;
+            }
+
+            .medal-road-reward-icon {
+                font-size: 14px;
+            }
+
+            .medal-road-reward-hero-icon {
+                width: 24px;
+                height: 24px;
+                border-radius: 7px;
+                object-fit: cover;
+            }
+
+            .medal-road-reward-copy {
+                min-width: 0;
+            }
+
+            .medal-road-reward-title {
+                font-size: 13px;
+                font-weight: 700;
+                color: #eaf7ff;
+                white-space: nowrap;
+                overflow: hidden;
+                text-overflow: ellipsis;
+            }
+
+            .medal-road-reward-meta {
+                margin-top: 1px;
+                font-size: 10px;
+                color: #8bb8dd;
+                font-weight: 600;
+            }
+
+            .medal-road-status {
+                margin-top: 5px;
+                font-size: 10px;
+                font-weight: 700;
+                color: #95c8ef;
+            }
+
+            .medal-road-row.ready .medal-road-status {
+                color: #ffd166;
+            }
+
+            .medal-road-row.claimed .medal-road-status {
+                color: #99f4c3;
+            }
+
+            .medal-road-progress-tag {
+                font-size: 10px;
+                font-weight: 700;
+                color: #b6ddff;
+                border: 1px solid rgba(120, 177, 230, 0.5);
+                border-radius: 999px;
+                padding: 3px 8px;
+                background: rgba(11, 29, 48, 0.7);
+                white-space: nowrap;
+            }
+
+            .medal-road-row.claimed .medal-road-progress-tag {
+                border-color: rgba(130, 247, 185, 0.56);
+                color: #ccffe2;
+                background: rgba(10, 58, 43, 0.63);
+            }
+
+            #credits-progress-bar {
+                padding: 12px;
+                border-radius: 10px;
+                border: 1px solid rgba(83, 201, 255, 0.36);
+                background: linear-gradient(170deg, rgba(9, 21, 37, 0.92), rgba(8, 14, 25, 0.94));
+                margin-bottom: 12px;
+            }
+
+            #credits-tier-list {
+                max-height: min(74vh, 860px);
+                overflow-y: auto;
+                padding-right: 2px;
+            }
+
+            .credits-cards-shell {
+                width: 100%;
+                display: block;
+                min-height: 300px;
+                margin: 12px 0;
+                background: linear-gradient(135deg, #0a0e1a 0%, #0f1323 100%);
+                border-radius: 12px;
+                border: 2px solid rgba(90, 180, 255, 0.28);
+                padding: 12px;
+            }
+
+            .credits-cards-strip {
+                display: flex;
+                gap: 12px;
+                overflow-x: auto;
+                overflow-y: visible;
+                width: 100%;
+                padding-bottom: 4px;
+            }
+
+            .credits-player-card {
+                flex-shrink: 0;
+                width: 200px;
+                background: linear-gradient(135deg, #1a1a2e 0%, #242838 100%);
+                border: 3px solid rgba(120, 185, 247, 0.45);
+                border-radius: 14px;
+                padding: 12px;
+                text-align: center;
+                cursor: pointer;
+            }
+
+            .credits-player-card.selected {
+                transform: translateY(-1px);
+            }
+
+            .credits-player-card-media {
+                width: 100%;
+                height: 150px;
+                border-radius: 10px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                margin-bottom: 10px;
+                overflow: hidden;
+                border: 2px solid rgba(255, 255, 255, 0.15);
+            }
+
+            .credits-player-card-name {
+                margin: 6px 0 2px;
+                font-size: 13px;
+                color: #fff;
+                font-weight: bold;
+            }
+
+            .credits-player-card-rarity {
+                margin: 0 0 6px;
+                font-size: 11px;
+                font-weight: bold;
+            }
+
+            .credits-player-card-stats {
+                font-size: 10px;
+                color: #ccc;
+                margin-bottom: 8px;
+            }
+
+            .credits-player-card-action {
+                width: 100%;
+                padding: 8px 4px;
+                font-size: 12px;
+                border-radius: 6px;
+                border: none;
+                font-weight: bold;
+            }
+
+            @media (max-width: 700px) {
+                .medal-road-row {
+                    grid-template-columns: 82px 1fr;
+                }
+
+                .medal-road-progress-tag {
+                    grid-column: 1 / -1;
+                    justify-self: start;
+                }
             }
 
         #gameCanvas {
@@ -590,7 +1464,7 @@
                 right: 8px;
                 font-size: 12px;
                 padding: 5px 9px;
-                width: 118px;
+                width: 124px;
             }
 
             #history-btn {
@@ -598,7 +1472,7 @@
                 right: 8px;
                 font-size: 11px;
                 padding: 4px 8px;
-                width: 118px;
+                width: 124px;
             }
 
             #medal-road-btn {
@@ -606,7 +1480,7 @@
                 right: 8px;
                 font-size: 11px;
                 padding: 4px 8px;
-                width: 118px;
+                width: 124px;
             }
 
             #tutorial-btn {
@@ -659,8 +1533,98 @@
 
             #account-chip {
                 top: 10px !important;
+                left: 10px !important;
+                bottom: auto !important;
                 max-width: 200px;
                 padding: 8px 12px;
+            }
+
+            #account-chip-level {
+                padding: 6px 7px;
+                margin-bottom: 3px;
+            }
+
+            .account-chip-level-toggle {
+                font-size: 10px;
+                padding: 3px 5px;
+            }
+
+            .account-chip-level-action {
+                font-size: 9px;
+                padding: 1px 5px;
+            }
+
+            .account-chip-roadmap {
+                gap: 6px;
+                padding-bottom: 6px;
+            }
+
+            .account-chip-roadmap-shell {
+                width: 100%;
+            }
+
+            .account-chip-milestone {
+                flex: 0 0 62px;
+                min-width: 62px;
+            }
+
+            .account-chip-milestone-tile {
+                width: 58px;
+                height: 44px;
+            }
+
+            .account-chip-milestone-mark {
+                width: 13px;
+                height: 13px;
+                font-size: 9px;
+            }
+
+            .account-chip-milestone-icon {
+                font-size: 11px;
+            }
+
+            .account-chip-milestone-hero-icon {
+                width: 12px;
+                height: 12px;
+            }
+
+            .account-chip-milestone-value {
+                font-size: 9px;
+            }
+
+            .account-chip-milestone-value.hero-name {
+                font-size: 6px;
+                max-width: 50px;
+            }
+
+            .account-chip-milestone-target {
+                font-size: 9px;
+            }
+
+            .account-chip-milestone-needed {
+                font-size: 7px;
+                padding: 1px 4px;
+            }
+
+            .account-chip-level-track {
+                height: 7px;
+            }
+
+            .account-chip-level-next {
+                font-size: 9px;
+            }
+
+            #account-chip-stats {
+                grid-template-columns: 1fr 1fr;
+                gap: 5px;
+            }
+
+            .account-chip-stat {
+                padding: 4px 5px;
+            }
+
+            .account-chip-stat .v {
+                font-size: 14px;
             }
 
             .menu {
@@ -669,7 +1633,7 @@
                 max-height: 50vh;
                 overflow-y: auto;
                 gap: 8px;
-                padding: 8px;
+                padding: 10px;
             }
 
             .menu .btn {
