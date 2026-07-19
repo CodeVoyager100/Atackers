@@ -14,9 +14,9 @@
             padding: 0;
             overflow: hidden;
             background:
-                radial-gradient(circle at 16% 14%, rgba(16, 155, 235, 0.2), transparent 34%),
-                radial-gradient(circle at 85% 88%, rgba(255, 174, 54, 0.14), transparent 36%),
-                linear-gradient(170deg, #020307 0%, #070d19 54%, #05070f 100%);
+                radial-gradient(circle at 16% 14%, rgba(48, 186, 255, 0.34), transparent 36%),
+                radial-gradient(circle at 85% 88%, rgba(255, 188, 78, 0.24), transparent 38%),
+                linear-gradient(170deg, #071325 0%, #0b1c35 54%, #0a162a 100%);
             color: white;
             font-family: 'Rajdhani', Arial, sans-serif;
             letter-spacing: 0.2px;
@@ -65,11 +65,11 @@
             top: 10px;
             left: 10px;
             z-index: 10;
-            background: linear-gradient(165deg, rgba(9, 15, 28, 0.88), rgba(7, 10, 18, 0.78));
-            border: 1px solid rgba(122, 196, 255, 0.4);
-            box-shadow: 0 10px 22px rgba(0, 0, 0, 0.45);
+            background: linear-gradient(165deg, rgba(13, 24, 45, 0.9), rgba(10, 18, 34, 0.84));
+            border: 1px solid rgba(149, 214, 255, 0.58);
+            box-shadow: 0 10px 22px rgba(0, 0, 0, 0.34);
             backdrop-filter: blur(6px);
-            padding: 8px 12px;
+            padding: 10px 14px;
             border-radius: 12px;
             cursor: pointer;
             user-select: none;
@@ -124,19 +124,19 @@
             top: 10px;
             right: 10px;
             z-index: 10;
-            background: linear-gradient(150deg, rgba(10, 18, 34, 0.9), rgba(8, 14, 28, 0.78));
-            border: 1px solid rgba(86, 198, 255, 0.66);
-            color: #98e5ff;
-            font-size: 13px;
+            background: linear-gradient(150deg, rgba(20, 36, 63, 0.94), rgba(14, 27, 48, 0.84));
+            border: 1px solid rgba(132, 221, 255, 0.8);
+            color: #b5edff;
+            font-size: 16px;
             font-weight: 700;
-            padding: 8px 12px;
-            width: 136px;
+            padding: 10px 14px;
+            width: 172px;
             text-align: center;
             box-sizing: border-box;
-            border-radius: 10px;
+            border-radius: 6px;
             cursor: pointer;
             user-select: none;
-            box-shadow: 0 8px 22px rgba(0, 0, 0, 0.42);
+            box-shadow: 0 9px 24px rgba(0, 0, 0, 0.35);
             transition: transform 0.2s ease, border-color 0.2s ease, background 0.2s ease;
         }
         #daily-btn:hover {
@@ -195,22 +195,23 @@
         /* ── Match History ── */
         #history-btn {
             position: absolute;
-            top: 52px;
-            right: 10px;
+            top: clamp(220px, 35vh, 360px);
+            left: 10px;
+            right: auto;
             z-index: 10;
-            background: linear-gradient(150deg, rgba(18, 18, 20, 0.92), rgba(12, 12, 14, 0.8));
-            border: 1px solid rgba(190, 198, 209, 0.52);
-            color: #c9d0db;
-            font-size: 13px;
+            background: linear-gradient(150deg, rgba(25, 31, 42, 0.94), rgba(16, 23, 34, 0.86));
+            border: 1px solid rgba(216, 226, 240, 0.72);
+            color: #dde8f6;
+            font-size: 16px;
             font-weight: 700;
-            padding: 7px 11px;
-            width: 136px;
+            padding: 10px 14px;
+            width: 172px;
             text-align: center;
             box-sizing: border-box;
-            border-radius: 10px;
+            border-radius: 6px;
             cursor: pointer;
             user-select: none;
-            box-shadow: 0 8px 22px rgba(0, 0, 0, 0.38);
+            box-shadow: 0 9px 24px rgba(0, 0, 0, 0.32);
             transition: transform 0.2s ease, border-color 0.2s ease, background 0.2s ease;
         }
         #history-btn:hover {
@@ -221,22 +222,23 @@
 
         #medal-road-btn {
             position: absolute;
-            top: 94px;
-            right: 10px;
+            top: calc(clamp(220px, 35vh, 360px) + 66px);
+            left: 10px;
+            right: auto;
             z-index: 10;
-            background: linear-gradient(150deg, rgba(34, 22, 8, 0.92), rgba(24, 16, 8, 0.82));
-            border: 1px solid rgba(255, 204, 102, 0.72);
-            color: #ffd68a;
-            font-size: 13px;
+            background: linear-gradient(150deg, rgba(66, 44, 16, 0.92), rgba(42, 29, 14, 0.84));
+            border: 1px solid rgba(255, 220, 145, 0.8);
+            color: #ffe3aa;
+            font-size: 16px;
             font-weight: 700;
-            padding: 7px 11px;
-            width: 136px;
+            padding: 10px 14px;
+            width: 172px;
             text-align: center;
             box-sizing: border-box;
-            border-radius: 10px;
+            border-radius: 6px;
             cursor: pointer;
             user-select: none;
-            box-shadow: 0 8px 22px rgba(0, 0, 0, 0.4);
+            box-shadow: 0 9px 24px rgba(0, 0, 0, 0.34);
             transition: transform 0.2s ease, border-color 0.2s ease, background 0.2s ease;
         }
         #medal-road-btn:hover {
@@ -524,12 +526,12 @@
             justify-content: center;
             gap: 10px;
             z-index: 30;
-            background: linear-gradient(155deg, rgba(8, 14, 28, 0.9), rgba(6, 10, 18, 0.82));
+            background: linear-gradient(155deg, rgba(14, 24, 43, 0.9), rgba(10, 17, 30, 0.85));
             border: 1px solid var(--menu-border);
             box-shadow: var(--menu-shadow);
             backdrop-filter: blur(7px);
-            padding: 12px 14px;
-            border-radius: 14px;
+            padding: 15px 18px;
+            border-radius: 8px;
             max-width: min(96vw, 920px);
         }
 
@@ -537,12 +539,65 @@
             background: linear-gradient(160deg, rgba(51, 55, 69, 0.95), rgba(35, 38, 49, 0.85));
             color: #eef5ff;
             border: 1px solid rgba(177, 197, 230, 0.35);
-            padding: 10px 15px;
-            border-radius: 10px;
+            padding: 13px 20px;
+            border-radius: 6px;
             cursor: pointer;
             font-weight: 700;
+            font-size: 16px;
             font-family: 'Rajdhani', Arial, sans-serif;
             transition: transform 0.24s ease, border-color 0.24s ease, box-shadow 0.24s ease, background 0.24s ease;
+        }
+
+        .game-modes-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 18px;
+            margin: 20px 0;
+            width: min(1300px, 100%);
+        }
+
+        .mode-card {
+            min-height: 168px;
+            padding: 18px 16px;
+            border-radius: 8px;
+            border: 1px solid rgba(141, 208, 255, 0.48);
+            background: linear-gradient(165deg, rgba(16, 28, 48, 0.92), rgba(10, 19, 33, 0.88));
+            cursor: pointer;
+            box-shadow: 0 10px 24px rgba(0, 0, 0, 0.24);
+            transition: transform 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+            box-sizing: border-box;
+        }
+
+        .mode-card:hover {
+            transform: translateY(-2px);
+            border-color: rgba(191, 232, 255, 0.92);
+            box-shadow: 0 14px 28px rgba(0, 0, 0, 0.3);
+        }
+
+        .mode-card h3 {
+            margin: 0 0 8px;
+            font-size: 24px;
+            line-height: 1.05;
+            font-family: 'Teko', sans-serif;
+            letter-spacing: 0.5px;
+        }
+
+        .mode-card p {
+            margin: 0 0 10px;
+            font-size: 15px;
+            color: #d4e9fb;
+            line-height: 1.35;
+        }
+
+        #player-list {
+            display: grid !important;
+            grid-template-columns: repeat(auto-fill, minmax(126px, 1fr));
+            gap: 14px !important;
+            justify-items: center;
+            width: 100%;
+            margin: 0 auto;
+            padding: 8px 0 14px;
+            box-sizing: border-box;
         }
 
             .btn:hover {
@@ -597,10 +652,10 @@
         }
 
         #char-showcase {
-            background: linear-gradient(165deg, rgba(11, 17, 30, 0.9), rgba(7, 10, 20, 0.84)) !important;
-            border: 1px solid rgba(119, 181, 255, 0.36) !important;
+            background: linear-gradient(165deg, rgba(16, 27, 47, 0.9), rgba(10, 19, 36, 0.86)) !important;
+            border: 1px solid rgba(149, 204, 255, 0.52) !important;
             border-radius: 18px !important;
-            box-shadow: 0 22px 48px rgba(0, 0, 0, 0.52), inset 0 0 20px rgba(102, 229, 255, 0.08);
+            box-shadow: 0 22px 48px rgba(0, 0, 0, 0.4), inset 0 0 20px rgba(120, 234, 255, 0.14);
             backdrop-filter: blur(8px);
             min-width: 340px !important;
             padding: 14px 20px !important;
@@ -635,10 +690,10 @@
             top: 10px !important;
             bottom: auto !important;
             z-index: 40 !important;
-            background: linear-gradient(155deg, rgba(8, 14, 26, 0.9), rgba(5, 8, 16, 0.84)) !important;
-            border: 1px solid rgba(95, 223, 255, 0.62) !important;
-            border-radius: 14px !important;
-            box-shadow: 0 10px 22px rgba(0, 0, 0, 0.44);
+            background: linear-gradient(155deg, rgba(13, 24, 43, 0.92), rgba(8, 16, 31, 0.88)) !important;
+            border: 1px solid rgba(130, 224, 255, 0.74) !important;
+            border-radius: 8px !important;
+            box-shadow: 0 10px 22px rgba(0, 0, 0, 0.32);
             backdrop-filter: blur(6px);
             min-width: 210px;
             max-width: 360px;
@@ -1121,12 +1176,32 @@
             border-radius: 0;
             z-index: 1300;
             max-width: none;
-            width: 100vw;
+            width: 100vw !important;
             max-height: none;
-            height: 100vh;
+            height: 100vh !important;
             overflow-y: auto;
             border: none;
             box-shadow: none;
+            box-sizing: border-box;
+        }
+
+        .modal-panel > * {
+            width: min(1200px, 100%);
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        #player-menu {
+            width: 100vw !important;
+            height: 100vh !important;
+            max-width: none !important;
+            max-height: none !important;
+            padding: 72px 20px 20px;
+        }
+
+        #player-menu > * {
+            width: 100%;
+            max-width: none;
         }
 
         @media (max-width: 600px) {
@@ -1192,27 +1267,286 @@
                 border-radius: 0;
             }
 
+            #medal-road-panel {
+                width: 100vw !important;
+                max-width: none !important;
+                height: 100vh !important;
+                max-height: none !important;
+                padding: 62px 26px 18px;
+                overflow: hidden;
+            }
+
+            #medal-road-panel > h2 {
+                font-size: clamp(40px, 6.2vw, 72px);
+                margin-bottom: 6px;
+            }
+
+            #medal-road-panel > p {
+                font-size: clamp(15px, 2vw, 24px) !important;
+                margin-top: 0 !important;
+            }
+
             #medal-road-container {
                 background: linear-gradient(170deg, rgba(7, 18, 32, 0.96), rgba(8, 14, 26, 0.93)) !important;
                 border: 1px solid rgba(95, 186, 255, 0.42) !important;
-                border-radius: 10px !important;
-                max-height: min(74vh, 860px);
+                border-radius: 14px !important;
+                max-height: calc(100vh - 172px);
                 overflow-y: auto;
+                width: min(1800px, 100%);
+                margin: 10px auto 0;
+                padding: 18px;
+                box-sizing: border-box;
             }
 
             #medal-road-timeline {
                 display: flex;
                 flex-direction: column;
-                gap: 8px;
+                gap: 12px;
+            }
+
+            #account-chip-level .account-chip-level-toggle,
+            #account-chip-level .account-chip-level-action,
+            #account-chip-level .account-chip-roadmap-shell,
+            #account-chip-level .account-chip-roadmap,
+            #account-chip-level .account-chip-roadmap-label,
+            #account-chip-level .account-chip-level-body {
+                display: none !important;
+            }
+
+            .medal-road-bs-summary {
+                display: grid;
+                grid-template-columns: 1fr auto;
+                gap: 10px 16px;
+                background: linear-gradient(160deg, rgba(15, 31, 58, 0.98), rgba(11, 19, 37, 0.94));
+                border: 2px solid rgba(119, 207, 255, 0.5);
+                border-radius: 18px;
+                padding: 16px;
+            }
+
+            .medal-road-bs-summary-label {
+                color: #8fd0f4;
+                font-size: 15px;
+                font-weight: 700;
+                letter-spacing: 0.4px;
+                text-transform: uppercase;
+            }
+
+            .medal-road-bs-summary-title {
+                color: #f4fcff;
+                font-size: clamp(22px, 3.2vw, 34px);
+                font-weight: 800;
+                line-height: 1.1;
+            }
+
+            .medal-road-bs-summary-sub,
+            .medal-road-bs-summary-right {
+                color: #9ac2e2;
+                font-size: 14px;
+                font-weight: 700;
+            }
+
+            .medal-road-bs-progress {
+                grid-column: 1 / -1;
+                height: 16px;
+                border-radius: 999px;
+                background: rgba(8, 24, 48, 0.86);
+                border: 1px solid rgba(112, 187, 238, 0.5);
+                overflow: hidden;
+            }
+
+            .medal-road-bs-progress-fill {
+                height: 100%;
+                background: linear-gradient(90deg, #3ac8ff, #49e5d5, #ffd569);
+                border-radius: 999px;
+            }
+
+            .medal-road-bs-shell {
+                width: 100%;
+                overflow-x: auto;
+                overflow-y: hidden;
+                padding-bottom: 10px;
+            }
+
+            .medal-road-bs-track {
+                display: inline-flex;
+                align-items: center;
+                gap: 10px;
+                min-width: 100%;
+                padding: 8px 4px 4px;
+            }
+
+            .medal-road-bs-card {
+                width: 220px;
+                min-height: 260px;
+                border-radius: 16px;
+                padding: 12px;
+                background: linear-gradient(165deg, rgba(12, 25, 43, 0.97), rgba(8, 15, 28, 0.95));
+                border: 2px solid rgba(116, 176, 236, 0.55);
+                box-sizing: border-box;
+                flex-shrink: 0;
+            }
+
+            .medal-road-bs-card.ready {
+                border-color: rgba(255, 219, 118, 0.9);
+                box-shadow: 0 0 18px rgba(255, 214, 99, 0.25);
+                cursor: pointer;
+            }
+
+            .medal-road-bs-claim-status {
+                grid-column: 1 / -1;
+                margin-top: 4px;
+                font-size: 13px;
+                font-weight: 700;
+            }
+
+            .medal-road-bs-card.claimed {
+                border-color: rgba(132, 241, 178, 0.9);
+                background: linear-gradient(165deg, rgba(10, 49, 37, 0.96), rgba(8, 24, 19, 0.94));
+            }
+
+            .medal-road-bs-card.next {
+                border-color: rgba(255, 226, 125, 0.95);
+                box-shadow: 0 0 0 2px rgba(255, 226, 125, 0.4);
+            }
+
+            .medal-road-bs-level {
+                color: #e4f5ff;
+                font-size: 18px;
+                font-weight: 800;
+            }
+
+            .medal-road-bs-medals {
+                margin-top: 2px;
+                color: #89b8da;
+                font-size: 13px;
+                font-weight: 700;
+            }
+
+            .medal-road-bs-media {
+                margin-top: 10px;
+                height: 88px;
+                border-radius: 12px;
+                border: 1px solid rgba(116, 177, 236, 0.45);
+                background: rgba(10, 30, 52, 0.74);
+                display: flex;
+                align-items: center;
+                justify-content: center;
+            }
+
+            .medal-road-bs-icon {
+                font-size: 44px;
+            }
+
+            .medal-road-bs-hero {
+                width: 72px;
+                height: 72px;
+                object-fit: cover;
+                border-radius: 12px;
+            }
+
+            .medal-road-bs-name {
+                margin-top: 10px;
+                color: #f0fbff;
+                font-size: 16px;
+                font-weight: 800;
+                line-height: 1.15;
+            }
+
+            .medal-road-bs-rarity {
+                margin-top: 4px;
+                color: #8fc0e4;
+                font-size: 12px;
+                font-weight: 700;
+            }
+
+            .medal-road-bs-status {
+                margin-top: 9px;
+                display: inline-block;
+                padding: 5px 10px;
+                border-radius: 999px;
+                border: 1px solid rgba(116, 177, 236, 0.55);
+                color: #b8ddf9;
+                font-size: 12px;
+                font-weight: 800;
+                background: rgba(8, 25, 44, 0.75);
+            }
+
+            .medal-road-bs-card.ready .medal-road-bs-status {
+                color: #ffe07e;
+                border-color: rgba(255, 219, 118, 0.8);
+            }
+
+            .medal-road-bs-card.claimed .medal-road-bs-status {
+                color: #b8ffd9;
+                border-color: rgba(132, 241, 178, 0.7);
+            }
+
+            .medal-road-bs-link {
+                width: 46px;
+                height: 10px;
+                border-radius: 99px;
+                background: linear-gradient(90deg, rgba(112, 188, 241, 0.4), rgba(112, 188, 241, 0.78), rgba(112, 188, 241, 0.4));
+                flex-shrink: 0;
+            }
+
+            .medal-road-summary {
+                border: 1px solid rgba(122, 198, 255, 0.5);
+                background: linear-gradient(165deg, rgba(10, 28, 47, 0.95), rgba(9, 16, 30, 0.94));
+                border-radius: 12px;
+                padding: 14px;
+                margin-bottom: 8px;
+                display: grid;
+                grid-template-columns: 1fr auto;
+                gap: 8px 12px;
+                align-items: center;
+            }
+
+            .medal-road-summary-title {
+                font-size: 15px;
+                color: #8dc0e8;
+                font-weight: 700;
+                text-transform: uppercase;
+                letter-spacing: 0.4px;
+            }
+
+            .medal-road-summary-value {
+                color: #f0fbff;
+                font-size: 22px;
+                font-weight: 800;
+                margin-top: 2px;
+            }
+
+            .medal-road-summary-meta,
+            .medal-road-summary-count,
+            .medal-road-summary-left {
+                color: #9cc7e7;
+                font-size: 14px;
+                font-weight: 700;
+            }
+
+            .medal-road-summary-track {
+                grid-column: 1 / -1;
+                height: 14px;
+                border-radius: 999px;
+                overflow: hidden;
+                background: rgba(13, 31, 53, 0.82);
+                border: 1px solid rgba(111, 179, 235, 0.5);
+            }
+
+            .medal-road-summary-fill {
+                height: 100%;
+                background: linear-gradient(90deg, #38d1ff, #4ae8d8, #ffd166);
+                border-radius: 999px;
+                transition: width 0.25s ease;
             }
 
             .medal-road-row {
                 display: grid;
-                grid-template-columns: 96px 1fr auto;
-                gap: 10px;
+                grid-template-columns: 130px 1fr auto;
+                gap: 14px;
                 align-items: center;
                 border-radius: 10px;
-                padding: 10px;
+                padding: 14px;
                 border: 1px solid rgba(114, 170, 228, 0.5);
                 background: linear-gradient(165deg, rgba(12, 24, 40, 0.95), rgba(8, 14, 27, 0.94));
             }
@@ -1227,11 +1561,16 @@
                 background: linear-gradient(165deg, rgba(11, 44, 35, 0.92), rgba(8, 24, 20, 0.94));
             }
 
+            .medal-road-row.next-target {
+                border-color: rgba(255, 217, 109, 0.9);
+                box-shadow: 0 0 0 1px rgba(255, 217, 109, 0.4), 0 0 16px rgba(255, 217, 109, 0.24);
+            }
+
             .medal-road-level-pill {
                 display: flex;
                 flex-direction: column;
-                gap: 2px;
-                padding: 6px 7px;
+                gap: 4px;
+                padding: 10px 8px;
                 border-radius: 8px;
                 border: 1px solid rgba(111, 169, 233, 0.56);
                 background: rgba(11, 29, 50, 0.66);
@@ -1241,12 +1580,12 @@
             .medal-road-level-main {
                 color: #d8f5ff;
                 font-weight: 800;
-                font-size: 14px;
+                font-size: 18px;
             }
 
             .medal-road-level-medals {
                 color: #88b8dd;
-                font-size: 10px;
+                font-size: 13px;
                 font-weight: 700;
             }
 
@@ -1257,13 +1596,13 @@
             .medal-road-reward-top {
                 display: flex;
                 align-items: center;
-                gap: 8px;
+                gap: 12px;
             }
 
             .medal-road-reward-icon,
             .medal-road-reward-icon-wrap {
-                width: 28px;
-                height: 28px;
+                width: 44px;
+                height: 44px;
                 border-radius: 8px;
                 display: flex;
                 align-items: center;
@@ -1274,12 +1613,12 @@
             }
 
             .medal-road-reward-icon {
-                font-size: 14px;
+                font-size: 24px;
             }
 
             .medal-road-reward-hero-icon {
-                width: 24px;
-                height: 24px;
+                width: 38px;
+                height: 38px;
                 border-radius: 7px;
                 object-fit: cover;
             }
@@ -1289,7 +1628,7 @@
             }
 
             .medal-road-reward-title {
-                font-size: 13px;
+                font-size: 20px;
                 font-weight: 700;
                 color: #eaf7ff;
                 white-space: nowrap;
@@ -1299,14 +1638,14 @@
 
             .medal-road-reward-meta {
                 margin-top: 1px;
-                font-size: 10px;
+                font-size: 13px;
                 color: #8bb8dd;
                 font-weight: 600;
             }
 
             .medal-road-status {
                 margin-top: 5px;
-                font-size: 10px;
+                font-size: 13px;
                 font-weight: 700;
                 color: #95c8ef;
             }
@@ -1320,12 +1659,12 @@
             }
 
             .medal-road-progress-tag {
-                font-size: 10px;
+                font-size: 13px;
                 font-weight: 700;
                 color: #b6ddff;
                 border: 1px solid rgba(120, 177, 230, 0.5);
                 border-radius: 999px;
-                padding: 3px 8px;
+                padding: 6px 12px;
                 background: rgba(11, 29, 48, 0.7);
                 white-space: nowrap;
             }
@@ -1337,17 +1676,21 @@
             }
 
             #credits-progress-bar {
+                width: min(1200px, 100%);
                 padding: 12px;
                 border-radius: 10px;
                 border: 1px solid rgba(83, 201, 255, 0.36);
                 background: linear-gradient(170deg, rgba(9, 21, 37, 0.92), rgba(8, 14, 25, 0.94));
-                margin-bottom: 12px;
+                margin: 12px auto;
+                box-sizing: border-box;
             }
 
             #credits-tier-list {
                 max-height: min(74vh, 860px);
                 overflow-y: auto;
                 padding-right: 2px;
+                width: min(1200px, 100%);
+                margin: 0 auto;
             }
 
             .credits-cards-shell {
@@ -1362,23 +1705,24 @@
             }
 
             .credits-cards-strip {
-                display: flex;
+                display: grid;
+                grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
                 gap: 12px;
-                overflow-x: auto;
+                overflow-x: hidden;
                 overflow-y: visible;
                 width: 100%;
                 padding-bottom: 4px;
             }
 
             .credits-player-card {
-                flex-shrink: 0;
-                width: 200px;
+                width: 100%;
                 background: linear-gradient(135deg, #1a1a2e 0%, #242838 100%);
                 border: 3px solid rgba(120, 185, 247, 0.45);
                 border-radius: 14px;
                 padding: 12px;
                 text-align: center;
                 cursor: pointer;
+                box-sizing: border-box;
             }
 
             .credits-player-card.selected {
@@ -1426,13 +1770,52 @@
             }
 
             @media (max-width: 700px) {
+                #medal-road-panel {
+                    padding: 62px 10px 12px;
+                }
+
+                #medal-road-container {
+                    max-height: calc(100vh - 162px);
+                    padding: 10px;
+                }
+
+                .medal-road-summary {
+                    grid-template-columns: 1fr;
+                }
+
+                .medal-road-bs-summary {
+                    grid-template-columns: 1fr;
+                    padding: 12px;
+                }
+
+                .medal-road-bs-card {
+                    width: 186px;
+                    min-height: 236px;
+                    padding: 10px;
+                }
+
+                .medal-road-bs-link {
+                    width: 30px;
+                }
+
                 .medal-road-row {
-                    grid-template-columns: 82px 1fr;
+                    grid-template-columns: 90px 1fr;
                 }
 
                 .medal-road-progress-tag {
                     grid-column: 1 / -1;
                     justify-self: start;
+                }
+
+                .credits-cards-strip {
+                    display: flex;
+                    grid-template-columns: none;
+                    overflow-x: auto;
+                }
+
+                .credits-player-card {
+                    flex-shrink: 0;
+                    width: 220px;
                 }
             }
 
@@ -1462,25 +1845,29 @@
             #daily-btn {
                 top: 8px;
                 right: 8px;
-                font-size: 12px;
-                padding: 5px 9px;
-                width: 124px;
+                font-size: 13px;
+                padding: 8px 10px;
+                width: 142px;
             }
 
             #history-btn {
-                top: 40px;
-                right: 8px;
-                font-size: 11px;
-                padding: 4px 8px;
-                width: 124px;
+                top: auto;
+                bottom: 168px;
+                left: 8px;
+                right: auto;
+                font-size: 13px;
+                padding: 8px 10px;
+                width: 142px;
             }
 
             #medal-road-btn {
-                top: 72px;
-                right: 8px;
-                font-size: 11px;
-                padding: 4px 8px;
-                width: 124px;
+                top: auto;
+                bottom: 112px;
+                left: 8px;
+                right: auto;
+                font-size: 13px;
+                padding: 8px 10px;
+                width: 142px;
             }
 
             #tutorial-btn {
@@ -1639,6 +2026,29 @@
             .menu .btn {
                 padding: 9px 10px;
                 font-size: 13px;
+            }
+
+            .game-modes-grid {
+                grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+                gap: 12px;
+            }
+
+            .mode-card {
+                min-height: 142px;
+                padding: 14px 12px;
+            }
+
+            .mode-card h3 {
+                font-size: 20px;
+            }
+
+            .mode-card p {
+                font-size: 13px;
+            }
+
+            #player-list {
+                grid-template-columns: repeat(auto-fit, minmax(98px, 1fr));
+                gap: 10px !important;
             }
 
             #char-showcase {
@@ -1819,6 +2229,166 @@
             to   { box-shadow: 0 0 22px #00ee66; }
         }
 
+        /* Onboarding control ghosts (mobile guidance cues) */
+        #joystick-base::before,
+        #shoot-joystick-base::before,
+        #super-btn::before,
+        #gadget-btn::before,
+        #joystick-base::after,
+        #shoot-joystick-base::after,
+        #super-btn::after,
+        #gadget-btn::after {
+            content: '';
+            position: absolute;
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        .phantom-finger-tip {
+            margin-top: 7px;
+            display: inline-block;
+            padding: 4px 8px;
+            border-radius: 999px;
+            font-size: 12px;
+            color: #ffe7a6;
+            background: rgba(255, 188, 70, 0.18);
+            border: 1px solid rgba(255, 210, 120, 0.48);
+            animation: phantomFingerBob 1.05s ease-in-out infinite;
+        }
+
+        @keyframes phantomFingerBob {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-3px); }
+        }
+
+        body.onboarding-ghost-move #joystick-base::after {
+            width: 46px;
+            height: 46px;
+            border-radius: 50%;
+            left: calc(50% - 23px);
+            top: calc(50% - 23px);
+            border: 2px dashed rgba(255, 255, 255, 0.85);
+            background: rgba(255, 255, 255, 0.2);
+            box-shadow: 0 0 12px rgba(255, 255, 255, 0.45);
+            animation: onboardingGhostMove 1s ease-in-out infinite;
+        }
+
+        body.onboarding-ghost-aim #shoot-joystick-base::after {
+            width: 46px;
+            height: 46px;
+            border-radius: 50%;
+            left: calc(50% - 23px);
+            top: calc(50% - 23px);
+            border: 2px dashed rgba(255, 130, 130, 0.92);
+            background: rgba(255, 120, 120, 0.22);
+            box-shadow: 0 0 14px rgba(255, 110, 110, 0.55);
+            animation: onboardingGhostAim 0.95s ease-in-out infinite;
+        }
+
+        body.onboarding-ghost-super #super-btn::after,
+        body.onboarding-ghost-gadget #gadget-btn::after {
+            left: 50%;
+            top: 50%;
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            transform: translate(-50%, -50%) scale(0.8);
+        }
+
+        body.onboarding-ghost-move #joystick-base::before,
+        body.onboarding-ghost-aim #shoot-joystick-base::before,
+        body.onboarding-ghost-super #super-btn::before,
+        body.onboarding-ghost-gadget #gadget-btn::before {
+            left: 50%;
+            top: -24px;
+            transform: translateX(-50%);
+            opacity: 1;
+            font-size: 12px;
+            font-weight: 700;
+            color: #fff3c8;
+            text-shadow: 0 0 8px rgba(0, 0, 0, 0.65);
+            animation: phantomFingerLabelPulse 1s ease-in-out infinite;
+            white-space: nowrap;
+        }
+
+        body.onboarding-ghost-move #joystick-base::before,
+        body.onboarding-ghost-aim #shoot-joystick-base::before {
+            content: '👆 DRAG';
+        }
+
+        body.onboarding-ghost-super #super-btn::before,
+        body.onboarding-ghost-gadget #gadget-btn::before {
+            content: '👆 CLICK';
+        }
+
+        @keyframes phantomFingerLabelPulse {
+            0%, 100% { opacity: 0.72; }
+            50% { opacity: 1; }
+        }
+
+        body.onboarding-ghost-super #super-btn::after {
+            border: 2px solid rgba(255, 204, 0, 0.85);
+            box-shadow: 0 0 12px rgba(255, 204, 0, 0.65);
+            animation: onboardingGhostTap 1s ease-out infinite;
+        }
+
+        body.onboarding-ghost-gadget #gadget-btn::after {
+            border: 2px solid rgba(68, 255, 136, 0.9);
+            box-shadow: 0 0 12px rgba(68, 255, 136, 0.62);
+            animation: onboardingGhostTap 1s ease-out infinite 0.24s;
+        }
+
+        @keyframes onboardingGhostMove {
+            0% {
+                opacity: 0;
+                transform: translate(0px, 0px);
+            }
+            20% {
+                opacity: 0.95;
+            }
+            55% {
+                opacity: 0.95;
+                transform: translate(-20px, -16px);
+            }
+            100% {
+                opacity: 0;
+                transform: translate(0px, 0px);
+            }
+        }
+
+        @keyframes onboardingGhostAim {
+            0% {
+                opacity: 0;
+                transform: translate(0px, 0px);
+            }
+            16% {
+                opacity: 0.95;
+            }
+            52% {
+                opacity: 0.95;
+                transform: translate(18px, -14px);
+            }
+            100% {
+                opacity: 0;
+                transform: translate(0px, 0px);
+            }
+        }
+
+        @keyframes onboardingGhostTap {
+            0% {
+                opacity: 0.85;
+                transform: translate(-50%, -50%) scale(0.82);
+            }
+            70% {
+                opacity: 0.24;
+                transform: translate(-50%, -50%) scale(1.3);
+            }
+            100% {
+                opacity: 0;
+                transform: translate(-50%, -50%) scale(1.42);
+            }
+        }
+
         /* Use item button */
         #use-item-btn-container {
             display: none;
@@ -1828,7 +2398,7 @@
             z-index: 100;
         }
         .game-active #use-item-btn-container {
-            display: block;
+            display: none;
         }
         #use-item-btn {
             width: 56px;
@@ -1892,6 +2462,374 @@
             text-align: center;
         }
 
+        #battle-intro-overlay {
+            z-index: 1450;
+            background:
+                radial-gradient(circle at 20% 15%, rgba(74, 180, 255, 0.18), transparent 34%),
+                radial-gradient(circle at 82% 84%, rgba(255, 180, 64, 0.16), transparent 36%),
+                rgba(4, 10, 22, 0.9);
+        }
+
+        #battle-intro-card {
+            width: min(1120px, 94vw);
+            max-height: 90vh;
+            overflow: hidden;
+            border: 2px solid rgba(117, 212, 255, 0.72);
+            border-radius: 18px;
+            background:
+                radial-gradient(circle at 16% 18%, rgba(102, 188, 255, 0.14), transparent 36%),
+                radial-gradient(circle at 84% 86%, rgba(255, 191, 106, 0.12), transparent 34%),
+                linear-gradient(165deg, rgba(10, 24, 44, 0.97), rgba(8, 18, 33, 0.95));
+            box-shadow: 0 22px 56px rgba(0, 0, 0, 0.52), inset 0 0 0 1px rgba(141, 222, 255, 0.18);
+            padding: 20px 18px 18px;
+            box-sizing: border-box;
+        }
+
+        #battle-intro-title {
+            margin: 0;
+            font-family: 'Teko', sans-serif;
+            font-size: clamp(32px, 4.8vw, 46px);
+            letter-spacing: 1.1px;
+            color: #bdeeff;
+            line-height: 1;
+            text-shadow: 0 0 16px rgba(114, 199, 255, 0.28);
+        }
+
+        #battle-intro-subtitle {
+            margin: 7px 0 14px;
+            font-size: 14px;
+            color: #d4efff;
+            letter-spacing: 0.32px;
+        }
+
+        #battle-intro-roster {
+            display: grid;
+            gap: 10px;
+        }
+
+        .battle-intro-player-grid {
+            display: grid;
+            grid-template-columns: repeat(var(--solo-cols, 4), minmax(0, 1fr));
+            gap: 10px;
+        }
+
+        .battle-intro-teams-grid {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 8px;
+        }
+
+        .battle-intro-teams-row {
+            display: grid;
+            grid-template-columns: 1fr auto 1fr;
+            gap: 10px;
+            align-items: stretch;
+        }
+
+        .battle-intro-vs-split {
+            align-self: center;
+            justify-self: center;
+            font-family: 'Teko', sans-serif;
+            font-size: 30px;
+            line-height: 1;
+            color: #ffd36f;
+            text-shadow: 0 0 10px rgba(255, 190, 64, 0.45);
+            letter-spacing: 1px;
+            padding: 0 4px;
+        }
+
+        .battle-intro-team-block {
+            border: 1px solid rgba(123, 184, 238, 0.4);
+            border-radius: 13px;
+            background: linear-gradient(165deg, rgba(10, 24, 44, 0.68), rgba(9, 20, 37, 0.72));
+            padding: 10px 10px 11px;
+            box-shadow: inset 0 0 0 1px rgba(145, 208, 255, 0.09);
+        }
+
+        .battle-intro-teams-row.two-team-split .battle-intro-team-block.red {
+            border-color: rgba(255, 110, 110, 0.72);
+            background: linear-gradient(165deg, rgba(58, 18, 18, 0.78), rgba(33, 11, 11, 0.82));
+        }
+
+        .battle-intro-teams-row.two-team-split .battle-intro-team-block.blue {
+            border-color: rgba(110, 165, 255, 0.72);
+            background: linear-gradient(165deg, rgba(14, 24, 58, 0.78), rgba(10, 16, 38, 0.82));
+        }
+
+        .battle-intro-team-title {
+            text-align: left;
+            font-size: 12px;
+            letter-spacing: 0.85px;
+            color: #c6ecff;
+            font-weight: 800;
+            margin: 0 2px 9px;
+            text-shadow: 0 0 10px rgba(126, 198, 255, 0.2);
+        }
+
+        .battle-intro-team-card-grid {
+            display: grid;
+            gap: 10px;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
+
+        .battle-intro-teams-row.two-team-split .battle-intro-team-card-grid {
+            grid-template-columns: repeat(var(--team-count, 3), minmax(0, 1fr));
+        }
+
+        .battle-intro-player-card {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-start;
+            gap: 5px;
+            padding: 8px 8px 9px;
+            border-radius: 11px;
+            border: 1px solid rgba(123, 184, 238, 0.58);
+            background:
+                linear-gradient(180deg, rgba(255,255,255,0.07), rgba(255,255,255,0.01) 32%, rgba(0,0,0,0) 100%),
+                linear-gradient(165deg, rgba(15, 31, 56, 0.93), rgba(10, 21, 39, 0.89));
+            text-align: center;
+            aspect-ratio: 1 / 1;
+            min-height: 0;
+            box-shadow: 0 10px 22px rgba(0,0,0,0.28);
+            transition: transform 0.18s ease, box-shadow 0.18s ease;
+        }
+
+        .battle-intro-player-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 14px 28px rgba(0,0,0,0.36);
+        }
+
+        .battle-intro-player-card.human {
+            box-shadow: inset 0 0 0 1px rgba(255, 216, 96, 0.3);
+        }
+
+        .battle-intro-card-top,
+        .battle-intro-card-bottom {
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .battle-intro-card-bottom {
+            margin-top: auto;
+        }
+
+        .battle-intro-chip {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 9px;
+            line-height: 1;
+            font-weight: 800;
+            letter-spacing: 0.45px;
+            padding: 4px 6px;
+            border-radius: 999px;
+            border: 1px solid rgba(140, 198, 244, 0.48);
+            color: #d2edff;
+            background: rgba(11, 28, 49, 0.76);
+            white-space: nowrap;
+        }
+
+        .battle-intro-chip.role {
+            color: #ffe7a8;
+            border-color: rgba(255, 222, 143, 0.56);
+            background: rgba(64, 46, 16, 0.74);
+        }
+
+        .battle-intro-chip.team {
+            color: #cfeaff;
+        }
+
+        .battle-intro-chip.trophy {
+            color: #ffe9bb;
+            border-color: rgba(255, 218, 135, 0.55);
+            background: rgba(66, 47, 18, 0.75);
+        }
+
+        .battle-intro-chip.ready {
+            color: #d8ffd4;
+            border-color: rgba(130, 228, 142, 0.52);
+            background: rgba(14, 52, 24, 0.74);
+        }
+
+        .battle-intro-player-card.team-red { border-color: rgba(255, 110, 110, 0.9); }
+        .battle-intro-player-card.team-blue { border-color: rgba(110, 165, 255, 0.9); }
+        .battle-intro-player-card.team-green { border-color: rgba(105, 224, 127, 0.9); }
+        .battle-intro-player-card.team-yellow { border-color: rgba(255, 221, 102, 0.95); }
+        .battle-intro-player-card.team-purple { border-color: rgba(205, 147, 255, 0.92); }
+        .battle-intro-player-card.team-orange { border-color: rgba(255, 177, 107, 0.92); }
+
+        .battle-intro-player-portrait-wrap {
+            width: 76px;
+            height: 76px;
+            border-radius: 10px;
+            border: 2px solid rgba(132, 209, 255, 0.72);
+            overflow: hidden;
+            background: rgba(7, 19, 35, 0.9);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 6px 14px rgba(0,0,0,0.3), inset 0 0 0 1px rgba(255,255,255,0.06);
+        }
+
+        .battle-intro-player-portrait {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .battle-intro-player-portrait-fallback {
+            color: #d0ecff;
+            font-size: 20px;
+            font-weight: 800;
+        }
+
+        .battle-intro-player-name {
+            font-size: 14px;
+            color: #f2fbff;
+            font-weight: 800;
+            line-height: 1.15;
+            margin-top: 2px;
+            max-width: 100%;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            text-shadow: 0 1px 0 rgba(0,0,0,0.35);
+        }
+
+        .battle-intro-player-character {
+            font-size: 11px;
+            color: #a9d7f3;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            max-width: 100%;
+            letter-spacing: 0.2px;
+        }
+
+        .battle-intro-player-tags {
+            display: flex;
+            gap: 5px;
+            flex-wrap: wrap;
+            justify-content: center;
+            margin-top: 2px;
+        }
+
+        .battle-intro-player-tag {
+            font-size: 10px;
+            font-weight: 700;
+            padding: 2px 6px;
+            border-radius: 999px;
+            color: #b6dcff;
+            border: 1px solid rgba(120, 175, 225, 0.6);
+            background: rgba(11, 28, 49, 0.8);
+        }
+
+        .battle-intro-player-tag.owner {
+            color: #ffe09d;
+            border-color: rgba(255, 211, 127, 0.7);
+            background: rgba(60, 44, 16, 0.78);
+        }
+
+        .battle-intro-player-tag.bot {
+            color: #d4ffd2;
+            border-color: rgba(118, 226, 141, 0.68);
+            background: rgba(11, 47, 24, 0.76);
+        }
+
+        #battle-intro-countdown {
+            margin-top: 16px;
+            font-family: 'Teko', sans-serif;
+            font-size: clamp(40px, 6vw, 74px);
+            color: #ffd777;
+            line-height: 1;
+            letter-spacing: 1.4px;
+            text-shadow: 0 0 16px rgba(255, 188, 62, 0.45);
+        }
+
+        #battle-intro-overlay.battle-intro-attack-phase #battle-intro-roster,
+        #battle-intro-overlay.battle-intro-attack-phase #battle-intro-subtitle {
+            opacity: 0.12;
+            transform: scale(0.98);
+            transition: opacity 0.2s ease, transform 0.2s ease;
+            pointer-events: none;
+        }
+
+        #battle-intro-overlay.battle-intro-attack-phase #battle-intro-title {
+            color: #ffd879;
+            text-shadow: 0 0 18px rgba(255, 188, 62, 0.52);
+        }
+
+        #battle-intro-countdown.attack-pulse {
+            animation: battleAttackPulse 0.62s ease-out;
+        }
+
+        @keyframes battleAttackPulse {
+            0% { transform: scale(0.68); opacity: 0.35; }
+            45% { transform: scale(1.2); opacity: 1; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+
+        @media (max-width: 700px) {
+            #battle-intro-card {
+                overflow-y: auto;
+            }
+
+            .battle-intro-player-grid {
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+                gap: 8px;
+            }
+
+            .battle-intro-teams-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .battle-intro-teams-row {
+                grid-template-columns: 1fr;
+                gap: 8px;
+            }
+
+            .battle-intro-vs-split {
+                display: none;
+            }
+
+            .battle-intro-team-card-grid {
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+                gap: 8px;
+            }
+
+            .battle-intro-player-card {
+                padding: 7px 6px 8px;
+            }
+
+            .battle-intro-chip {
+                font-size: 8px;
+                padding: 3px 5px;
+                letter-spacing: 0.35px;
+            }
+
+            .battle-intro-player-portrait-wrap {
+                width: 62px;
+                height: 62px;
+            }
+
+            .battle-intro-player-name {
+                font-size: 13px;
+            }
+
+            .battle-intro-player-character {
+                font-size: 10px;
+            }
+
+            .battle-intro-player-tag {
+                font-size: 10px;
+                padding: 2px 5px;
+            }
+        }
+
         .onboarding-overlay {
             position: fixed;
             inset: 0;
@@ -1908,7 +2846,7 @@
         }
 
         .onboarding-card {
-            width: min(560px, 94vw);
+            width: min(760px, 96vw);
             background: rgba(10, 16, 30, 0.96);
             border: 2px solid #ffcc00;
             border-radius: 16px;
@@ -1948,7 +2886,7 @@
 
         .onboarding-arena {
             position: relative;
-            height: 140px;
+            height: 240px;
             margin: 10px 0 0;
             border-radius: 12px;
             border: 1px solid rgba(103, 184, 255, 0.45);
@@ -1982,9 +2920,9 @@
 
         .onboarding-target-bot {
             position: absolute;
-            width: 34px;
-            height: 34px;
-            right: 26px;
+            width: 48px;
+            height: 48px;
+            right: 34px;
             top: 50%;
             transform: translateY(-50%);
             border-radius: 9px;
@@ -1998,10 +2936,10 @@
         .onboarding-target-bot-hp {
             position: absolute;
             left: 50%;
-            top: -10px;
+            top: -14px;
             transform: translateX(-50%);
-            width: 42px;
-            height: 6px;
+            width: 64px;
+            height: 8px;
             border-radius: 999px;
             border: 1px solid rgba(0, 0, 0, 0.55);
             background: rgba(15, 23, 42, 0.85);
@@ -2037,11 +2975,7 @@
         }
 
         .onboarding-practice {
-            margin: 12px 0 4px;
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: center;
-            gap: 8px;
+            display: none !important;
         }
 
         .onboarding-practice-btn {

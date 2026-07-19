@@ -77,18 +77,43 @@
                 </div>
             </div>
             <p id="onboarding-objective" class="onboarding-objective"></p>
-            <div id="onboarding-practice" class="onboarding-practice" style="display:none;">
-                <button id="onboarding-target-btn" class="btn onboarding-practice-btn" style="display:none;">🎯 Hit Target</button>
-                <button id="onboarding-super-btn" class="btn onboarding-practice-btn" style="display:none;">⚡ Use Super</button>
-                <button id="onboarding-gadget-btn" class="btn onboarding-practice-btn" style="display:none;">🧰 Use Gadget</button>
-                <button id="onboarding-item-btn" class="btn onboarding-practice-btn" style="display:none;">🎒 Use Item</button>
-            </div>
             <div id="onboarding-dots" class="onboarding-dots"></div>
-            <div class="onboarding-actions">
-                <button id="onboarding-prev" class="btn" style="background:#2b2b2b;">Back</button>
-                <button id="onboarding-next" class="btn" style="background:#ffcc00; color:#111;">Next</button>
+        </div>
+    </div>
+
+    <div id="experience-overlay" class="onboarding-overlay" style="display:none;">
+        <div class="onboarding-card" style="max-width:560px;">
+            <div class="onboarding-step">Welcome</div>
+            <h2>Before we start</h2>
+            <p id="experience-question" style="line-height:1.6; color:#ddd;">Have you played this game before?</p>
+            <p style="line-height:1.6; color:#aaa; margin-top:4px;">If you are new, tutorial starts now. If you have played, you go straight to menu.</p>
+            <div class="onboarding-actions" style="margin-top:14px;">
+                <button id="experience-new-btn" class="btn" style="background:#ffcc00; color:#111;">I am new</button>
+                <button id="experience-returning-btn" class="btn" style="background:#2b2b2b;">I have played</button>
             </div>
-            <button id="onboarding-skip" class="btn" style="margin-top:10px; background:#444;">Skip Tutorial</button>
+        </div>
+    </div>
+
+    <div id="tutorial-check-overlay" class="onboarding-overlay" style="display:none;">
+        <div class="onboarding-card" style="max-width:620px;">
+            <div class="onboarding-step">Tutorial Complete</div>
+            <h2>Do you understand how to play?</h2>
+            <p style="line-height:1.6; color:#ddd; margin:8px 0 0;">Choose one option below. If you click "I understand", you go straight to a battle.</p>
+            <div class="onboarding-actions" style="margin-top:16px; display:flex !important;">
+                <button id="tutorial-check-yes-btn" class="btn" style="background:#ffcc00; color:#111;">I understand - Start battle</button>
+                <button id="tutorial-check-no-btn" class="btn" style="background:#2b2b2b;">Not yet, show tutorial again</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="tutorial-reward-overlay" class="onboarding-overlay" style="display:none;">
+        <div class="onboarding-card" style="max-width:620px;">
+            <div class="onboarding-step">Reward Unlocked</div>
+            <h2>Tutorial complete bonus!</h2>
+            <p id="tutorial-reward-text" style="line-height:1.6; color:#ddd; margin:8px 0 0;">You earned rewards for completing tutorial.</p>
+            <div class="onboarding-actions" style="margin-top:16px; display:flex !important;">
+                <button id="tutorial-reward-continue-btn" class="btn" style="background:#ffcc00; color:#111;">Continue</button>
+            </div>
         </div>
     </div>
 
@@ -106,6 +131,15 @@
             <button id="return-to-menu" class="btn" style="background: #ffcc00; color: black; font-size: 18px; padding: 10px 20px;">
                 Return to Menu
             </button>
+        </div>
+    </div>
+
+    <div id="battle-intro-overlay" class="game-overlay" style="display:none;">
+        <div id="battle-intro-card">
+            <h2 id="battle-intro-title">Battle Ready</h2>
+            <p id="battle-intro-subtitle"></p>
+            <div id="battle-intro-roster"></div>
+            <div id="battle-intro-countdown">Starting...</div>
         </div>
     </div>
 
@@ -154,7 +188,7 @@
         </div>
     </div>
 
-    <div id="profile-panel" class="modal-panel" style="width:800px; max-width:95vw; max-height:85vh; overflow-y:auto;">
+    <div id="profile-panel" class="modal-panel" style="display:none;">
         <h2 style="margin-bottom:16px;">👤 Profile</h2>
         
         <!-- ═══ ACCOUNT INFO SECTION ═══ -->
@@ -163,6 +197,11 @@
                 <div>
                     <div id="profile-username" style="font-size:24px; color:#8de3ff; font-weight:bold; margin-bottom:4px;"></div>
                     <div id="profile-ranked-info" style="font-size:12px; color:#4ae8d8; font-weight:600;"></div>
+                    <div style="display:flex; gap:8px; margin-top:10px; align-items:center; flex-wrap:wrap;">
+                        <input id="profile-name-input" type="text" maxlength="20" placeholder="Change profile name" style="flex:1; min-width:170px; background:#0f1520; color:#fff; border:1px solid #3c4a60; border-radius:6px; padding:7px 9px; font-size:12px;" />
+                        <button id="profile-name-save" class="btn" style="padding:7px 10px; font-size:12px; background:#1f6f8a; color:#dff6ff; border:1px solid #2e96b9; border-radius:6px; font-weight:600;">Save Name</button>
+                    </div>
+                    <div id="profile-name-msg" style="font-size:11px; margin-top:6px; min-height:14px; color:#9ab0c9;"></div>
                 </div>
                 <div style="text-align:right;">
                     <div style="font-size:12px; color:#9ab0c9; margin-bottom:2px;">Hottest Streak</div>
@@ -313,7 +352,7 @@
     <!-- Kill Streak banner (in-game, canvas-overlay) -->
     <div id="streak-banner"></div>
 
-    <div id="level-rewards-panel" class="modal-panel" style="width:420px;">
+    <div id="level-rewards-panel" class="modal-panel" style="display:none;">
         <h2>🏆 Level Rewards</h2>
         <p style="color:#aaa; text-align:center; margin-top:-10px; font-size:13px;">Click your level badge anytime to check progress</p>
         <div id="level-rewards-list" style="margin: 16px 0;"></div>
@@ -321,7 +360,7 @@
     </div>
 
     <!-- Daily Challenges panel -->
-    <div id="daily-panel" class="modal-panel" style="width:440px; display:none;">
+    <div id="daily-panel" class="modal-panel" style="display:none;">
         <h2>📋 Daily Challenges</h2>
         <p id="daily-reset-label" style="color:#aaa; text-align:center; margin-top:-10px; font-size:12px;"></p>
         <div id="daily-list" style="margin: 14px 0;"></div>
@@ -329,14 +368,14 @@
     </div>
 
     <!-- Match History panel -->
-    <div id="history-panel" class="modal-panel" style="width:520px; display:none;">
+    <div id="history-panel" class="modal-panel" style="display:none;">
         <h2>📊 Match History & Stats</h2>
         <div id="history-stats" class="history-stats-grid"></div>
         <div id="history-list" style="margin: 14px 0; max-height: 360px; overflow-y: auto;"></div>
         <button class="btn modal-close" id="close-history-panel">Close</button>
     </div>
 
-    <div id="tutorial-panel" class="modal-panel" style="width:600px; display:none;">
+    <div id="tutorial-panel" class="modal-panel" style="display:none;">
         <h2>📖 How To Play</h2>
         <div id="tutorial-content" style="max-height:420px; overflow-y:auto; font-size:14px; line-height:1.7; color:#ccc;"></div>
         <div style="display:flex; gap:8px; margin-top:12px;">
@@ -345,19 +384,19 @@
         </div>
     </div>
 
-    <div id="medal-road-panel" class="modal-panel" style="width:700px; display:none;">
+    <div id="medal-road-panel" class="modal-panel" style="display:none;">
         <h2>🏅 Medal Road</h2>
         <p style="color:#aaa; text-align:center; margin-top:-10px; font-size:12px;">Level <span id="medal-road-level" style="color:#ffcc00;">1</span> • Unlock exclusive rewards as you progress</p>
-        <div id="medal-road-container" style="margin:14px 0; max-height:420px; overflow-y:auto; background:#0a1a1a; border:1px solid #1a5544; border-radius:8px; padding:12px;">
-            <div id="medal-road-timeline" style="display:flex; flex-direction:column; gap:8px;"></div>
+        <div id="medal-road-container">
+            <div id="medal-road-timeline"></div>
         </div>
         <button class="btn modal-close" id="close-medal-road-panel">Close</button>
     </div>
 
-    <div id="credits-panel" class="modal-panel" style="width:700px;">
+    <div id="credits-panel" class="modal-panel" style="display:none;">
         <h2 style="color:#4ae8d8;">🎖️ Hero Marks Progression</h2>
-        <p style="text-align:center; color:#aaa; margin-top:-10px; font-size:13px;">Earn Hero Marks in battles, then choose which player to unlock.</p>
-        <div id="credits-progress-bar" style="margin:10px auto 18px; max-width:420px;"></div>
+        <p style="text-align:center; color:#aaa; margin-top:-10px; font-size:13px;">Choose which player to unlock with your Hero Marks.</p>
+        <div id="credits-progress-bar"></div>
         <div id="credits-tier-list"></div>
         <button class="btn modal-close" id="close-credits-panel" style="margin-top:12px;">Close</button>
     </div>
@@ -384,7 +423,7 @@
     </div>
 
     <!-- Player Detail Popup -->
-    <div id="player-detail-popup" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.7); z-index:1100; justify-content:center; align-items:center; overflow-y:auto;">
+    <div id="player-detail-popup" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.7); z-index:1500; justify-content:center; align-items:center; overflow-y:auto;">
         <div id="player-detail-box" style="background:#1a1a2e; border-radius:16px; border:3px solid #ffcc00; padding:24px; max-width:340px; width:90%; text-align:center; color:#fff; max-height:88vh; overflow-y:auto; position:relative;">
             <button id="pd-back-btn" class="menu-back-btn" style="position:absolute; left:12px; top:12px;">← Back</button>
             <img id="pd-img" src="" style="width:120px; height:120px; object-fit:cover; border-radius:12px; border:3px solid #ccc;" />
@@ -406,7 +445,7 @@
         </div>
     </div>
 
-    <div id="map-select-panel" class="modal-panel" style="width:680px; max-width:95vw;">
+    <div id="map-select-panel" class="modal-panel" style="display:none;">
         <h2 style="color:#ffcc00;">🗺️ Choose a Map</h2>
         <p style="text-align:center; color:#aaa; font-size:13px; margin-top:-8px;">Pick a map or let the game choose one randomly.</p>
         <div id="map-select-grid" style="display:flex; flex-wrap:wrap; gap:14px; justify-content:center; margin:16px 0;"></div>
@@ -415,26 +454,22 @@
 
     <div id="game-modes-container" class="modal-panel">
         <h2>🎮 Select Game Mode</h2>
-        <div class="game-modes-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin: 20px 0;">
-            <div class="mode-card" data-mode="easyStage">
-                <h3>🌱 Easy Stage</h3>
-                <p>Beginner mode with fewer, weaker bots.</p>
-                <div style="background: rgba(255, 204, 0, 0.2); padding: 5px 10px; border-radius: 20px; font-size: 12px; font-weight: bold;">4 Players (1v3)</div>
-            </div>
+        <div class="game-modes-grid" style="margin: 20px 0;">
+            
             <div class="mode-card" data-mode="showdown">
                 <h3>👑 Showdown</h3>
                 <p>Battle Royale - Last standing!</p>
-                <div style="background: rgba(255, 204, 0, 0.2); padding: 5px 10px; border-radius: 20px; font-size: 12px; font-weight: bold;">1-4 Players</div>
+                <div style="background: rgba(255, 204, 0, 0.2); padding: 5px 10px; border-radius: 20px; font-size: 12px; font-weight: bold;">10 Players</div>
             </div>
             <div class="mode-card" data-mode="3v3">
                 <h3>⚔️ 3v3 Team Battle</h3>
-                <p>4 teams of 3 — last team standing wins!</p>
-                <div style="background: rgba(255, 204, 0, 0.2); padding: 5px 10px; border-radius: 20px; font-size: 12px; font-weight: bold;">12 Players</div>
+                <p>6 teams of 3 — last team standing wins!</p>
+                <div style="background: rgba(255, 204, 0, 0.2); padding: 5px 10px; border-radius: 20px; font-size: 12px; font-weight: bold;">18 Players</div>
             </div>
             <div class="mode-card" data-mode="2v2">
                 <h3>⚔️ 2v2 Team Battle</h3>
-                <p>4 teams of 2 — duo showdown!</p>
-                <div style="background: rgba(255, 204, 0, 0.2); padding: 5px 10px; border-radius: 20px; font-size: 12px; font-weight: bold;">8 Players</div>
+                <p>5 teams of 2 — duo showdown!</p>
+                <div style="background: rgba(255, 204, 0, 0.2); padding: 5px 10px; border-radius: 20px; font-size: 12px; font-weight: bold;">10 Players</div>
             </div>
             <div class="mode-card" data-mode="ballGoal">
                 <h3>⚽ Ball-Goal</h3>
@@ -567,9 +602,9 @@
     const GAME_DATA = {
         gameModes: {
             easyStage: { name: 'Easy Stage', maxPlayers: 4, teams: false, fillBots: true, easyStage: true },
-            showdown: { name: 'Showdown', maxPlayers: 8, teams: false, fillBots: true },
-            '3v3': { name: '3v3 Team Battle', maxPlayers: 12, teams: true, teamSize: 3, teamNames: ['red', 'blue', 'green', 'yellow'], fillBots: true },
-            '2v2': { name: '2v2 Team Battle', maxPlayers: 8, teams: true, teamSize: 2, teamNames: ['red', 'blue', 'green', 'yellow'], fillBots: true },
+            showdown: { name: 'Showdown', maxPlayers: 10, teams: false, fillBots: true },
+            '3v3': { name: '3v3 Team Battle', maxPlayers: 18, teams: true, teamSize: 3, teamNames: ['red', 'blue', 'green', 'yellow', 'purple', 'orange'], fillBots: true },
+            '2v2': { name: '2v2 Team Battle', maxPlayers: 10, teams: true, teamSize: 2, teamNames: ['red', 'blue', 'green', 'yellow', 'purple'], fillBots: true },
             ballGoal: { name: 'Ball-Goal', maxPlayers: 6, teams: true, teamSize: 3, teamNames: ['red', 'blue'], fillBots: true },
             bounty: { name: 'Bounty', maxPlayers: 6, teams: true, teamSize: 3, teamNames: ['red', 'blue'], fillBots: true, bountyMode: true },
             elimination: { name: 'Elimination', maxPlayers: 6, teams: true, teamSize: 3, teamNames: ['red', 'blue'], fillBots: true, noRespawn: true },
@@ -586,20 +621,29 @@
         dailyChallenges: [
             { id: 'win2', desc: 'Win 2 matches', type: 'wins', target: 2, reward: { type: 'sparks', amount: 250 }, icon: 'ðŸ†' },
             { id: 'win3', desc: 'Win 3 matches', type: 'wins', target: 3, reward: { type: 'sparks', amount: 400 }, icon: 'ðŸ†' },
+            { id: 'win5', desc: 'Win 5 matches', type: 'wins', target: 5, reward: { type: 'sparks', amount: 680 }, icon: 'ðŸ†' },
             { id: 'kill8', desc: 'Get 8 kills in total', type: 'kills', target: 8, reward: { type: 'sparks', amount: 300 }, icon: 'âš¡' },
             { id: 'kill12', desc: 'Get 12 kills in total', type: 'kills', target: 12, reward: { type: 'sparks', amount: 450 }, icon: 'âš¡' },
+            { id: 'kill20', desc: 'Get 20 kills in total', type: 'kills', target: 20, reward: { type: 'sparks', amount: 760 }, icon: 'âš¡' },
             { id: 'kill5match', desc: 'Get 5 kills in one match', type: 'matchKills', target: 5, reward: { type: 'sparks', amount: 360 }, icon: 'ðŸŽ¯' },
+            { id: 'kill8match', desc: 'Get 8 kills in one match', type: 'matchKills', target: 8, reward: { type: 'coins', amount: 260 }, icon: 'ðŸŽ¯' },
             { id: 'play3', desc: 'Play 3 matches', type: 'games', target: 3, reward: { type: 'sparks', amount: 220 }, icon: 'ðŸŽ®' },
             { id: 'play5', desc: 'Play 5 matches', type: 'games', target: 5, reward: { type: 'sparks', amount: 380 }, icon: 'ðŸŽ®' },
+            { id: 'play8', desc: 'Play 8 matches', type: 'games', target: 8, reward: { type: 'coins', amount: 240 }, icon: 'ðŸŽ®' },
             { id: 'streak3', desc: 'Get a 3-kill streak', type: 'streak', target: 3, reward: { type: 'sparks', amount: 360 }, icon: 'ðŸ”¥' },
             { id: 'streak5', desc: 'Reach RAMPAGE (5 streak)', type: 'streak', target: 5, reward: { type: 'sparks', amount: 650 }, icon: 'ðŸ’¥' },
+            { id: 'streak7', desc: 'Reach GODLIKE (7 streak)', type: 'streak', target: 7, reward: { type: 'credits', amount: 8 }, icon: 'ðŸ’¥' },
             { id: 'damage1200', desc: 'Deal 1200 total damage', type: 'damage', target: 1200, reward: { type: 'sparks', amount: 320 }, icon: 'ðŸ’£' },
             { id: 'damage2000', desc: 'Deal 2000 total damage', type: 'damage', target: 2000, reward: { type: 'sparks', amount: 520 }, icon: 'ðŸ’¥' },
+            { id: 'damage3500', desc: 'Deal 3500 total damage', type: 'damage', target: 3500, reward: { type: 'sparks', amount: 840 }, icon: 'ðŸ’¥' },
             { id: 'survive120', desc: 'Survive 2 minutes in one match', type: 'survive', target: 120, reward: { type: 'sparks', amount: 320 }, icon: 'â±ï¸' },
+            { id: 'survive180', desc: 'Survive 3 minutes in one match', type: 'survive', target: 180, reward: { type: 'coins', amount: 220 }, icon: 'â±ï¸' },
             { id: 'winstreak2', desc: 'Win 2 matches in a row', type: 'winstreak', target: 2, reward: { type: 'coins', amount: 150 }, icon: 'ðŸ”´' },
             { id: 'winstreak3', desc: 'Win 3 matches in a row', type: 'winstreak', target: 3, reward: { type: 'sparks', amount: 400 }, icon: 'ðŸŽ¯' },
+            { id: 'winstreak4', desc: 'Win 4 matches in a row', type: 'winstreak', target: 4, reward: { type: 'credits', amount: 6 }, icon: 'ðŸŽ¯' },
             { id: 'coins200', desc: 'Earn 200 coins total', type: 'coins', target: 200, reward: { type: 'sparks', amount: 280 }, icon: 'ðŸ’°' },
-            { id: 'coins500', desc: 'Earn 500 coins total', type: 'coins', target: 500, reward: { type: 'sparks', amount: 550 }, icon: 'ðŸ’°' }
+            { id: 'coins500', desc: 'Earn 500 coins total', type: 'coins', target: 500, reward: { type: 'sparks', amount: 550 }, icon: 'ðŸ’°' },
+            { id: 'coins900', desc: 'Earn 900 coins total', type: 'coins', target: 900, reward: { type: 'credits', amount: 5 }, icon: 'ðŸ’°' }
         ],
         balanceSandboxDefaults: {
             botSuperMinMs: 800,
@@ -660,8 +704,12 @@
         }
 
         const inMemoryStorage = Object.create(null);
+        let temporarySessionMode = false;
 
         function storageGetItem(key) {
+            if (temporarySessionMode) {
+                return Object.prototype.hasOwnProperty.call(inMemoryStorage, key) ? inMemoryStorage[key] : null;
+            }
             try {
                 return localStorage.getItem(key);
             } catch (e) {
@@ -671,6 +719,10 @@
 
         function storageSetItem(key, value) {
             const stringValue = String(value);
+            if (temporarySessionMode) {
+                inMemoryStorage[key] = stringValue;
+                return;
+            }
             try {
                 localStorage.setItem(key, stringValue);
             } catch (e) {
@@ -679,6 +731,10 @@
         }
 
         function storageRemoveItem(key) {
+            if (temporarySessionMode) {
+                delete inMemoryStorage[key];
+                return;
+            }
             try {
                 localStorage.removeItem(key);
             } catch (e) {
@@ -765,10 +821,14 @@
         let activeMapEvent = null;
         let mapEventCooldown = 480;
         let currentBotDifficultyInfo = { skillPct: 0, label: 'starter' };
+        let battleIntroInProgress = false;
+        let battleIntroTimerId = null;
+        let forceEasyIntroBattle = false;
 
         // ─── ACCOUNT & PROFILE SYSTEM ───────────────────────────────────────────────
         let accountAuthMode = 'login';
         let currentAccount = null;
+        let currentAccountKey = '__guest__';
         let guestProfile = null;
         const PROFILE_AVATAR_ICONS = ['😀', '😎', '🤖', '🔥', '⚡', '🛡️', '👑', '🐍', '🦾', '🎯', '🚀', '⭐','🐖','💘'];
         const TITLE_REWARDS = [
@@ -967,12 +1027,19 @@
             return (value || '').trim().toLowerCase();
         }
 
+        function sanitizeProfileName(value) {
+            const cleaned = (value || '').replace(/\s+/g, ' ').trim();
+            if (cleaned.length < 3) return { ok: false, message: 'Name must be at least 3 characters.' };
+            if (cleaned.length > 20) return { ok: false, message: 'Name must be 20 characters or less.' };
+            return { ok: true, value: cleaned };
+        }
+
         function getAccountsStore() {
             return readStorageJson('nexusAccounts', {});
         }
 
         function saveAccountsStore(store) {
-            localStorage.setItem('nexusAccounts', JSON.stringify(store));
+            storageSetItem('nexusAccounts', JSON.stringify(store));
         }
 
         function getCurrentProfile() {
@@ -998,58 +1065,11 @@
                 if (profile) {
                     const medalsIntoLevel = ((playerMedals % 10) + 10) % 10;
                     const pct = Math.max(0, Math.min(100, Math.round((medalsIntoLevel / 10) * 100)));
-                    const roadmapItems = [];
-                    const roadMaxMedals = 1000;
-                    const rewardMilestones = Array.from(new Set(levelRewards.map(r => (r.level - 1) * 10))).sort((a, b) => a - b);
-                    const roadMilestoneSet = new Set(rewardMilestones);
-                    roadMilestoneSet.add(roadMaxMedals);
-                    const roadMilestones = Array.from(roadMilestoneSet).sort((a, b) => a - b);
-                    for (const medal of roadMilestones) {
-                        const shownReward = levelRewards.find(r => ((r.level - 1) * 10) === medal) || null;
-                        if (!shownReward && medal !== roadMaxMedals) continue;
-                        const isReached = playerMedals >= medal;
-                        const nextCheckpoint = roadMilestones.find(m => m > medal);
-                        const isCurrentWindow = playerMedals >= medal && (nextCheckpoint === undefined || playerMedals < nextCheckpoint);
-                        const medalsNeeded = Math.max(0, medal - playerMedals);
-                        const unlockPlayer = shownReward && shownReward.type === 'unlock' && shownReward.playerId
-                            ? playersData[shownReward.playerId]
-                            : null;
-                        const rewardValue = shownReward
-                            ? shownReward.type === 'unlock'
-                                ? (unlockPlayer?.name || 'Hero')
-                                : String(shownReward.amount || '')
-                            : '1000';
-                        const rewardIcon = shownReward ? shownReward.icon : '🏁';
-                        const rewardIconHtml = unlockPlayer
-                            ? `<img class="account-chip-milestone-hero-icon" src="${unlockPlayer.icon || unlockPlayer.img || ''}" alt="${unlockPlayer.name || 'Hero'}">`
-                            : `<div class="account-chip-milestone-icon">${rewardIcon}</div>`;
-                        const rewardTitle = shownReward ? (shownReward.reward || 'Reward') : 'Goal checkpoint';
-                        roadmapItems.push(
-                            `<div class="account-chip-milestone${isCurrentWindow ? ' current' : isReached ? ' unlocked' : ''}" title="${medal} medals • ${rewardTitle}">
-                                <div class="account-chip-milestone-tile">
-                                    <div class="account-chip-milestone-mark">${isReached ? '✓' : isCurrentWindow ? '★' : '•'}</div>
-                                    ${rewardIconHtml}
-                                    <div class="account-chip-milestone-value${unlockPlayer ? ' hero-name' : ''}">${rewardValue}</div>
-                                </div>
-                                <div class="account-chip-milestone-target">${medal}</div>
-                                <div class="account-chip-milestone-needed">${medalsNeeded === 0 ? 'Ready' : `${medalsNeeded} needed`}</div>
-                            </div>`
-                        );
-                    }
                     chipLevel.style.display = 'block';
                     chipLevel.innerHTML =
-                        `<button type="button" class="account-chip-level-toggle" onclick="toggleAccountChipLevel()">
-                            <span class="account-chip-level-main">🎁 Reward Track</span>
-                            <span class="account-chip-level-action">${accountChipLevelExpanded ? 'Hide ▲' : 'Show ▼'}</span>
-                        </button>
-                        <div class="account-chip-level-body${accountChipLevelExpanded ? ' open' : ''}">
-                            <div class="account-chip-level-track"><div class="account-chip-level-fill" style="width:${pct}%"></div></div>
-                            <div class="account-chip-roadmap-label">Reward road 0 → ${roadMaxMedals} medals (scroll)</div>
-                            <div class="account-chip-roadmap-shell">
-                                <div class="account-chip-roadmap-rail"></div>
-                                <div class="account-chip-roadmap">${roadmapItems.join('')}</div>
-                            </div>
-                        </div>`;
+                        `<div class="account-chip-level-main">🏅 Level ${playerLevel}</div>
+                        <div class="account-chip-level-track"><div class="account-chip-level-fill" style="width:${pct}%"></div></div>
+                        <div class="account-chip-level-next">${10 - medalsIntoLevel} medals to next level</div>`;
                 } else {
                     chipLevel.style.display = 'none';
                     chipLevel.innerHTML = '';
@@ -1067,14 +1087,16 @@
         function saveCurrentAccountProfile() {
             const profile = getCurrentProfile();
             if (!profile) return;
-            if (!currentAccount) {
-                localStorage.setItem('nexusGuestProfile', JSON.stringify(profile));
+            if (!currentAccount || currentAccountKey === '__guest__') {
+                storageSetItem('nexusGuestProfile', JSON.stringify(profile));
                 return;
             }
-            const key = normalizeUsername(profile.username);
             const store = getAccountsStore();
-            if (!store[key]) return;
-            store[key].profile = profile;
+            if (!store[currentAccountKey]) {
+                storageSetItem('nexusGuestProfile', JSON.stringify(profile));
+                return;
+            }
+            store[currentAccountKey].profile = profile;
             saveAccountsStore(store);
         }
 
@@ -1083,12 +1105,14 @@
             const acc = store[usernameKey] || null;
             currentAccount = acc;
             if (acc) {
-                localStorage.setItem('nexusCurrentAccount', usernameKey);
+                currentAccountKey = usernameKey;
+                storageSetItem('nexusCurrentAccount', usernameKey);
                 acc.profile.lastLoginAt = Date.now();
                 store[usernameKey] = acc;
                 saveAccountsStore(store);
             } else {
-                localStorage.removeItem('nexusCurrentAccount');
+                currentAccountKey = '__guest__';
+                storageRemoveItem('nexusCurrentAccount');
             }
             updateAccountChip();
         }
@@ -1176,8 +1200,9 @@
             };
 
             currentAccount = { profile: guestProfile };
-            localStorage.setItem('nexusCurrentAccount', '__guest__');
-            localStorage.setItem('nexusGuestProfile', JSON.stringify(guestProfile));
+            currentAccountKey = '__guest__';
+            storageSetItem('nexusCurrentAccount', '__guest__');
+            storageSetItem('nexusGuestProfile', JSON.stringify(guestProfile));
 
             const authOverlay = document.getElementById('account-auth-overlay');
             if (authOverlay) authOverlay.style.display = 'none';
@@ -1273,6 +1298,8 @@
 
             // Display username with avatar
             document.getElementById('profile-username').textContent = `${profile.avatarIcon || '😀'} ${profile.username}`;
+            const nameInput = document.getElementById('profile-name-input');
+            if (nameInput) nameInput.value = profile.username || '';
 
             // Display max win streak
             const maxWs = getMaxWinStreakPlayerFromHistory();
@@ -1481,6 +1508,37 @@
                 panel.style.display = 'none';
             });
             document.getElementById('profile-logout-btn').style.display = 'none';
+
+            // Profile name editing
+            const profileNameInput = document.getElementById('profile-name-input');
+            const profileNameSave = document.getElementById('profile-name-save');
+            const profileNameMsg = document.getElementById('profile-name-msg');
+            const applyProfileName = () => {
+                const profile = getCurrentProfile();
+                if (!profile || !profileNameInput || !profileNameMsg) return;
+                const sanitized = sanitizeProfileName(profileNameInput.value);
+                if (!sanitized.ok) {
+                    profileNameMsg.style.color = '#ff9da0';
+                    profileNameMsg.textContent = sanitized.message;
+                    return;
+                }
+
+                profile.username = sanitized.value;
+                saveCurrentAccountProfile();
+                updateAccountChip();
+                profileNameMsg.style.color = '#7df7ab';
+                profileNameMsg.textContent = 'Name updated.';
+                renderProfilePanel();
+            };
+            if (profileNameSave) profileNameSave.onclick = applyProfileName;
+            if (profileNameInput) {
+                profileNameInput.onkeydown = (e) => {
+                    if (e.key === 'Enter') {
+                        e.preventDefault();
+                        applyProfileName();
+                    }
+                };
+            }
 
             // Avatar selection
             const avatarWrap = document.getElementById('profile-avatar-options');
@@ -1729,21 +1787,75 @@
         }
 
         function saveProgress() {
-            localStorage.setItem('playerCoins', playerCoins);
-            localStorage.setItem('unlockedNexus', JSON.stringify(unlockedNexus));
-            localStorage.setItem('selectedNexusId', selectedNexusId);
-            localStorage.setItem('playerMedals', playerMedals);
-            localStorage.setItem('killFeedColor', killFeedColor);
-            localStorage.setItem('energySparks', energySparks);
-            localStorage.setItem('playerCredits', playerCredits);
-            localStorage.setItem('creditTierPick', JSON.stringify(creditTierPick));
-            if (selectedCreditTargetId) localStorage.setItem('selectedCreditTargetId', selectedCreditTargetId);
-            else localStorage.removeItem('selectedCreditTargetId');
-            localStorage.setItem('playerPowerLevels', JSON.stringify(playerPowerLevels));
-            localStorage.setItem('unlockedGadgets', JSON.stringify(unlockedGadgets));
-            localStorage.setItem('playerMedalsByNexus', JSON.stringify(playerMedalsByNexus));
-            localStorage.setItem('claimedNexusMedalMilestones', JSON.stringify(claimedNexusMedalMilestones));
-            localStorage.setItem('claimedLevelRewards', JSON.stringify(levelRewards.filter(r => r.claimed).map(r => r.level)));
+            storageSetItem('playerCoins', playerCoins);
+            storageSetItem('unlockedNexus', JSON.stringify(unlockedNexus));
+            storageSetItem('selectedNexusId', selectedNexusId);
+            storageSetItem('playerMedals', playerMedals);
+            storageSetItem('killFeedColor', killFeedColor);
+            storageSetItem('energySparks', energySparks);
+            storageSetItem('playerCredits', playerCredits);
+            storageSetItem('creditTierPick', JSON.stringify(creditTierPick));
+            if (selectedCreditTargetId) storageSetItem('selectedCreditTargetId', selectedCreditTargetId);
+            else storageRemoveItem('selectedCreditTargetId');
+            storageSetItem('playerPowerLevels', JSON.stringify(playerPowerLevels));
+            storageSetItem('unlockedGadgets', JSON.stringify(unlockedGadgets));
+            storageSetItem('playerMedalsByNexus', JSON.stringify(playerMedalsByNexus));
+            storageSetItem('claimedNexusMedalMilestones', JSON.stringify(claimedNexusMedalMilestones));
+            storageSetItem('claimedLevelRewards', JSON.stringify(levelRewards.filter(r => r.claimed).map(r => r.level)));
+        }
+
+        function startTemporaryNewAccountSession() {
+            temporarySessionMode = true;
+            Object.keys(inMemoryStorage).forEach((k) => delete inMemoryStorage[k]);
+
+            playerCoins = 0;
+            unlockedNexus = ['default'];
+            selectedNexusId = 'default';
+            playerMedals = 0;
+            playerLevel = 1;
+            killFeedColor = '#ffffff';
+            energySparks = 0;
+            playerCredits = 0;
+            creditTierPick = {};
+            selectedCreditTargetId = null;
+            playerPowerLevels = {};
+            unlockedGadgets = ['default'];
+            playerMedalsByNexus = {};
+            claimedNexusMedalMilestones = {};
+            playerMatchesPlayed = 0;
+            rankedPoints = 1000;
+            rankedSeasonId = '';
+            clanState = { name: '', points: 0, wins: 0 };
+            pompakisBombVariant = 'classic';
+            selectedKillEffect = 'classic';
+            currentWinStreak = 0;
+
+            const tag = Math.floor(Math.random() * 9000) + 1000;
+            guestProfile = {
+                username: `NewGuest${tag}`,
+                avatarIcon: '😀',
+                title: 'Rookie',
+                selectedTitle: null,
+                killEffect: 'classic',
+                createdAt: Date.now(),
+                lastLoginAt: Date.now(),
+                profileVersion: 1
+            };
+            currentAccount = { profile: guestProfile };
+            currentAccountKey = '__guest__';
+
+            activeDailyKey = getDailyKey();
+            dailyState = loadDailyChallenges(activeDailyKey);
+
+            saveCurrentAccountProfile();
+            saveProgress();
+            showCoins();
+            updateAccountChip();
+            updatePlayerMenu();
+            updateCharShowcase();
+            renderCreditsPanel();
+            updateDailyBadge();
+            renderDailyWinsWidget();
         }
 
         let levelUpMessage = null; // { text, timer }
@@ -1981,11 +2093,11 @@
                 name: 'soublakiscorpio',
                 img: 'images/ScorpiosSouvlak.png',
                 color: '#4a86e8',
-                hp: 20,
-                speed: 4,
-                laserDamage: 1,
+                hp: 33,
+                speed: 5.4,
+                laserDamage: 3,
                 size: 55,
-                laserRange: 250,
+                laserRange: 340,
                 price: 0,
                 rarity: 'common',
                 attackType: 'standard',
@@ -2466,7 +2578,11 @@
         };
         // Rarities above rare are unlocked with credits (pick ONE per tier)
         const creditRarities = ['epic', 'mythic', 'legendary'];
-        const creditRarityThresholds = { epic: 200, mythic: 500, legendary: 1000 };
+        const creditRarityThresholds = { epic: 170, mythic: 420, legendary: 850 };
+        const HERO_MARKS_MATCH_REWARDS = {
+            win: { standard: 11, team: 16 },
+            lose: { standard: 5, team: 7 }
+        };
 
         // Keep Hero Marks pricing consistent for every player in the same rarity.
         Object.values(playersData).forEach(p => {
@@ -2513,9 +2629,9 @@
             externalGameData.gameModes,
             {
                 easyStage: { name: 'Easy Stage', maxPlayers: 4, teams: false, fillBots: true, easyStage: true },
-                showdown: { name: 'Showdown', maxPlayers: 8, teams: false, fillBots: true },
-                '3v3': { name: '3v3 Team Battle', maxPlayers: 12, teams: true, teamSize: 3, teamNames: ['red', 'blue', 'green', 'yellow'], fillBots: true },
-                '2v2': { name: '2v2 Team Battle', maxPlayers: 8, teams: true, teamSize: 2, teamNames: ['red', 'blue', 'green', 'yellow'], fillBots: true },
+                showdown: { name: 'Showdown', maxPlayers: 10, teams: false, fillBots: true },
+                '3v3': { name: '3v3 Team Battle', maxPlayers: 18, teams: true, teamSize: 3, teamNames: ['red', 'blue', 'green', 'yellow', 'purple', 'orange'], fillBots: true },
+                '2v2': { name: '2v2 Team Battle', maxPlayers: 10, teams: true, teamSize: 2, teamNames: ['red', 'blue', 'green', 'yellow', 'purple'], fillBots: true },
                 ballGoal: { name: 'Ball-Goal', maxPlayers: 6, teams: true, teamSize: 3, teamNames: ['red', 'blue'], fillBots: true },
                 bounty: { name: 'Bounty', maxPlayers: 6, teams: true, teamSize: 3, teamNames: ['red', 'blue'], fillBots: true, bountyMode: true },
                 elimination: { name: 'Elimination', maxPlayers: 6, teams: true, teamSize: 3, teamNames: ['red', 'blue'], fillBots: true, noRespawn: true },
@@ -2528,13 +2644,17 @@
             red: '#ff4444',
             blue: '#4488ff',
             green: '#44cc44',
-            yellow: '#ffcc00'
+            yellow: '#ffcc00',
+            purple: '#b065ff',
+            orange: '#ff9740'
         };
         const teamScoreboardColors = {
             red: '#ff6666',
             blue: '#6699ff',
             green: '#66dd66',
-            yellow: '#ffdd66'
+            yellow: '#ffdd66',
+            purple: '#cd93ff',
+            orange: '#ffb16b'
         };
 
         // Input handling
@@ -2574,11 +2694,11 @@
 
             let focusTarget = player;
 
-            // If player is dead, follow a living teammate (or center on dead player)
-            if (player.currentHp <= 0 && (player.respawnTimer > 0 || currentGameMode === 'elimination')) {
+            // If player is dead in team play, follow a living teammate.
+            if (player.currentHp <= 0 && player.team) {
                 const livingTeammate = players.find(t => t !== player && t.team === player.team && t.currentHp > 0);
                 if (livingTeammate) focusTarget = livingTeammate;
-                else focusTarget = player;  // no living teammates, stay on dead player
+                else focusTarget = player;
             }
 
             // Center camera on focus target
@@ -2823,9 +2943,21 @@
                 // Bottom walls (y=1650): left group, right group
                 obstacles.push(initializeObstacleHealth({ x: 300, y: 1650, width: 500, height: 50, type: 'brick' }));
                 obstacles.push(initializeObstacleHealth({ x: 1200, y: 1650, width: 500, height: 50, type: 'brick' }));
+
+                // Mid-lane extra cover to make team maps feel less empty
+                obstacles.push(initializeObstacleHealth({ x: 640, y: 900, width: 80, height: 200, type: 'brick' }));
+                obstacles.push(initializeObstacleHealth({ x: 1280, y: 900, width: 80, height: 200, type: 'brick' }));
+                obstacles.push(initializeObstacleHealth({ x: 860, y: 640, width: 280, height: 50, type: 'metal' }));
+                obstacles.push(initializeObstacleHealth({ x: 860, y: 1310, width: 280, height: 50, type: 'metal' }));
+                obstacles.push(initializeObstacleHealth({ x: 760, y: 970, width: 80, height: 60, type: 'water' }));
+                obstacles.push(initializeObstacleHealth({ x: 1160, y: 970, width: 80, height: 60, type: 'water' }));
+                obstacles.push(initializeObstacleHealth({ x: 520, y: 620, width: 70, height: 140, type: 'brick' }));
+                obstacles.push(initializeObstacleHealth({ x: 1410, y: 620, width: 70, height: 140, type: 'brick' }));
+                obstacles.push(initializeObstacleHealth({ x: 520, y: 1240, width: 70, height: 140, type: 'brick' }));
+                obstacles.push(initializeObstacleHealth({ x: 1410, y: 1240, width: 70, height: 140, type: 'brick' }));
                 return;
             }
-            const obstacleCount = currentGameMode === 'ballGoal' ? 6 : 15;
+            const obstacleCount = currentGameMode === 'ballGoal' ? 14 : 34;
             const edgeClear = 200;
             let attempts = 0;
             let placed = 0;
@@ -3078,7 +3210,7 @@
             return false;
         }
 
-        // Pick up items from ground; auto-use heal if inventory full and it's a heal
+        // Pick up items from ground and auto-use immediately.
         function checkPickupCollision(entity) {
             for (let i = pickupItems.length - 1; i >= 0; i--) {
                 const item = pickupItems[i];
@@ -3091,19 +3223,9 @@
                     if (item.type === 'heal') {
                         spawnHealPickupEffect(entity.x + entity.size / 2, entity.y + entity.size / 2);
                     }
-                    if (entity.items.length < 3) {
-                        entity.items.push(item.type);
-                        pickupItems.splice(i, 1);
-                        // Bots auto-use heal when low; auto-use buffs when healthy
-                        if (entity.isBot) {
-                            const type = entity.items[entity.items.length - 1];
-                            if (type === 'heal' && entity.currentHp < entity.maxHp * 0.7) {
-                                useItem(entity);
-                            } else if (type !== 'heal' && entity.currentHp >= entity.maxHp * 0.5) {
-                                useItem(entity);
-                            }
-                        }
-                    }
+                    pickupItems.splice(i, 1);
+                    entity.items.push(item.type);
+                    useItem(entity);
                 }
             }
         }
@@ -3481,6 +3603,14 @@
 
         const BOT_TACTIC_POOL = Object.keys(BOT_TACTIC_PROFILES);
 
+        const BOT_PERSONALITY_PRESETS = [
+            { id: 'aggressive', label: 'Aggro', icon: '🔥', tactic: 'aggressive' },
+            { id: 'sniper', label: 'Sniper', icon: '🎯', tactic: 'sniper' },
+            { id: 'healer', label: 'Medic', icon: '💚', tactic: 'healer' },
+            { id: 'ambush', label: 'Ambush', icon: '🕶️', tactic: 'ambush' },
+            { id: 'balanced', label: 'Balanced', icon: '⚖️', tactic: 'balanced' }
+        ];
+
         const BOT_DIFFICULTY_PROFILES = [
             {
                 id: 'starter',
@@ -3628,6 +3758,15 @@
         function assignRandomBotTactic(bot) {
             if (!bot) return;
             bot.aiTactic = BOT_TACTIC_POOL[Math.floor(Math.random() * BOT_TACTIC_POOL.length)] || 'balanced';
+        }
+
+        function assignBotPersonality(bot, index = 0) {
+            if (!bot) return;
+            const preset = BOT_PERSONALITY_PRESETS[index % BOT_PERSONALITY_PRESETS.length] || BOT_PERSONALITY_PRESETS[0];
+            bot.aiTactic = preset.tactic;
+            bot.botPersonalityId = preset.id;
+            bot.botPersonalityLabel = preset.label;
+            bot.botPersonalityIcon = preset.icon;
         }
 
         function isBotEnemyTargetCandidate(bot, target) {
@@ -4153,6 +4292,29 @@
             killFeed = [];
             matchStatsList = [];
 
+            function buildBotProfileName(index, characterId) {
+                const directNames = [
+                   'Viper','NPC kid','Speedrunner'
+                ];
+                const prefixes = ['Big', 'Dark', 'Mega', 'Neo', 'Ultra', 'Wild', 'Iron', 'Fire', 'Ice', 'Shadow', 'Cyber', 'Storm'];
+                const roots = [ 'Rider', 'Hunter', 'Knight', 'Wolf', 'Blaze', 'Ghost', 'Sniper', 'Striker', 'Viper', 'Titan', 'Phantom'];
+                const suffixes = ['', 'X', 'Pro', 'Prime', 'MK2'];
+                const seed = `${characterId || 'bot'}_${index}_${Date.now()}`;
+                let hash = 0;
+                for (let i = 0; i < seed.length; i++) {
+                    hash = ((hash << 5) - hash) + seed.charCodeAt(i);
+                    hash |= 0;
+                }
+                const a = Math.abs(hash);
+                if (index < directNames.length) {
+                    return directNames[(a + index) % directNames.length];
+                }
+                const prefix = prefixes[a % prefixes.length];
+                const root = roots[Math.floor(a / prefixes.length) % roots.length];
+                const suffix = suffixes[Math.floor(a / (prefixes.length * roots.length)) % suffixes.length];
+                return `${prefix}${root}${suffix}`;
+            }
+
             // Set map size per mode
             if (mode === 'ballGoal' || mode === 'elimination' || mode === 'kingTown') {
                 MAP_WIDTH = 1500;
@@ -4184,7 +4346,7 @@
             };
 
             // For 3v3/2v2: track how many players placed per team for ordered side-spawns
-            const teamIndexCounters = { red: 0, blue: 0, green: 0, yellow: 0 };
+            const teamIndexCounters = {};
 
             function getTeamSpawnPosition(size, team) {
                 // Use battlemap spawn circles if available
@@ -4200,21 +4362,28 @@
                     return { x: pt.x - size / 2, y: pt.y - size / 2 };
                 }
 
-                // 3v3 / 2v2: fixed side-spawns — teammates line up next to each other
+                // 3v3 / 2v2: place teams around the arena ring; teammates line up per team.
                 if (mode === '3v3' || mode === '2v2') {
                     const idx = teamIndexCounters[team] || 0;
                     teamIndexCounters[team] = idx + 1;
-                    const spacing = size + 40; // extra gap so players don't overlap
+                    const teamList = modeConfig.teamNames || [];
+                    const teamIdx = Math.max(0, teamList.indexOf(team));
+                    const teamCount = Math.max(1, teamList.length);
+                    const spacing = size + 32;
                     const teamSize = modeConfig.teamSize;
-                    // offset so the whole row is centred on the map midpoint
                     const totalSpan = (teamSize - 1) * spacing;
-                    const mid = MAP_HEIGHT / 2;
-                    const midX = MAP_WIDTH / 2;
-                    const edgeMargin = 100; // near the edge so teams start close to their side
-                    if (team === 'red')    return { x: edgeMargin,               y: mid - totalSpan / 2 + idx * spacing };
-                    if (team === 'blue')   return { x: MAP_WIDTH - edgeMargin - size, y: mid - totalSpan / 2 + idx * spacing };
-                    if (team === 'green')  return { x: midX - totalSpan / 2 + idx * spacing, y: edgeMargin };
-                    if (team === 'yellow') return { x: midX - totalSpan / 2 + idx * spacing, y: MAP_HEIGHT - edgeMargin - size };
+                    const cx = MAP_WIDTH / 2;
+                    const cy = MAP_HEIGHT / 2;
+                    const radius = Math.max(220, Math.min(MAP_WIDTH, MAP_HEIGHT) * 0.37);
+                    const angle = (Math.PI * 2 * teamIdx / teamCount) - Math.PI / 2;
+                    const baseX = cx + Math.cos(angle) * radius;
+                    const baseY = cy + Math.sin(angle) * radius;
+                    const perpX = -Math.sin(angle);
+                    const perpY = Math.cos(angle);
+                    const offset = -totalSpan / 2 + idx * spacing;
+                    const x = Math.max(20, Math.min(MAP_WIDTH - size - 20, baseX + perpX * offset - size / 2));
+                    const y = Math.max(20, Math.min(MAP_HEIGHT - size - 20, baseY + perpY * offset - size / 2));
+                    return { x, y };
                 }
 
                 // Default: random within quadrant zone
@@ -4232,13 +4401,48 @@
                 return pos;
             }
 
+            function isFarEnoughFromPlacedPlayers(pos, size, minDistance) {
+                if (!Array.isArray(players) || players.length === 0) return true;
+                const cx = pos.x + size / 2;
+                const cy = pos.y + size / 2;
+                for (const placed of players) {
+                    if (!placed) continue;
+                    const px = placed.x + (placed.size || size) / 2;
+                    const py = placed.y + (placed.size || size) / 2;
+                    if (getDistance(cx, cy, px, py) < minDistance) return false;
+                }
+                return true;
+            }
+
+            function getFarSpawnPosition(size, team = null) {
+                const modeTeam = !!modeConfig.teams;
+                const targetTeam = modeTeam ? team : null;
+                const nearAlliesMin = Math.max(190, size + 120);
+                const enemyDistanceFloor = modeTeam
+                    ? ((mode === '3v3' || mode === '2v2') ? 450 : 390)
+                    : 460;
+
+                // Retry with a relaxing distance threshold so we avoid impossible layouts.
+                for (let attempt = 0; attempt < 110; attempt++) {
+                    const base = modeTeam ? getTeamSpawnPosition(size, targetTeam) : getSpawnPosition(size);
+                    const minDistance = Math.max(nearAlliesMin, enemyDistanceFloor - attempt * 2.8);
+                    if (isFarEnoughFromPlacedPlayers(base, size, minDistance)) {
+                        return base;
+                    }
+                }
+
+                // Final fallback keeps gameplay flowing even on tight maps.
+                return modeTeam ? getTeamSpawnPosition(size, targetTeam) : getSpawnPosition(size);
+            }
+
             // Create player
             const playerData = playersData[selectedNexusId];
             const playerTeam = modeConfig.teams ? 'red' : null;
-            const playerPos = modeConfig.teams ? getTeamSpawnPosition(playerData.size, 'red') : getSpawnPosition(playerData.size);
+            const playerPos = getFarSpawnPosition(playerData.size, playerTeam);
             const playerBonus = getStatBonus(selectedNexusId);
             player = {
                 ...playerData,
+                name: getCurrentProfile()?.username || playerData.name,
                 characterId: playerData.id,
                 x: playerPos.x,
                 y: playerPos.y,
@@ -4281,22 +4485,36 @@
 
             // Create bots
             const botCount = modeConfig.maxPlayers - 1;
-            const botDifficultyProfile = getBotDifficultyProfile();
+            const botDifficultyProfile = forceEasyIntroBattle
+                ? {
+                    id: 'tutorial_easy',
+                    maxMatches: Infinity,
+                    rarities: ['common', 'rare'],
+                    hpMult: 0.72,
+                    damageMult: 0.65,
+                    speedMult: 0.86,
+                    shootChanceMult: 0.58,
+                    cooldownMult: 1.45,
+                    spreadMult: 1.55,
+                    aimLeadMult: 0.12
+                }
+                : getBotDifficultyProfile();
             currentBotDifficultyInfo = {
-                skillPct: currentGameMode === 'easyStage' ? 0 : Math.round(getPlayerSkillScore() * 100),
+                skillPct: (currentGameMode === 'easyStage' || forceEasyIntroBattle) ? 0 : Math.round(getPlayerSkillScore() * 100),
                 label: botDifficultyProfile?.id || 'starter'
             };
             for (let i = 0; i < botCount; i++) {
                 const botPlayerId = pickBotIdForDifficulty(selectedNexusId, botDifficultyProfile);
                 const botData = playersData[botPlayerId];
                 const botTeam = modeConfig.teams ? modeConfig.teamNames[Math.floor((i + 1) / modeConfig.teamSize)] || modeConfig.teamNames[modeConfig.teamNames.length - 1] : null;
-                const botPos = modeConfig.teams ? getTeamSpawnPosition(botData.size, botTeam) : getSpawnPosition(botData.size);
+                const botPos = getFarSpawnPosition(botData.size, botTeam);
 
                 const bot = {
                     ...botData,
+                    name: buildBotProfileName(i, botPlayerId),
                     id: `bot_${i}`,
                     characterId: botPlayerId,
-                    aiTactic: BOT_TACTIC_POOL[Math.floor(Math.random() * BOT_TACTIC_POOL.length)] || 'balanced',
+                    aiTactic: 'balanced',
                     x: botPos.x,
                     y: botPos.y,
                     isBot: true,
@@ -4334,6 +4552,8 @@
                     _nextSuperAttemptTs: 0
                 };
 
+                assignBotPersonality(bot, i);
+
                 applyBotDifficulty(bot, botDifficultyProfile);
 
                 if (modeConfig.easyStage) {
@@ -4341,7 +4561,6 @@
                     bot.currentHp = bot.maxHp;
                     bot.laserDamage = Math.max(1, Math.round(bot.laserDamage * 0.68));
                     bot.speed = bot.speed * 0.9;
-                    bot.aiTactic = 'balanced';
                 }
 
                 players.push(bot);
@@ -4349,6 +4568,7 @@
             }
 
             totalPlayersAtStart = players.length;
+            forceEasyIntroBattle = false;
 
             // Reset super effects
             superEffects = [];
@@ -4810,10 +5030,12 @@
                 ctx.fillStyle = 'white';
                 ctx.fillText(`${Math.ceil(p.currentHp)}/${p.maxHp}`, px + p.size / 2, py - 15);
 
+                // Show fighter name above every character.
+                ctx.font = '12px Arial';
+                ctx.fillStyle = p.isHuman ? 'white' : '#d9f2ff';
+                ctx.fillText(p.name, px + p.size / 2, py - 28);
+
                 if (p.isHuman) {
-                    ctx.font = '12px Arial';
-                    ctx.fillStyle = 'white';
-                    ctx.fillText(p.name, px + p.size / 2, py - 28);
                     const activeTitle = getEquippedTitle(getCurrentProfile());
                     ctx.font = '10px Arial';
                     ctx.fillStyle = '#ffcc66';
@@ -4835,6 +5057,7 @@
                     ctx.fillText(`🛡️${p._shieldHp}`, px + p.size / 2, py - (p.isHuman ? 54 : 44));
                 }
 
+
                 // Spawn shield indicator (temporary damage immunity)
                 if ((p.spawnShieldTimer || 0) > 0) {
                     const secs = (p.spawnShieldTimer / 60).toFixed(1);
@@ -4851,6 +5074,7 @@
 
                 // Stars above player in bounty mode
                 if (currentGameMode === 'bounty' && p.kills > 0) {
+
                     ctx.font = 'bold 13px Arial';
                     ctx.textAlign = 'center';
                     const starY = py - (p.isHuman ? 42 : 32);
@@ -6289,67 +6513,21 @@
                     // Show respawn message
                     if (p.isHuman) levelUpMessage = { text: '✨ Respawned!', timer: 90 };
 
-                    // Determine spawn position
-                    if (currentGameMode === 'ballGoal' || currentGameMode === 'kingTown') {
-                        // Respawn near own goalpost
-                        const ownGoal = goals.find(g => g.team === p.team);
-                        if (ownGoal) {
-                            const offsetX = p.team === 'red' ? 80 : -80;
-                            spawnX = ownGoal.x + ownGoal.w / 2 + offsetX - p.size / 2;
-                            spawnY = ownGoal.y + ownGoal.h / 2 + (Math.random() - 0.5) * 100 - p.size / 2;
-                        }
-                    } else if (currentGameMode === 'bounty') {
-                        // Respawn in own team's half (red=left, blue=right)
+                    // Determine spawn position.
+                    // Team respawn modes always spawn near a living teammate.
+                    if (isTeamMode) {
                         const livingTeammates = players.filter(t => t !== p && t.team === p.team && t.currentHp > 0);
                         if (livingTeammates.length > 0) {
                             const mate = livingTeammates[Math.floor(Math.random() * livingTeammates.length)];
                             const angle = Math.random() * Math.PI * 2;
-                            const dist = 80 + Math.random() * 60;
+                            const dist = 72 + Math.random() * 56;
                             spawnX = mate.x + Math.cos(angle) * dist;
                             spawnY = mate.y + Math.sin(angle) * dist;
-                        } else {
-                            // Respawn in safe zone based on team
-                            spawnX = p.team === 'red' ? 150 + Math.random() * 400 : MAP_WIDTH - 550 + Math.random() * 400;
-                            spawnY = 150 + Math.random() * (MAP_HEIGHT - 300);
-                        }
-                    } else if (currentGameMode === '3v3' || currentGameMode === '2v2') {
-                        // Respawn in team's edge strip — guaranteed obstacle-free zone (300px from edge)
-                        const edgeMargin = 100;
-                        const stripDepth = 180; // safe depth from edge
-                        const lateralMin = 300;
-                        const lateralMax = MAP_HEIGHT - 300;
-                        const lateralMinX = 300;
-                        const lateralMaxX = MAP_WIDTH - 300;
-                        if (p.team === 'red') {
-                            spawnX = edgeMargin + Math.random() * stripDepth;
-                            spawnY = lateralMin + Math.random() * (lateralMax - lateralMin);
-                        } else if (p.team === 'blue') {
-                            spawnX = MAP_WIDTH - edgeMargin - stripDepth + Math.random() * stripDepth - p.size;
-                            spawnY = lateralMin + Math.random() * (lateralMax - lateralMin);
-                        } else if (p.team === 'green') {
-                            spawnX = lateralMinX + Math.random() * (lateralMaxX - lateralMinX);
-                            spawnY = edgeMargin + Math.random() * stripDepth;
-                        } else if (p.team === 'yellow') {
-                            spawnX = lateralMinX + Math.random() * (lateralMaxX - lateralMinX);
-                            spawnY = MAP_HEIGHT - edgeMargin - stripDepth + Math.random() * stripDepth - p.size;
                         }
                     } else {
-                        if (isTeamMode) {
-                            // Respawn near a living teammate
-                            const livingTeammates = players.filter(t => t !== p && t.team === p.team && t.currentHp > 0);
-                            if (livingTeammates.length > 0) {
-                                const mate = livingTeammates[Math.floor(Math.random() * livingTeammates.length)];
-                                const angle = Math.random() * Math.PI * 2;
-                                const dist = 60 + Math.random() * 40;
-                                spawnX = mate.x + Math.cos(angle) * dist;
-                                spawnY = mate.y + Math.sin(angle) * dist;
-                            }
-                        } else {
-                            // Non-team fallback (Showdown/FFA-like): random safe respawn.
-                            const freeSpawn = getSpawnPosition(p.size);
-                            spawnX = freeSpawn.x;
-                            spawnY = freeSpawn.y;
-                        }
+                        const freeSpawn = getSpawnPosition(p.size);
+                        spawnX = freeSpawn.x;
+                        spawnY = freeSpawn.y;
                     }
 
                     setSafeRespawnPosition(p, spawnX, spawnY);
@@ -7327,11 +7505,6 @@
                 player.shootCooldown = Math.max(0, player.shootCooldown - 1); // double decrement
             }
 
-            // Use item: F key
-            if (keysPressed['f'] && player.items.length > 0) {
-                keysPressed['f'] = false;
-                useItem(player);
-            }
         }
         /************************************************** */
         //end joystick implementation
@@ -9007,8 +9180,8 @@
             const winSparks  = is3v3 ? 18 : 12;
             const loseSparks = is3v3 ? 7 : 4;
 
-            const winCredits = is3v3 ? 14 : 9;
-            const loseCredits = is3v3 ? 6 : 4;
+            const winCredits = is3v3 ? HERO_MARKS_MATCH_REWARDS.win.team : HERO_MARKS_MATCH_REWARDS.win.standard;
+            const loseCredits = is3v3 ? HERO_MARKS_MATCH_REWARDS.lose.team : HERO_MARKS_MATCH_REWARDS.lose.standard;
             const humanSnapshot = (function buildHumanSnapshot() {
                 const fromList = matchStatsList.find(s => s.isHuman) || {};
                 const live = player && player.isHuman ? player : null;
@@ -9403,20 +9576,29 @@
             [
                 { id: 'win2', desc: 'Win 2 matches', type: 'wins', target: 2, reward: { type: 'sparks', amount: 250 }, icon: '🏆' },
                 { id: 'win3', desc: 'Win 3 matches', type: 'wins', target: 3, reward: { type: 'sparks', amount: 400 }, icon: '🏆' },
+                { id: 'win5', desc: 'Win 5 matches', type: 'wins', target: 5, reward: { type: 'sparks', amount: 680 }, icon: '🏆' },
                 { id: 'kill8', desc: 'Get 8 kills in total', type: 'kills', target: 8, reward: { type: 'sparks', amount: 300 }, icon: '⚡' },
                 { id: 'kill12', desc: 'Get 12 kills in total', type: 'kills', target: 12, reward: { type: 'sparks', amount: 450 }, icon: '⚡' },
+                { id: 'kill20', desc: 'Get 20 kills in total', type: 'kills', target: 20, reward: { type: 'sparks', amount: 760 }, icon: '⚡' },
                 { id: 'kill5match', desc: 'Get 5 kills in one match', type: 'matchKills', target: 5, reward: { type: 'sparks', amount: 360 }, icon: '🎯' },
+                { id: 'kill8match', desc: 'Get 8 kills in one match', type: 'matchKills', target: 8, reward: { type: 'coins', amount: 260 }, icon: '🎯' },
                 { id: 'play3', desc: 'Play 3 matches', type: 'games', target: 3, reward: { type: 'sparks', amount: 220 }, icon: '🎮' },
                 { id: 'play5', desc: 'Play 5 matches', type: 'games', target: 5, reward: { type: 'sparks', amount: 380 }, icon: '🎮' },
+                { id: 'play8', desc: 'Play 8 matches', type: 'games', target: 8, reward: { type: 'coins', amount: 240 }, icon: '🎮' },
                 { id: 'streak3', desc: 'Get a 3-kill streak', type: 'streak', target: 3, reward: { type: 'sparks', amount: 360 }, icon: '🔥' },
                 { id: 'streak5', desc: 'Reach RAMPAGE (5 streak)', type: 'streak', target: 5, reward: { type: 'sparks', amount: 650 }, icon: '💥' },
+                { id: 'streak7', desc: 'Reach GODLIKE (7 streak)', type: 'streak', target: 7, reward: { type: 'credits', amount: 8 }, icon: '💥' },
                 { id: 'damage1200', desc: 'Deal 1200 total damage', type: 'damage', target: 1200, reward: { type: 'sparks', amount: 320 }, icon: '💣' },
                 { id: 'damage2000', desc: 'Deal 2000 total damage', type: 'damage', target: 2000, reward: { type: 'sparks', amount: 520 }, icon: '💥' },
+                { id: 'damage3500', desc: 'Deal 3500 total damage', type: 'damage', target: 3500, reward: { type: 'sparks', amount: 840 }, icon: '💥' },
                 { id: 'survive120', desc: 'Survive 2 minutes in one match', type: 'survive', target: 120, reward: { type: 'sparks', amount: 320 }, icon: '⏱️' },
+                { id: 'survive180', desc: 'Survive 3 minutes in one match', type: 'survive', target: 180, reward: { type: 'coins', amount: 220 }, icon: '⏱️' },
                 { id: 'winstreak2', desc: 'Win 2 matches in a row', type: 'winstreak', target: 2, reward: { type: 'coins', amount: 150 }, icon: '🔴' },
                 { id: 'winstreak3', desc: 'Win 3 matches in a row', type: 'winstreak', target: 3, reward: { type: 'sparks', amount: 400 }, icon: '🎯' },
+                { id: 'winstreak4', desc: 'Win 4 matches in a row', type: 'winstreak', target: 4, reward: { type: 'credits', amount: 6 }, icon: '🎯' },
                 { id: 'coins200', desc: 'Earn 200 coins total', type: 'coins', target: 200, reward: { type: 'sparks', amount: 280 }, icon: '💰' },
-                { id: 'coins500', desc: 'Earn 500 coins total', type: 'coins', target: 500, reward: { type: 'sparks', amount: 550 }, icon: '💰' }
+                { id: 'coins500', desc: 'Earn 500 coins total', type: 'coins', target: 500, reward: { type: 'sparks', amount: 550 }, icon: '💰' },
+                { id: 'coins900', desc: 'Earn 900 coins total', type: 'coins', target: 900, reward: { type: 'credits', amount: 5 }, icon: '💰' }
             ]
         );
 
@@ -9428,9 +9610,10 @@
         function loadDailyChallenges(key = getDailyKey()) {
             const saved = readStorageJson(key, null);
             if (saved) return saved;
-            // Pick 3 random challenges for today
+            // Pick 7 random challenges for today
             const shuffled = [...DAILY_CHALLENGE_DEFS].sort(() => Math.random() - 0.5);
-            const picked = shuffled.slice(0, 3).map(c => ({
+            const dailyCount = Math.min(7, DAILY_CHALLENGE_DEFS.length);
+            const picked = shuffled.slice(0, dailyCount).map(c => ({
                 id: c.id, progress: 0, claimed: false
             }));
             storageSetItem(key, JSON.stringify(picked));
@@ -9648,7 +9831,7 @@
 
         function loadMatchHistory(accountKey = null) {
             const key = getMatchHistoryStorageKey(accountKey);
-            const raw = localStorage.getItem(key);
+            const raw = storageGetItem(key);
             if (raw) return parseStorageJson(raw, []);
             // Backward compatibility for older builds that used one global key.
             if (!accountKey && key !== 'matchHistory') {
@@ -9676,7 +9859,7 @@
                 ts: Date.now(),
             });
             if (history.length > 20) history.length = 20;
-            localStorage.setItem(getMatchHistoryStorageKey(), JSON.stringify(history));
+            storageSetItem(getMatchHistoryStorageKey(), JSON.stringify(history));
         }
 
         function openMatchHistory() {
@@ -9756,52 +9939,55 @@
 
         const ONBOARDING_STEPS = [
             {
-                title: '🎮 Move Like a Pro',
-                body: 'Move with WASD / Arrow Keys. On mobile, use the left joystick. Keep moving and strafe so enemy shots miss.',
-                hint: 'Tip: Standing still is the fastest way to lose a duel.',
-                objective: 'Move with the left joystick (or W/A/S/D on desktop).'
+                title: '1) Move',
+                body: 'Move your player for 1 second.',
+                hint: 'Desktop: WASD/Arrows. Mobile: left joystick.',
+                objective: 'Move.'
             },
             {
-                title: '🎯 Aim at the Bot',
-                body: 'Track and attack the tutorial bot. On mobile, aim and release the right joystick to shoot.',
-                hint: 'Tip: Aim a bit ahead of moving targets for cleaner hits.',
-                objective: 'Aim and attack with right joystick (or mouse on desktop).'
+                title: '2) Shoot',
+                body: 'Shoot once.',
+                hint: 'Desktop: click arena. Mobile: right joystick or Shoot button.',
+                objective: 'Shoot once.'
             },
             {
-                title: '⚡ Super Ability',
-                body: 'Deal damage to charge your Super. Use E (or the Super button) when the meter is full to swing fights.',
-                hint: 'Tip: Save Super for pushes, clutch defenses, or finishing low enemies.',
-                objective: 'Press E or tap Use Super.'
+                title: '3) Use Super',
+                body: 'Use Super once.',
+                hint: 'Desktop: press E. Mobile: tap Super button.',
+                objective: 'Use Super once.'
             },
             {
-                title: '🧰 Gadget and Items',
-                body: 'Use Space (or gadget button) for your gadget. Break crates for drops and press F to use your first item.',
-                hint: 'Tip: Good gadget timing wins more fights than raw aim.',
-                objective: 'Use both Gadget (Space) and Item (F).'
+                title: '4) Use Gadget',
+                body: 'Use Gadget once.',
+                hint: 'Desktop: press Space. Mobile: tap Gadget button.',
+                objective: 'Use Gadget once.'
             },
             {
-                title: '🏆 Win the Match',
-                body: 'Try Easy Stage first, then jump into Showdown or Team modes. Earn coins, medals, sparks, and Hero Marks after each game.',
-                hint: 'Ready? Tap Start Playing and go battle.',
-                objective: 'Tutorial complete. Tap Start Playing.'
+                title: '5) Start Playing',
+                body: 'You are ready.',
+                hint: 'Press Start Playing to begin battles.',
+                objective: 'Tutorial complete.'
             }
         ];
 
         let onboardingStepIndex = 0;
+        let onboardingAutoAdvanceTimer = null;
         let onboardingProgress = {
             moved: false,
             aimed: false,
             shot: false,
+            superAimed: false,
             superUsed: false,
+            gadgetAimed: false,
             gadgetUsed: false,
             itemUsed: false
         };
         let onboardingArena = { x: 130, y: 70, aimX: 1, aimY: 0 };
         const ONBOARDING_TARGET_BOT_IMAGE = 'images/tutorial bot.png';
-        const onboardingTargetBotState = { maxHp: 100, hp: 100 };
+        const onboardingTargetBotState = { maxHp: 220, hp: 220 };
 
         function getOnboardingCharacterData() {
-            return playersData.default || Object.values(playersData)[0] || null;
+            return playersData.default || null;
         }
 
         function getOnboardingArenaLimits() {
@@ -9848,8 +10034,74 @@
             return { dx, dy, distance };
         }
 
+        function spawnOnboardingShot(nx, ny, color = '#ffcf5a', size = 7) {
+            const arenaEl = document.getElementById('onboarding-arena');
+            if (!arenaEl) return;
+
+            const mag = Math.hypot(nx, ny);
+            const ux = mag > 0.01 ? (nx / mag) : onboardingArena.aimX;
+            const uy = mag > 0.01 ? (ny / mag) : onboardingArena.aimY;
+            const range = 86;
+            const startX = onboardingArena.x;
+            const startY = onboardingArena.y;
+            const endX = startX + ux * range;
+            const endY = startY + uy * range;
+
+            const shotEl = document.createElement('div');
+            shotEl.style.position = 'absolute';
+            shotEl.style.left = `${startX}px`;
+            shotEl.style.top = `${startY}px`;
+            shotEl.style.width = `${size}px`;
+            shotEl.style.height = `${size}px`;
+            shotEl.style.borderRadius = '50%';
+            shotEl.style.background = color;
+            shotEl.style.boxShadow = `0 0 10px ${color}`;
+            shotEl.style.transform = 'translate(-50%, -50%)';
+            shotEl.style.pointerEvents = 'none';
+            shotEl.style.zIndex = '20';
+            shotEl.style.transition = 'left 120ms linear, top 120ms linear, opacity 140ms linear';
+
+            arenaEl.appendChild(shotEl);
+            requestAnimationFrame(() => {
+                shotEl.style.left = `${endX}px`;
+                shotEl.style.top = `${endY}px`;
+                shotEl.style.opacity = '0.18';
+            });
+            setTimeout(() => {
+                if (shotEl.parentNode) shotEl.parentNode.removeChild(shotEl);
+            }, 170);
+        }
+
         function attemptOnboardingAttack(nx, ny) {
             if (!isOnboardingActive() || onboardingStepIndex !== 1) return false;
+            spawnOnboardingShot(nx, ny, '#ffd778', 7);
+            onboardingProgress.aimed = true;
+            onboardingProgress.shot = true;
+
+            onboardingTargetBotState.hp = Math.max(0, onboardingTargetBotState.hp - 25);
+            if (onboardingTargetBotState.hp <= 0) onboardingTargetBotState.hp = onboardingTargetBotState.maxHp;
+
+            renderOnboardingStep();
+            renderOnboardingArena();
+            return true;
+        }
+
+        function attemptOnboardingSuper(nx, ny) {
+            if (!isOnboardingActive() || onboardingStepIndex !== 2) return false;
+            spawnOnboardingShot(nx, ny, '#ff9f45', 10);
+            onboardingProgress.superUsed = true;
+            onboardingProgress.superAimed = true;
+            onboardingTargetBotState.hp = Math.max(0, onboardingTargetBotState.hp - 50);
+            if (onboardingTargetBotState.hp <= 0) onboardingTargetBotState.hp = onboardingTargetBotState.maxHp;
+
+            renderOnboardingStep();
+            renderOnboardingArena();
+            return true;
+        }
+
+        function attemptOnboardingGadget(nx, ny) {
+            if (!isOnboardingActive() || onboardingStepIndex !== 3) return false;
+            spawnOnboardingShot(nx, ny, '#55ff96', 8);
             const aimMag = Math.hypot(nx, ny);
             if (aimMag < 0.08) return false;
             const targetVec = getOnboardingTargetDirection();
@@ -9861,19 +10113,18 @@
             const ty = targetVec.dy / targetVec.distance;
             const dot = ax * tx + ay * ty;
 
-            if (!onboardingProgress.aimed) onboardingProgress.aimed = true;
-            onboardingProgress.shot = true;
-
-            if (dot >= 0.86) {
-                onboardingTargetBotState.hp = Math.max(0, onboardingTargetBotState.hp - 25);
-                if (onboardingTargetBotState.hp <= 0) {
-                    onboardingTargetBotState.hp = onboardingTargetBotState.maxHp;
-                }
+            if (dot >= 0.82) {
+                onboardingProgress.gadgetAimed = true;
+                onboardingProgress.gadgetUsed = true;
+                onboardingTargetBotState.hp = Math.max(0, onboardingTargetBotState.hp - 35);
+                if (onboardingTargetBotState.hp <= 0) onboardingTargetBotState.hp = onboardingTargetBotState.maxHp;
+            } else {
+                onboardingProgress.gadgetUsed = true;
             }
 
             renderOnboardingStep();
             renderOnboardingArena();
-            return dot >= 0.86;
+            return dot >= 0.82;
         }
 
         function renderOnboardingArena() {
@@ -9885,7 +10136,12 @@
             if (!arenaEl || !playerEl || !playerImgEl) return;
 
             const pd = getOnboardingCharacterData();
-            const imgSrc = pd ? (getPlayerPreferredImageSrc(pd) || pd.img || 'images/ScorpiosSouvlak.png') : 'images/ScorpiosSouvlak.png';
+            const imgSrc = pd ? (pd.img || 'images/ScorpiosSouvlak.png') : 'images/ScorpiosSouvlak.png';
+            playerImgEl.onerror = () => {
+                if (playerImgEl.getAttribute('src') !== 'images/ScorpiosSouvlak.png') {
+                    playerImgEl.setAttribute('src', 'images/ScorpiosSouvlak.png');
+                }
+            };
             if (playerImgEl.getAttribute('src') !== imgSrc) playerImgEl.setAttribute('src', imgSrc);
             if (targetBotImgEl && targetBotImgEl.getAttribute('src') !== ONBOARDING_TARGET_BOT_IMAGE) {
                 targetBotImgEl.setAttribute('src', ONBOARDING_TARGET_BOT_IMAGE);
@@ -9929,7 +10185,9 @@
                 moved: false,
                 aimed: false,
                 shot: false,
+                superAimed: false,
                 superUsed: false,
+                gadgetAimed: false,
                 gadgetUsed: false,
                 itemUsed: false
             };
@@ -9939,26 +10197,95 @@
 
         function isOnboardingStepComplete(stepIndex) {
             if (stepIndex === 0) return onboardingProgress.moved;
-            if (stepIndex === 1) return onboardingProgress.aimed && onboardingProgress.shot;
+            if (stepIndex === 1) return onboardingProgress.shot;
             if (stepIndex === 2) return onboardingProgress.superUsed;
-            if (stepIndex === 3) return onboardingProgress.gadgetUsed && onboardingProgress.itemUsed;
+            if (stepIndex === 3) return onboardingProgress.gadgetUsed;
             return true;
         }
 
         function getOnboardingObjectiveText(stepIndex) {
             if (stepIndex === 0) {
-                return `${onboardingProgress.moved ? '✅' : '⬜'} Move: W/A/S/D or Arrow Keys`;
+                return `${onboardingProgress.moved ? '✅' : '⬜'} Move`;
             }
             if (stepIndex === 1) {
-                return `${onboardingProgress.aimed ? '✅' : '⬜'} Aim movement    ${onboardingProgress.shot ? '✅' : '⬜'} Attack bot`;
+                return `${onboardingProgress.shot ? '✅' : '⬜'} Shoot once`;
             }
             if (stepIndex === 2) {
-                return `${onboardingProgress.superUsed ? '✅' : '⬜'} Use Super (E or button)`;
+                return `${onboardingProgress.superUsed ? '✅' : '⬜'} Use Super once`;
             }
             if (stepIndex === 3) {
-                return `${onboardingProgress.gadgetUsed ? '✅' : '⬜'} Gadget    ${onboardingProgress.itemUsed ? '✅' : '⬜'} Item`;
+                return `${onboardingProgress.gadgetUsed ? '✅' : '⬜'} Use Gadget once`;
             }
             return '✅ You are ready. Start your first battle!';
+        }
+
+        function getOnboardingContextHint(stepIndex) {
+            if (stepIndex === 0) {
+                return onboardingProgress.moved
+                    ? 'Nice movement. Keep strafing to avoid shots.'
+                    : 'Tip: hold a direction for a full second.';
+            }
+            if (stepIndex === 1) {
+                if (!onboardingProgress.aimed) return 'Aim at the bot first, then shoot.';
+                if (!onboardingProgress.shot) return 'You are aiming correctly. Fire now.';
+                return 'Great shot. Keep distance while attacking.';
+            }
+            if (stepIndex === 2) {
+                return onboardingProgress.superUsed
+                    ? 'Super used perfectly.'
+                    : 'Use Super when enemies are in front of you.';
+            }
+            if (stepIndex === 3) {
+                const hpPct = Math.round((onboardingTargetBotState.hp / onboardingTargetBotState.maxHp) * 100);
+                if (!onboardingProgress.gadgetUsed) return `Try gadget now. Bot HP: ${hpPct}%`;
+                return 'Nice gadget timing.';
+            }
+            return 'You are ready. The next click starts a real battle.';
+        }
+
+        const TUTORIAL_REWARD_COINS = 140;
+        const TUTORIAL_REWARD_SPARKS = 220;
+
+        function getTutorialRewardClaimKey() {
+            const profile = getCurrentProfile();
+            const tag = profile?.username ? normalizeUsername(profile.username) : 'guest';
+            return `tutorialRewardClaimed_${tag}`;
+        }
+
+        function grantTutorialCompletionRewardOnce() {
+            const rewardKey = getTutorialRewardClaimKey();
+            if (storageGetItem(rewardKey) === 'true') return false;
+            playerCoins += TUTORIAL_REWARD_COINS;
+            energySparks += TUTORIAL_REWARD_SPARKS;
+            storageSetItem(rewardKey, 'true');
+            saveProgress();
+            showCoins();
+            return true;
+        }
+
+        function queueOnboardingAutoAdvance() {
+            if (!isOnboardingActive()) return;
+            if (!isOnboardingStepComplete(onboardingStepIndex)) return;
+            if (onboardingAutoAdvanceTimer) clearTimeout(onboardingAutoAdvanceTimer);
+
+            const startStep = onboardingStepIndex;
+            const isLast = onboardingStepIndex >= ONBOARDING_STEPS.length - 1;
+            const delay = isLast ? 900 : 550;
+
+            onboardingAutoAdvanceTimer = setTimeout(() => {
+                onboardingAutoAdvanceTimer = null;
+                if (!isOnboardingActive()) return;
+                if (onboardingStepIndex !== startStep) return;
+                if (!isOnboardingStepComplete(onboardingStepIndex)) return;
+
+                if (isLast) {
+                    finishOnboarding(true);
+                    return;
+                }
+
+                onboardingStepIndex = Math.min(ONBOARDING_STEPS.length - 1, onboardingStepIndex + 1);
+                renderOnboardingStep();
+            }, delay);
         }
 
         function isOnboardingActive() {
@@ -9969,6 +10296,11 @@
         function syncOnboardingJoysticks() {
             const moveJoy = document.getElementById('joystick-container');
             const shootJoy = document.getElementById('shoot-joystick-container');
+            const superBtnContainer = document.getElementById('super-btn-container');
+            const gadgetBtnContainer = document.getElementById('gadget-btn-container');
+            const body = document.body;
+            const ghostClasses = ['onboarding-ghost-move', 'onboarding-ghost-aim', 'onboarding-ghost-super', 'onboarding-ghost-gadget'];
+            ghostClasses.forEach(c => body.classList.remove(c));
             if (!moveJoy || !shootJoy) return;
 
             if (!isOnboardingActive()) {
@@ -9976,6 +10308,12 @@
                     moveJoy.style.setProperty('display', 'none', 'important');
                     shootJoy.style.setProperty('display', 'none', 'important');
                 }
+                if (superBtnContainer) superBtnContainer.style.removeProperty('display');
+                if (gadgetBtnContainer) gadgetBtnContainer.style.removeProperty('display');
+                moveJoy.style.removeProperty('z-index');
+                shootJoy.style.removeProperty('z-index');
+                if (superBtnContainer) superBtnContainer.style.removeProperty('z-index');
+                if (gadgetBtnContainer) gadgetBtnContainer.style.removeProperty('z-index');
                 return;
             }
 
@@ -9983,27 +10321,35 @@
             if (onboardingStepIndex === 0) {
                 moveJoy.style.setProperty('display', 'block', 'important');
                 shootJoy.style.setProperty('display', 'none', 'important');
+                if (superBtnContainer) superBtnContainer.style.setProperty('display', 'none', 'important');
+                if (gadgetBtnContainer) gadgetBtnContainer.style.setProperty('display', 'none', 'important');
+                body.classList.add('onboarding-ghost-move');
                 return;
             }
 
             // Step 2+: movement + aiming joystick.
             moveJoy.style.setProperty('display', 'block', 'important');
             shootJoy.style.setProperty('display', 'block', 'important');
+            moveJoy.style.setProperty('z-index', '2200', 'important');
+            shootJoy.style.setProperty('z-index', '2200', 'important');
+            if (onboardingStepIndex === 1) body.classList.add('onboarding-ghost-aim');
+
+            if (superBtnContainer) {
+                const showSuper = onboardingStepIndex === 2;
+                superBtnContainer.style.setProperty('display', showSuper ? 'block' : 'none', 'important');
+                superBtnContainer.style.setProperty('z-index', '2200', 'important');
+                if (showSuper) body.classList.add('onboarding-ghost-super');
+            }
+            if (gadgetBtnContainer) {
+                const showGadget = onboardingStepIndex === 3;
+                gadgetBtnContainer.style.setProperty('display', showGadget ? 'block' : 'none', 'important');
+                gadgetBtnContainer.style.setProperty('z-index', '2200', 'important');
+                if (showGadget) body.classList.add('onboarding-ghost-gadget');
+            }
         }
 
         function renderOnboardingPractice(stepIndex) {
-            const practiceEl = document.getElementById('onboarding-practice');
-            const targetBtn = document.getElementById('onboarding-target-btn');
-            const superBtn = document.getElementById('onboarding-super-btn');
-            const gadgetBtn = document.getElementById('onboarding-gadget-btn');
-            const itemBtn = document.getElementById('onboarding-item-btn');
-            if (!practiceEl || !targetBtn || !superBtn || !gadgetBtn || !itemBtn) return;
-
-            practiceEl.style.display = (stepIndex >= 2 && stepIndex <= 3) ? 'flex' : 'none';
-            targetBtn.style.display = 'none';
-            superBtn.style.display = stepIndex === 2 ? 'inline-block' : 'none';
-            gadgetBtn.style.display = stepIndex === 3 ? 'inline-block' : 'none';
-            itemBtn.style.display = stepIndex === 3 ? 'inline-block' : 'none';
+            return;
         }
 
         function renderOnboardingStep() {
@@ -10015,35 +10361,43 @@
             const hintEl = document.getElementById('onboarding-hint');
             const stepEl = document.getElementById('onboarding-step');
             const dotsEl = document.getElementById('onboarding-dots');
-            const prevBtn = document.getElementById('onboarding-prev');
-            const nextBtn = document.getElementById('onboarding-next');
             const objectiveEl = document.getElementById('onboarding-objective');
 
-            if (!titleEl || !bodyEl || !hintEl || !stepEl || !dotsEl || !prevBtn || !nextBtn || !objectiveEl) return;
+            if (!titleEl || !bodyEl || !hintEl || !stepEl || !dotsEl || !objectiveEl) return;
 
             titleEl.textContent = step.title;
             bodyEl.textContent = step.body;
-            hintEl.textContent = step.hint;
+            hintEl.textContent = `${step.hint} ${getOnboardingContextHint(onboardingStepIndex)}`;
             stepEl.textContent = `Step ${onboardingStepIndex + 1}/${ONBOARDING_STEPS.length}`;
             objectiveEl.textContent = `${step.objective}  ${getOnboardingObjectiveText(onboardingStepIndex)}`;
 
             dotsEl.innerHTML = ONBOARDING_STEPS.map((_, i) => `<span class="onboarding-dot${i === onboardingStepIndex ? ' active' : ''}"></span>`).join('');
-            prevBtn.disabled = onboardingStepIndex === 0;
-            nextBtn.textContent = onboardingStepIndex === ONBOARDING_STEPS.length - 1 ? 'Start Playing' : 'Next';
-            nextBtn.disabled = !isOnboardingStepComplete(onboardingStepIndex);
             renderOnboardingPractice(onboardingStepIndex);
             syncOnboardingJoysticks();
             renderOnboardingArena();
+            queueOnboardingAutoAdvance();
         }
 
         function finishOnboarding(markSeen = true) {
             const overlay = document.getElementById('onboarding-overlay');
             if (overlay) overlay.style.display = 'none';
+            if (onboardingAutoAdvanceTimer) {
+                clearTimeout(onboardingAutoAdvanceTimer);
+                onboardingAutoAdvanceTimer = null;
+            }
             if (markSeen) storageSetItem('tutorialSeen', 'true');
             syncOnboardingJoysticks();
             showAllUI();
             updateCharShowcase();
             renderDailyWinsWidget();
+            if (markSeen) {
+                const rewarded = grantTutorialCompletionRewardOnce();
+                if (rewarded) {
+                    openTutorialRewardFlow();
+                } else {
+                    openTutorialCheckFlow();
+                }
+            }
         }
 
         function startOnboardingFlow() {
@@ -10064,28 +10418,126 @@
         }
 
         function ensureMainMenuVisible() {
+            const expOverlay = document.getElementById('experience-overlay');
             const overlay = document.getElementById('onboarding-overlay');
             const menuEl = document.querySelector('.menu');
+            const isExperienceVisible = !!expOverlay && expOverlay.style.display === 'flex';
             const isOnboardingVisible = !!overlay && overlay.style.display === 'flex';
             const isMenuHidden = !menuEl || getComputedStyle(menuEl).display === 'none';
-            if (!isOnboardingVisible && isMenuHidden && !gameStarted) {
+            if (!isExperienceVisible && !isOnboardingVisible && isMenuHidden && !gameStarted) {
                 showAllUI();
                 updateCharShowcase();
                 renderDailyWinsWidget();
             }
         }
 
+        function openExperienceChoiceFlow() {
+            const expOverlay = document.getElementById('experience-overlay');
+            if (!expOverlay) {
+                showAllUI();
+                return;
+            }
+            hideAllUI();
+            expOverlay.style.display = 'flex';
+        }
+
+        function closeExperienceChoiceFlow() {
+            const expOverlay = document.getElementById('experience-overlay');
+            if (expOverlay) expOverlay.style.display = 'none';
+        }
+
+        function openTutorialCheckFlow() {
+            const overlay = document.getElementById('tutorial-check-overlay');
+            if (!overlay) return;
+            overlay.style.display = 'flex';
+        }
+
+        function closeTutorialCheckFlow() {
+            const overlay = document.getElementById('tutorial-check-overlay');
+            if (overlay) overlay.style.display = 'none';
+        }
+
+        function openTutorialRewardFlow() {
+            const overlay = document.getElementById('tutorial-reward-overlay');
+            const textEl = document.getElementById('tutorial-reward-text');
+            if (!overlay) {
+                openTutorialCheckFlow();
+                return;
+            }
+            if (textEl) textEl.textContent = `You earned +${TUTORIAL_REWARD_COINS} coins and +${TUTORIAL_REWARD_SPARKS} sparks.`;
+            overlay.style.display = 'flex';
+        }
+
+        function closeTutorialRewardFlow() {
+            const overlay = document.getElementById('tutorial-reward-overlay');
+            if (overlay) overlay.style.display = 'none';
+        }
+
+        function initTutorialRewardFlow() {
+            const overlay = document.getElementById('tutorial-reward-overlay');
+            const continueBtn = document.getElementById('tutorial-reward-continue-btn');
+            if (!overlay || !continueBtn) return;
+            if (overlay.dataset.bound === '1') return;
+
+            continueBtn.addEventListener('click', () => {
+                closeTutorialRewardFlow();
+                openTutorialCheckFlow();
+            });
+
+            overlay.dataset.bound = '1';
+        }
+
+        function initTutorialCheckFlow() {
+            const overlay = document.getElementById('tutorial-check-overlay');
+            const yesBtn = document.getElementById('tutorial-check-yes-btn');
+            const noBtn = document.getElementById('tutorial-check-no-btn');
+            if (!overlay || !yesBtn || !noBtn) return;
+            if (overlay.dataset.bound === '1') return;
+
+            yesBtn.addEventListener('click', () => {
+                closeTutorialCheckFlow();
+                forceEasyIntroBattle = true;
+                if (!gameStarted) startGame();
+            });
+
+            noBtn.addEventListener('click', () => {
+                closeTutorialCheckFlow();
+                if (!gameStarted) startOnboardingFlow();
+            });
+
+            overlay.dataset.bound = '1';
+        }
+
+        function initExperienceChoiceFlow() {
+            const expOverlay = document.getElementById('experience-overlay');
+            const newBtn = document.getElementById('experience-new-btn');
+            const returningBtn = document.getElementById('experience-returning-btn');
+            if (!expOverlay || !newBtn || !returningBtn) return;
+            if (expOverlay.dataset.bound === '1') return;
+
+            newBtn.addEventListener('click', () => {
+                storageSetItem('experienceChoice', 'new');
+                storageRemoveItem('tutorialSeen');
+                closeExperienceChoiceFlow();
+                if (!gameStarted) startOnboardingFlow();
+            });
+
+            returningBtn.addEventListener('click', () => {
+                storageSetItem('experienceChoice', 'returning');
+                storageSetItem('tutorialSeen', 'true');
+                closeExperienceChoiceFlow();
+                showAllUI();
+                updateCharShowcase();
+                renderDailyWinsWidget();
+            });
+
+            expOverlay.dataset.bound = '1';
+        }
+
         function initOnboardingFlow() {
             const overlay = document.getElementById('onboarding-overlay');
             const arena = document.getElementById('onboarding-arena');
-            const prevBtn = document.getElementById('onboarding-prev');
-            const nextBtn = document.getElementById('onboarding-next');
-            const skipBtn = document.getElementById('onboarding-skip');
-            const targetBtn = document.getElementById('onboarding-target-btn');
-            const superBtn = document.getElementById('onboarding-super-btn');
-            const gadgetBtn = document.getElementById('onboarding-gadget-btn');
-            const itemBtn = document.getElementById('onboarding-item-btn');
-            if (!overlay || !arena || !prevBtn || !nextBtn || !skipBtn || !targetBtn || !superBtn || !gadgetBtn || !itemBtn) return;
+            if (!overlay || !arena) return;
             if (overlay.dataset.bound === '1') return;
 
             const onboardingActive = () => overlay.style.display === 'flex';
@@ -10108,24 +10560,20 @@
                     }
                 }
                 if (onboardingStepIndex === 2 && code === 'KeyE') {
-                    onboardingProgress.superUsed = true;
+                    attemptOnboardingSuper(onboardingArena.aimX, onboardingArena.aimY);
                     renderOnboardingStep();
                 }
-                if (onboardingStepIndex === 3 && code === 'Space') {
-                    onboardingProgress.gadgetUsed = true;
-                    renderOnboardingStep();
-                }
-                if (onboardingStepIndex === 3 && code === 'KeyF') {
-                    onboardingProgress.itemUsed = true;
+                if (onboardingStepIndex === 3 && (code === 'Space' || code === 'KeyQ')) {
+                    attemptOnboardingGadget(onboardingArena.aimX, onboardingArena.aimY);
                     renderOnboardingStep();
                 }
             });
 
             overlay.addEventListener('mousemove', (e) => {
-                if (!onboardingActive() || onboardingStepIndex !== 1) return;
-                const arena = document.getElementById('onboarding-arena');
-                if (!arena) return;
-                const r = arena.getBoundingClientRect();
+                if (!onboardingActive() || (onboardingStepIndex !== 1 && onboardingStepIndex !== 2 && onboardingStepIndex !== 3)) return;
+                const arenaEl = document.getElementById('onboarding-arena');
+                if (!arenaEl) return;
+                const r = arenaEl.getBoundingClientRect();
                 const dx = e.clientX - (r.left + onboardingArena.x);
                 const dy = e.clientY - (r.top + onboardingArena.y);
                 if (!onboardingProgress.aimed) {
@@ -10136,11 +10584,11 @@
             });
 
             overlay.addEventListener('touchmove', (e) => {
-                if (!onboardingActive() || onboardingStepIndex !== 1) return;
-                const arena = document.getElementById('onboarding-arena');
-                if (!arena || !e.touches || e.touches.length === 0) return;
+                if (!onboardingActive() || (onboardingStepIndex !== 1 && onboardingStepIndex !== 2 && onboardingStepIndex !== 3)) return;
+                const arenaEl = document.getElementById('onboarding-arena');
+                if (!arenaEl || !e.touches || e.touches.length === 0) return;
                 const t = e.touches[0];
-                const r = arena.getBoundingClientRect();
+                const r = arenaEl.getBoundingClientRect();
                 const dx = t.clientX - (r.left + onboardingArena.x);
                 const dy = t.clientY - (r.top + onboardingArena.y);
                 if (!onboardingProgress.aimed) {
@@ -10151,62 +10599,28 @@
             }, { passive: true });
 
             arena.addEventListener('mousedown', (e) => {
-                if (!onboardingActive() || onboardingStepIndex !== 1) return;
+                if (!onboardingActive() || (onboardingStepIndex !== 1 && onboardingStepIndex !== 2 && onboardingStepIndex !== 3)) return;
                 const r = arena.getBoundingClientRect();
                 const dx = e.clientX - (r.left + onboardingArena.x);
                 const dy = e.clientY - (r.top + onboardingArena.y);
                 aimOnboardingPlayer(dx, dy);
-                attemptOnboardingAttack(dx, dy);
+                if (onboardingStepIndex === 1) attemptOnboardingAttack(dx, dy);
+                if (onboardingStepIndex === 2) attemptOnboardingSuper(dx, dy);
+                if (onboardingStepIndex === 3) attemptOnboardingGadget(dx, dy);
             });
 
             arena.addEventListener('touchstart', (e) => {
-                if (!onboardingActive() || onboardingStepIndex !== 1) return;
+                if (!onboardingActive() || (onboardingStepIndex !== 1 && onboardingStepIndex !== 2 && onboardingStepIndex !== 3)) return;
                 if (!e.touches || e.touches.length === 0) return;
                 const t = e.touches[0];
                 const r = arena.getBoundingClientRect();
                 const dx = t.clientX - (r.left + onboardingArena.x);
                 const dy = t.clientY - (r.top + onboardingArena.y);
                 aimOnboardingPlayer(dx, dy);
-                attemptOnboardingAttack(dx, dy);
+                if (onboardingStepIndex === 1) attemptOnboardingAttack(dx, dy);
+                if (onboardingStepIndex === 2) attemptOnboardingSuper(dx, dy);
+                if (onboardingStepIndex === 3) attemptOnboardingGadget(dx, dy);
             }, { passive: true });
-
-            targetBtn.addEventListener('click', () => {
-                onboardingProgress.shot = true;
-                renderOnboardingStep();
-            });
-            superBtn.addEventListener('click', () => {
-                onboardingProgress.superUsed = true;
-                renderOnboardingStep();
-            });
-            gadgetBtn.addEventListener('click', () => {
-                onboardingProgress.gadgetUsed = true;
-                renderOnboardingStep();
-            });
-            itemBtn.addEventListener('click', () => {
-                onboardingProgress.itemUsed = true;
-                renderOnboardingStep();
-            });
-
-            prevBtn.addEventListener('click', () => {
-                onboardingStepIndex = Math.max(0, onboardingStepIndex - 1);
-                renderOnboardingStep();
-            });
-
-            nextBtn.addEventListener('click', () => {
-                if (!isOnboardingStepComplete(onboardingStepIndex)) return;
-                if (onboardingStepIndex >= ONBOARDING_STEPS.length - 1) {
-                    finishOnboarding(true);
-                    return;
-                }
-                onboardingStepIndex = Math.min(ONBOARDING_STEPS.length - 1, onboardingStepIndex + 1);
-                renderOnboardingStep();
-            });
-
-            skipBtn.addEventListener('click', () => {
-                if (window.confirm('Are you sure you want to skip the tutorial?')) {
-                    finishOnboarding(true);
-                }
-            });
 
             overlay.dataset.bound = '1';
         }
@@ -10257,140 +10671,527 @@
             document.getElementById('medal-road-panel').style.display = 'block';
         }
 
+        let medalRoadLastClaimText = '';
+        let medalRoadLastClaimColor = '#c9e9ff';
+
+        function setMedalRoadClaimStatus(text, color = '#c9e9ff') {
+            medalRoadLastClaimText = String(text || '');
+            medalRoadLastClaimColor = color;
+            const el = document.getElementById('medal-road-claim-status');
+            if (!el) return;
+            el.style.color = medalRoadLastClaimColor;
+            el.textContent = medalRoadLastClaimText;
+        }
+
         function renderMedalRoad() {
             document.getElementById('medal-road-level').textContent = playerLevel;
             const timeline = document.getElementById('medal-road-timeline');
-            
-            timeline.innerHTML = levelRewards.map((reward, idx) => {
-                const isReached = playerLevel >= reward.level;
+
+            const nextUnclaimed = levelRewards.find(r => !r.claimed) || null;
+            const nextIdx = nextUnclaimed ? levelRewards.findIndex(r => r.level === nextUnclaimed.level) : levelRewards.length - 1;
+            const nextTargetMedals = nextUnclaimed ? (nextUnclaimed.level - 1) * 10 : MEDAL_ROAD_MAX_MEDALS;
+            const prevTargetMedals = nextUnclaimed ? Math.max(0, nextTargetMedals - 10) : Math.max(0, MEDAL_ROAD_MAX_MEDALS - 10);
+            const segmentProgress = nextUnclaimed
+                ? Math.max(0, Math.min(1, (playerMedals - prevTargetMedals) / Math.max(1, nextTargetMedals - prevTargetMedals)))
+                : 1;
+
+            const startIdx = Math.max(0, nextIdx - 14);
+            const endIdx = Math.min(levelRewards.length, nextIdx + 56);
+            const visible = levelRewards.slice(startIdx, endIdx);
+            const nextRewardLabel = nextUnclaimed ? (nextUnclaimed.reward || getRoadRewardValueText(nextUnclaimed)) : 'All rewards claimed';
+            const nextRewardNeed = Math.max(0, nextTargetMedals - playerMedals);
+
+            const cardsHtml = visible.map((reward, localIndex) => {
+                const rewardNeed = (reward.level - 1) * 10;
                 const isClaimed = reward.claimed;
-                const statusText = isClaimed ? 'Claimed' : isReached ? 'Ready' : 'Locked';
+                const isReady = !isClaimed && playerLevel >= reward.level;
+                const isNext = !!nextUnclaimed && reward.level === nextUnclaimed.level;
                 const rewardPlayer = reward.type === 'unlock' && playersData[reward.playerId]
                     ? playersData[reward.playerId]
                     : null;
-                const rewardLabel = rewardPlayer ? rewardPlayer.name : reward.reward;
-                const rewardMeta = rewardPlayer ? 'Hero unlock' : reward.type.charAt(0).toUpperCase() + reward.type.slice(1);
-                const rewardVisual = rewardPlayer
-                    ? `<div class="medal-road-reward-icon-wrap"><img class="medal-road-reward-hero-icon" src="${rewardPlayer.icon || rewardPlayer.img || ''}" alt="${rewardPlayer.name}"></div>`
-                    : `<div class="medal-road-reward-icon">${reward.icon}</div>`;
-                const rewardNeed = (reward.level - 1) * 10;
-                
+                const rarityText = rewardPlayer
+                    ? (rewardPlayer.rarity === 'epic' ? 'SUPER RARE' : (rarityLabels[rewardPlayer.rarity] || rewardPlayer.rarity).toUpperCase())
+                    : (reward.type === 'chest' ? `${(reward.chestTier || 'small').toUpperCase()} CHEST` : reward.type.toUpperCase());
+                const statusText = isClaimed ? 'CLAIMED' : isReady ? 'READY' : isNext ? 'NEXT' : `${Math.max(0, rewardNeed - playerMedals)} LEFT`;
+                const iconHtml = rewardPlayer
+                    ? `<img class="medal-road-bs-hero" src="${rewardPlayer.icon || rewardPlayer.img || ''}" alt="${rewardPlayer.name}">`
+                    : `<div class="medal-road-bs-icon">${reward.icon || '🎁'}</div>`;
+                const clickHandler = isReady ? ` onclick="claimMedalRoadRewardByLevel(${reward.level})"` : '';
+
                 return `
-                    <div class="medal-road-row ${isClaimed ? 'claimed' : isReached ? 'ready' : 'locked'}">
-                        <div class="medal-road-level-pill">
-                            <span class="medal-road-level-main">Lv ${reward.level}</span>
-                            <span class="medal-road-level-medals">${rewardNeed} medals</span>
-                        </div>
-                        <div class="medal-road-reward-block">
-                            <div class="medal-road-reward-top">
-                                ${rewardVisual}
-                                <div class="medal-road-reward-copy">
-                                    <div class="medal-road-reward-title">${rewardLabel}</div>
-                                    <div class="medal-road-reward-meta">${rewardMeta}</div>
-                                </div>
-                            </div>
-                            <div class="medal-road-status">${statusText}</div>
-                        </div>
-                        <div class="medal-road-progress-tag">
-                            ${Math.max(0, rewardNeed - playerMedals)} left
-                        </div>
-                    </div>
+                    <article class="medal-road-bs-card ${isClaimed ? 'claimed' : isReady ? 'ready' : 'locked'}${isNext ? ' next' : ''}"${clickHandler}>
+                        <div class="medal-road-bs-level">LV ${reward.level}</div>
+                        <div class="medal-road-bs-medals">${rewardNeed} medals</div>
+                        <div class="medal-road-bs-media">${iconHtml}</div>
+                        <div class="medal-road-bs-name">${rewardPlayer ? rewardPlayer.name : (reward.reward || getRoadRewardValueText(reward))}</div>
+                        <div class="medal-road-bs-rarity">${rarityText}</div>
+                        <div class="medal-road-bs-status">${statusText}</div>
+                    </article>
+                    ${localIndex < visible.length - 1 ? '<div class="medal-road-bs-link"></div>' : ''}
                 `;
             }).join('');
+
+            timeline.innerHTML = `
+                <section class="medal-road-bs-summary">
+                    <div class="medal-road-bs-summary-left">
+                        <div class="medal-road-bs-summary-label">Next Reward</div>
+                        <div class="medal-road-bs-summary-title">${nextRewardLabel}</div>
+                        <div class="medal-road-bs-summary-sub">${nextUnclaimed ? `${nextTargetMedals} medals target` : 'Road complete'}</div>
+                    </div>
+                    <div class="medal-road-bs-summary-right">
+                        <div>${nextUnclaimed ? `${nextRewardNeed} medals left` : 'Completed'}</div>
+                        <div>${levelRewards.filter(r => r.claimed).length}/${levelRewards.length} claimed</div>
+                    </div>
+                    <div class="medal-road-bs-progress"><div class="medal-road-bs-progress-fill" style="width:${Math.round(segmentProgress * 100)}%"></div></div>
+                    <div id="medal-road-claim-status" class="medal-road-bs-claim-status" style="color:${medalRoadLastClaimColor};">${medalRoadLastClaimText || 'Click READY rewards to claim.'}</div>
+                </section>
+                <section class="medal-road-bs-shell">
+                    <div class="medal-road-bs-track">${cardsHtml}</div>
+                </section>
+            `;
         }
 
         // ── UI Functions ─────────────────────────────────────────────────────────
 
-        const levelRewards = [
-            { level:  3, type:'sparks',  amount: 150,   icon: '⚡', reward: '150 energy sparks',   claimed: false },
-            { level:  4, type:'coins',   amount: 200,   icon: '💰', reward: '200 coins',           claimed: false },
-            { level:  5, type:'unlock',  playerId: 'lazerman',        icon: '🔓', reward: 'Unlock Lazerman (Rare)', claimed: false },
-            { level:  6, type:'coins',   amount: 300,   icon: '💰', reward: '300 coins',           claimed: false },
-            { level:  7, type:'medals',  amount: 5,     icon: '🏅', reward: '5 medals',               claimed: false },
-            { level:  8, type:'unlock',  playerId: 'fournakis',       icon: '🔓', reward: 'Unlock Fournakis (Rare)', claimed: false },
-            { level:  9, type:'coins',   amount: 400,   icon: '💰', reward: '400 coins',           claimed: false },
-            { level: 10, type:'unlock',  playerId: 'firekoupepy',     icon: '🔓', reward: 'Unlock Firekoupepy (Rare)', claimed: false },
-            { level: 11, type:'sparks',  amount: 500,   icon: '⚡', reward: '500 energy sparks',   claimed: false },
-            { level: 12, type:'unlock',  playerId: 'baklavasbazookos',icon: '🔓', reward: 'Unlock Baklavasbazookos (Rare)', claimed: false },
-            { level: 13, type:'sparks',  amount: 600,   icon: '⚡', reward: '600 energy sparks',   claimed: false },
-            { level: 14, type:'medals',  amount: 10,    icon: '🏅', reward: '10 medals',              claimed: false },
-            { level: 15, type:'unlock',  playerId: 'timor',           icon: '🔓', reward: 'Unlock Timor (Rare)',    claimed: false },
-            { level: 16, type:'sparks',  amount: 700,   icon: '⚡', reward: '700 energy sparks',   claimed: false },
-            { level: 17, type:'unlock',  playerId: 'kleftros',        icon: '🔓', reward: 'Unlock Kleftros (Rare)', claimed: false },
-            { level: 18, type:'sparks',  amount: 800,   icon: '⚡', reward: '800 energy sparks',   claimed: false },
-            { level: 19, type:'coins',   amount: 900,   icon: '💰', reward: '900 coins',           claimed: false },
-            { level: 20, type:'sparks',  amount: 1000,  icon: '⚡', reward: '1000 energy sparks',  claimed: false },
-            { level: 21, type:'coins',   amount: 1000,  icon: '💰', reward: '1000 coins',          claimed: false },
-            { level: 22, type:'sparks',  amount: 1100,  icon: '⚡', reward: '1100 energy sparks',  claimed: false },
-            { level: 23, type:'coins',   amount: 1100,  icon: '💰', reward: '1100 coins',          claimed: false },
-            { level: 24, type:'medals',  amount: 15,    icon: '🏅', reward: '15 medals',              claimed: false },
-            { level: 25, type:'coins',   amount: 1500,  icon: '💰', reward: '1500 coins',          claimed: false },
-            { level: 26, type:'sparks',  amount: 1200,  icon: '⚡', reward: '1200 energy sparks',  claimed: false },
-            { level: 27, type:'coins',   amount: 1200,  icon: '💰', reward: '1200 coins',          claimed: false },
-            { level: 28, type:'sparks',  amount: 1500,  icon: '⚡', reward: '1500 energy sparks',  claimed: false },
-            { level: 29, type:'coins',   amount: 1500,  icon: '💰', reward: '1500 coins',          claimed: false },
-            { level: 30, type:'medals',  amount: 20,    icon: '🏅', reward: '20 medals',              claimed: false },
-            { level: 31, type:'sparks',  amount: 1800,  icon: '⚡', reward: '1800 energy sparks',  claimed: false },
-            { level: 32, type:'coins',   amount: 1800,  icon: '💰', reward: '1800 coins',          claimed: false },
-            { level: 33, type:'sparks',  amount: 2000,  icon: '⚡', reward: '2000 energy sparks',  claimed: false },
-            { level: 34, type:'coins',   amount: 2000,  icon: '💰', reward: '2000 coins',          claimed: false },
-            { level: 35, type:'coins',   amount: 2500,  icon: '💰', reward: '2500 coins',          claimed: false },
-            { level: 36, type:'sparks',  amount: 2200,  icon: '⚡', reward: '2200 energy sparks',  claimed: false },
-            { level: 37, type:'coins',   amount: 2200,  icon: '💰', reward: '2200 coins',          claimed: false },
-            { level: 38, type:'sparks',  amount: 2500,  icon: '⚡', reward: '2500 energy sparks',  claimed: false },
-            { level: 39, type:'medals',  amount: 25,    icon: '🏅', reward: '25 medals',              claimed: false },
-            { level: 40, type:'coins',   amount: 3000,  icon: '💰', reward: '3000 coins',          claimed: false },
-            { level: 41, type:'sparks',  amount: 3000,  icon: '⚡', reward: '3000 energy sparks',  claimed: false },
-            { level: 42, type:'coins',   amount: 3000,  icon: '💰', reward: '3000 coins',          claimed: false },
-            { level: 43, type:'sparks',  amount: 3500,  icon: '⚡', reward: '3500 energy sparks',  claimed: false },
-            { level: 44, type:'coins',   amount: 3500,  icon: '💰', reward: '3500 coins',          claimed: false },
-            { level: 45, type:'medals',  amount: 30,    icon: '🏅', reward: '30 medals',              claimed: false },
-            { level: 46, type:'sparks',  amount: 4000,  icon: '⚡', reward: '4000 energy sparks',  claimed: false },
-            { level: 47, type:'coins',   amount: 4000,  icon: '💰', reward: '4000 coins',          claimed: false },
-            { level: 48, type:'sparks',  amount: 4500,  icon: '⚡', reward: '4500 energy sparks',  claimed: false },
-            { level: 49, type:'coins',   amount: 4500,  icon: '💰', reward: '4500 coins',          claimed: false },
-            { level: 50, type:'medals',  amount: 50,    icon: '🏅', reward: '50 medals',              claimed: false },
-            { level: 51, type:'medals',  amount: 100,   icon: '🏅', reward: '100 medals',             claimed: false },
+        const MEDAL_ROAD_MAX_MEDALS = 5000;
+        const MEDAL_ROAD_MAX_LEVEL = Math.floor(MEDAL_ROAD_MAX_MEDALS / 10) + 1;
+        const MEDAL_ROAD_SUPER_RARE_RARITIES = new Set(['epic']);
+        const MEDAL_ROAD_COSMETIC_COLORS = [
+            { name: 'Red', color: '#ff4444' },
+            { name: 'Cyan', color: '#44ffff' },
+            { name: 'Lime', color: '#44ff44' },
+            { name: 'Pink', color: '#ff66cc' },
+            { name: 'Orange', color: '#ff8833' },
+            { name: 'Gold', color: '#ffcc00' },
+            { name: 'Purple', color: '#bb66ff' },
+            { name: 'Ice Blue', color: '#66ccff' }
         ];
+        const MEDAL_ROAD_SMALL_CHEST_POOL = [
+            { type: 'coins', weight: 42, min: 180, max: 320 },
+            { type: 'sparks', weight: 33, min: 40, max: 95 },
+            { type: 'credits', weight: 18, min: 10, max: 28 },
+            { type: 'unlockRare', weight: 5 },
+            { type: 'gadget', weight: 1 },
+            { type: 'killfeedcolor', weight: 1 }
+        ];
+        const MEDAL_ROAD_BIG_CHEST_POOL = [
+            { type: 'coins', weight: 32, min: 350, max: 620 },
+            { type: 'sparks', weight: 27, min: 90, max: 170 },
+            { type: 'credits', weight: 22, min: 24, max: 56 },
+            { type: 'unlockRare', weight: 9 },
+            { type: 'unlockSuperRare', weight: 6 },
+            { type: 'gadget', weight: 2 },
+            { type: 'killfeedcolor', weight: 2 }
+        ];
+        const MEDAL_ROAD_MEGA_CHEST_POOL = [
+            { type: 'coins', weight: 22, min: 700, max: 1200 },
+            { type: 'sparks', weight: 22, min: 170, max: 290 },
+            { type: 'credits', weight: 22, min: 60, max: 125 },
+            { type: 'unlockRare', weight: 12 },
+            { type: 'unlockSuperRare', weight: 14 },
+            { type: 'gadget', weight: 5 },
+            { type: 'killfeedcolor', weight: 3 }
+        ];
+
+        function getRoadRewardValueText(reward) {
+            if (!reward) return '';
+            if (reward.type === 'unlock') {
+                return playersData[reward.playerId]?.name || 'Hero';
+            }
+            if (reward.type === 'chest') {
+                if (reward.chestTier === 'mega') return 'Mega Chest';
+                if (reward.chestTier === 'big') return 'Big Chest';
+                return 'Small Chest';
+            }
+            return String(reward.amount || reward.reward || '');
+        }
+
+        function getMedalRoadUnlockPools() {
+            const rarityRank = { common: 0, rare: 1, epic: 2, mythic: 3, legendary: 4 };
+            const players = Object.values(playersData)
+                .filter(p => p && p.id && p.id !== 'default');
+            const rare = players
+                .filter(p => p.rarity === 'rare')
+                .sort((a, b) => (rarityRank[a.rarity] - rarityRank[b.rarity]) || a.name.localeCompare(b.name))
+                .map(p => p.id);
+            const superRare = players
+                .filter(p => MEDAL_ROAD_SUPER_RARE_RARITIES.has(p.rarity))
+                .sort((a, b) => (rarityRank[a.rarity] - rarityRank[b.rarity]) || a.name.localeCompare(b.name))
+                .map(p => p.id);
+            return { rare, superRare };
+        }
+
+        function getChestRewardPoolByTier(tier) {
+            if (tier === 'mega') return MEDAL_ROAD_MEGA_CHEST_POOL;
+            if (tier === 'big') return MEDAL_ROAD_BIG_CHEST_POOL;
+            return MEDAL_ROAD_SMALL_CHEST_POOL;
+        }
+
+        function buildMedalRoadRewards() {
+            const rewards = [];
+            const unlockPools = getMedalRoadUnlockPools();
+            const rareUnlocks = [...unlockPools.rare];
+            const superRareUnlocks = [...unlockPools.superRare];
+
+            for (let level = 3; level <= MEDAL_ROAD_MAX_LEVEL; level++) {
+                const medalsTarget = (level - 1) * 10;
+                const phase = medalsTarget <= 1200 ? 1 : medalsTarget <= 3000 ? 2 : 3;
+
+                if (rareUnlocks.length > 0 && (level === 5 || (phase <= 2 && level % 18 === 0))) {
+                    const playerId = rareUnlocks.shift();
+                    rewards.push({
+                        level,
+                        type: 'unlock',
+                        playerId,
+                        icon: '🔓',
+                        reward: `Unlock ${playersData[playerId]?.name || 'Rare Hero'} (Rare)`,
+                        claimed: false
+                    });
+                    continue;
+                }
+
+                if (superRareUnlocks.length > 0 && medalsTarget >= 900 && (level % 25 === 0 || level % 33 === 0)) {
+                    const playerId = superRareUnlocks.shift();
+                    rewards.push({
+                        level,
+                        type: 'unlock',
+                        playerId,
+                        icon: '🌟',
+                        reward: `Unlock ${playersData[playerId]?.name || 'Super Rare Hero'} (Super Rare)`,
+                        claimed: false
+                    });
+                    continue;
+                }
+
+                if (level % 25 === 0) {
+                    rewards.push({ level, type: 'chest', chestTier: 'mega', icon: '🧰', reward: 'Mega chest drop', claimed: false });
+                    continue;
+                }
+
+                if (level % 10 === 0) {
+                    rewards.push({ level, type: 'chest', chestTier: 'big', icon: '📦', reward: 'Big chest drop', claimed: false });
+                    continue;
+                }
+
+                if (level % 5 === 0) {
+                    rewards.push({ level, type: 'chest', chestTier: 'small', icon: '🎁', reward: 'Small chest drop', claimed: false });
+                    continue;
+                }
+
+                if (level % 4 === 0) {
+                    const amount = phase === 1 ? 8 + Math.floor(level / 8) : phase === 2 ? 16 + Math.floor(level / 10) : 28 + Math.floor(level / 12);
+                    rewards.push({ level, type: 'credits', amount, icon: '🎖️', reward: `${amount} unlock tokens`, claimed: false });
+                    continue;
+                }
+
+                if (level % 3 === 0) {
+                    const amount = phase === 1 ? 90 + level * 5 : phase === 2 ? 260 + level * 4 : 580 + level * 3;
+                    rewards.push({ level, type: 'sparks', amount, icon: '⚡', reward: `${amount} energy sparks`, claimed: false });
+                    continue;
+                }
+
+                const coins = phase === 1 ? 120 + level * 8 : phase === 2 ? 360 + level * 6 : 760 + level * 5;
+                rewards.push({ level, type: 'coins', amount: coins, icon: '💰', reward: `${coins} coins`, claimed: false });
+            }
+
+            const coveredUnlockIds = new Set(rewards.filter(r => r.type === 'unlock' && r.playerId).map(r => r.playerId));
+            const missingRare = unlockPools.rare.filter(id => !coveredUnlockIds.has(id));
+            const missingSuperRare = unlockPools.superRare.filter(id => !coveredUnlockIds.has(id));
+            const missingUnlocks = [...missingRare, ...missingSuperRare];
+
+            if (missingUnlocks.length > 0) {
+                const replaceCandidates = rewards
+                    .map((reward, idx) => ({ reward, idx }))
+                    .filter(({ reward }) => reward.type !== 'unlock' && reward.type !== 'chest');
+
+                let cursor = Math.max(0, replaceCandidates.length - 1);
+                for (const playerId of missingUnlocks) {
+                    if (cursor < 0) break;
+                    const target = replaceCandidates[cursor--];
+                    if (!target) break;
+                    const rarity = playersData[playerId]?.rarity || 'rare';
+                    const rarityLabel = rarity === 'epic' ? 'Super Rare' : (rarityLabels[rarity] || 'Rare');
+                    rewards[target.idx] = {
+                        level: target.reward.level,
+                        type: 'unlock',
+                        playerId,
+                        icon: rarity === 'epic' ? '🌟' : '🔓',
+                        reward: `Unlock ${playersData[playerId]?.name || 'Hero'} (${rarityLabel})`,
+                        claimed: false
+                    };
+                }
+            }
+
+            return rewards;
+        }
+
+        const levelRewards = buildMedalRoadRewards();
         // Restore claimed state from localStorage
         const _claimedLevels = readStorageJson('claimedLevelRewards', []);
         for (const _m of levelRewards) { if (_claimedLevels.includes(_m.level)) _m.claimed = true; }
 
-        function claimLevelRewards() {
-            for (const milestone of levelRewards) {
-                if (playerLevel >= milestone.level && !milestone.claimed) {
-                    milestone.claimed = true;
-                    if (milestone.type === 'sparks') {
-                        energySparks += milestone.amount;
-                    } else if (milestone.type === 'credits') {
-                        playerCredits += milestone.amount;
-                    } else if (milestone.type === 'medals') {
-                        playerMedals = Math.max(0, playerMedals + milestone.amount);
-                        playerLevel = Math.floor(playerMedals / 10) + 1;
-                    } else if (milestone.type === 'unlock') {
-                        if (!unlockedNexus.includes(milestone.playerId)) {
-                            unlockedNexus.push(milestone.playerId);
-                        }
-                    } else {
-                        playerCoins += milestone.amount;
-                    }
-                }
+        function pickWeighted(pool) {
+            const validPool = Array.isArray(pool) ? pool.filter(e => e && toSafeInt(e.weight) > 0) : [];
+            if (validPool.length === 0) return null;
+            const totalWeight = validPool.reduce((sum, entry) => sum + toSafeInt(entry.weight), 0);
+            let roll = Math.random() * totalWeight;
+            for (const entry of validPool) {
+                roll -= toSafeInt(entry.weight);
+                if (roll <= 0) return entry;
             }
+            return validPool[validPool.length - 1];
+        }
+
+        function randRangeInt(min, max) {
+            const a = Math.min(toSafeInt(min), toSafeInt(max));
+            const b = Math.max(toSafeInt(min), toSafeInt(max));
+            return a + Math.floor(Math.random() * (b - a + 1));
+        }
+
+        function getLockedNexusByRarity(raritySet) {
+            const set = raritySet instanceof Set ? raritySet : new Set([raritySet]);
+            return Object.values(playersData)
+                .filter(p => p && p.id && p.id !== 'default' && set.has(p.rarity) && !unlockedNexus.includes(p.id))
+                .map(p => p.id);
+        }
+
+        function unlockMedalRoadRarityThresholdRewards() {
+            if (playerMedals < 1500) return false;
+
+            const eligibleRarities = new Set(['rare', ...Array.from(MEDAL_ROAD_SUPER_RARE_RARITIES)]);
+            let unlockedAny = false;
+
+            Object.values(playersData).forEach((p) => {
+                if (!p || !p.id || p.id === 'default') return;
+                if (!eligibleRarities.has(p.rarity)) return;
+                if (unlockedNexus.includes(p.id)) return;
+                unlockedNexus.push(p.id);
+                unlockedAny = true;
+            });
+
+            return unlockedAny;
+        }
+
+        function claimMedalRoadChest(tier) {
+            const resolved = rollMedalRoadChestReward(tier);
+            return applyMedalRoadChestReward(resolved);
+        }
+
+        function rollMedalRoadChestReward(tier) {
+            const pool = getChestRewardPoolByTier(tier);
+            const picked = pickWeighted(pool);
+            if (!picked) {
+                return { type: 'coins', amount: 100, icon: '💰', text: '+100 Coins' };
+            }
+
+            if (picked.type === 'coins') {
+                const amount = randRangeInt(picked.min, picked.max);
+                return { type: 'coins', amount, icon: '💰', text: `+${amount} Coins` };
+            }
+
+            if (picked.type === 'sparks') {
+                const amount = randRangeInt(picked.min, picked.max);
+                return { type: 'sparks', amount, icon: '⚡', text: `+${amount} Energy Sparks` };
+            }
+
+            if (picked.type === 'credits') {
+                const amount = randRangeInt(picked.min, picked.max);
+                return { type: 'credits', amount, icon: '🎖️', text: `+${amount} Hero Marks` };
+            }
+
+            if (picked.type === 'gadget') {
+                const gadgetKey = getRandomLockedGadgetKey();
+                if (gadgetKey && gadgetData[gadgetKey]) {
+                    return { type: 'gadget', gadgetKey, icon: '🧰', text: `Unlocked gadget: ${gadgetData[gadgetKey].name}` };
+                }
+                return { type: 'credits', amount: 30, icon: '🎖️', text: '+30 Hero Marks (duplicate protected)' };
+            }
+
+            if (picked.type === 'killfeedcolor') {
+                const availableColors = MEDAL_ROAD_COSMETIC_COLORS.filter(c => c.color !== killFeedColor);
+                if (availableColors.length > 0) {
+                    const chosen = availableColors[Math.floor(Math.random() * availableColors.length)];
+                    return { type: 'killfeedcolor', color: chosen.color, icon: '🎨', text: `Kill feed color: ${chosen.name}` };
+                }
+                return { type: 'credits', amount: 25, icon: '🎖️', text: '+25 Hero Marks (duplicate cosmetic)' };
+            }
+
+            if (picked.type === 'unlockRare') {
+                const lockedRare = getLockedNexusByRarity(new Set(['rare']));
+                if (lockedRare.length > 0) {
+                    const playerId = lockedRare[Math.floor(Math.random() * lockedRare.length)];
+                    return { type: 'unlock', playerId, icon: '🔓', text: `Unlocked ${playersData[playerId]?.name || 'Rare Hero'} (Rare)` };
+                }
+                return { type: 'credits', amount: 60, icon: '🎖️', text: '+60 Hero Marks (all Rare owned)' };
+            }
+
+            if (picked.type === 'unlockSuperRare') {
+                const lockedSuperRare = getLockedNexusByRarity(MEDAL_ROAD_SUPER_RARE_RARITIES);
+                if (lockedSuperRare.length > 0) {
+                    const playerId = lockedSuperRare[Math.floor(Math.random() * lockedSuperRare.length)];
+                    return { type: 'unlock', playerId, icon: '🌟', text: `Unlocked ${playersData[playerId]?.name || 'Super Rare Hero'} (Super Rare)` };
+                }
+                return { type: 'credits', amount: 100, icon: '🎖️', text: '+100 Hero Marks (all Super Rare owned)' };
+            }
+
+            return { type: 'coins', amount: 120, icon: '💰', text: '+120 Coins' };
+        }
+
+        function applyMedalRoadChestReward(reward) {
+            if (!reward || typeof reward !== 'object') {
+                playerCoins += 100;
+                return { icon: '💰', text: '+100 Coins' };
+            }
+
+            if (reward.type === 'coins') {
+                playerCoins += toSafeInt(reward.amount || 0);
+            } else if (reward.type === 'sparks') {
+                energySparks += toSafeInt(reward.amount || 0);
+            } else if (reward.type === 'credits') {
+                playerCredits += toSafeInt(reward.amount || 0);
+            } else if (reward.type === 'killfeedcolor' && reward.color) {
+                killFeedColor = reward.color;
+            } else if (reward.type === 'gadget' && reward.gadgetKey) {
+                unlockGadget(reward.gadgetKey);
+            } else if (reward.type === 'unlock' && reward.playerId && !unlockedNexus.includes(reward.playerId)) {
+                unlockedNexus.push(reward.playerId);
+            }
+
+            return {
+                icon: reward.icon || '🎁',
+                text: reward.text || 'Chest reward claimed'
+            };
+        }
+
+        function openMedalRoadChestRewardFlow(tier, onCollected) {
+            const overlay = document.getElementById('stardrop-overlay');
+            const box = document.getElementById('stardrop-box');
+            const chest = document.getElementById('stardrop-chest');
+            const rewardDiv = document.getElementById('stardrop-reward');
+            const rewardText = document.getElementById('stardrop-reward-text');
+            const collectBtn = document.getElementById('stardrop-collect');
+            const titleEl = document.getElementById('stardrop-title');
+            const rarityLabel = document.getElementById('stardrop-rarity-label');
+            const clicksDiv = document.getElementById('stardrop-clicks');
+            const hintEl = document.getElementById('stardrop-hint');
+
+            const tierKey = String(tier || 'small').toLowerCase();
+            const tierStyle = tierKey === 'mega'
+                ? { name: 'Mega Chest', color: '#ff6bb5', glow: 'rgba(255,107,181,0.35)' }
+                : tierKey === 'big'
+                    ? { name: 'Big Chest', color: '#5fd8ff', glow: 'rgba(95,216,255,0.35)' }
+                    : { name: 'Small Chest', color: '#ffcc66', glow: 'rgba(255,204,102,0.32)' };
+
+            if (!overlay || !box || !chest || !rewardDiv || !rewardText || !collectBtn || !titleEl || !rarityLabel || !clicksDiv || !hintEl) {
+                const fallbackSummary = claimMedalRoadChest(tierKey);
+                if (typeof onCollected === 'function') onCollected(fallbackSummary);
+                return;
+            }
+
+            let isOpened = false;
+            const rolledReward = rollMedalRoadChestReward(tierKey);
+
+            chest.src = 'images/chestclose.png';
+            chest.style.transform = '';
+            chest.style.pointerEvents = 'auto';
+            rewardDiv.style.display = 'none';
+            collectBtn.style.display = 'none';
+            hintEl.style.display = 'block';
+            hintEl.textContent = 'Tap chest to open';
+            titleEl.textContent = 'Medal Road Chest';
+            titleEl.style.color = tierStyle.color;
+            rarityLabel.textContent = tierStyle.name;
+            rarityLabel.style.color = tierStyle.color;
+            clicksDiv.textContent = '🎁';
+            box.style.borderColor = tierStyle.color;
+            box.style.boxShadow = `0 0 60px ${tierStyle.glow}, inset 0 0 30px ${tierStyle.glow}`;
+            overlay.style.display = 'flex';
+
+            overlay.onclick = (e) => {
+                if (e.target === collectBtn) return;
+                if (isOpened) return;
+                isOpened = true;
+
+                chest.style.pointerEvents = 'none';
+                hintEl.style.display = 'none';
+                chest.style.transform = 'scale(1.12)';
+
+                setTimeout(() => {
+                    chest.src = 'images/chestopen.png';
+                    rewardText.textContent = `${rolledReward.icon || '🎁'} ${rolledReward.text || 'Reward'}`;
+                    rewardText.style.color = tierStyle.color;
+                    rewardDiv.style.display = 'block';
+                    collectBtn.style.display = 'inline-block';
+                    collectBtn.textContent = 'Collect Reward';
+                }, 280);
+            };
+
+            collectBtn.onclick = () => {
+                const summary = applyMedalRoadChestReward(rolledReward);
+                overlay.style.display = 'none';
+                if (typeof onCollected === 'function') onCollected(summary);
+            };
+        }
+
+        function claimMedalRoadRewardByLevel(level) {
+            unlockMedalRoadRarityThresholdRewards();
+            const milestone = levelRewards.find(r => r.level === toSafeInt(level));
+            if (!milestone || milestone.claimed || playerLevel < milestone.level) {
+                setMedalRoadClaimStatus('This reward is not ready yet.', '#ff9da0');
+                return false;
+            }
+
+            milestone.claimed = true;
+            let claimText = 'Reward claimed';
+            if (milestone.type === 'sparks') {
+                energySparks += milestone.amount;
+                claimText = `⚡ +${milestone.amount} Energy Sparks`;
+            } else if (milestone.type === 'credits') {
+                playerCredits += milestone.amount;
+                claimText = `🎖️ +${milestone.amount} Hero Marks`;
+            } else if (milestone.type === 'medals') {
+                playerMedals = Math.max(0, playerMedals + milestone.amount);
+                playerLevel = Math.floor(playerMedals / 10) + 1;
+                claimText = `🏅 +${milestone.amount} Medals`;
+            } else if (milestone.type === 'unlock') {
+                if (!unlockedNexus.includes(milestone.playerId)) {
+                    unlockedNexus.push(milestone.playerId);
+                }
+                claimText = `🔓 Unlocked ${playersData[milestone.playerId]?.name || 'Hero'}`;
+            } else if (milestone.type === 'chest') {
+                openMedalRoadChestRewardFlow(milestone.chestTier || 'small', (chestReward) => {
+                    const chestText = chestReward ? `${chestReward.icon} ${chestReward.text}` : '🎁 Chest claimed';
+                    setMedalRoadClaimStatus(chestText, '#7df7ab');
+                    saveProgress();
+                    showCoins();
+                    renderMedalRoad();
+                });
+                setMedalRoadClaimStatus('Open the chest, then tap Collect Reward.', '#ffe07e');
+                renderMedalRoad();
+                return true;
+            } else {
+                playerCoins += milestone.amount;
+                claimText = `💰 +${milestone.amount} Coins`;
+            }
+
+            setMedalRoadClaimStatus(claimText, '#7df7ab');
             saveProgress();
+            showCoins();
+            renderMedalRoad();
+            return true;
         }
 
         function showCoins() {
             const medalsIntoLevel = playerMedals % 10;
             const medalsToNextLevel = Math.max(0, 10 - medalsIntoLevel);
-            // Check and auto-claim any newly reached rewards
-            claimLevelRewards();
+            const unlockedByMedalThreshold = unlockMedalRoadRarityThresholdRewards();
             const unlockedByCredits = tryAutoUnlockCreditTier();
             document.getElementById('coins-display').innerHTML =
                 `💰 Coins: ${playerCoins}<br>🏅 Medals: ${playerMedals} &nbsp;(Lv ${playerLevel})<br>📈 Next Level: ${medalsToNextLevel} medals left<br>⚡ Energy Sparks: ${energySparks}<br>🎖️ Hero Marks: ${playerCredits}`;
             // Keep account chip stats in sync
             updateAccountChip();
             const creditsPanel = document.getElementById('credits-panel');
-            if ((creditsPanel && creditsPanel.style.display === 'block') || unlockedByCredits) {
+            if ((creditsPanel && creditsPanel.style.display === 'block') || unlockedByCredits || unlockedByMedalThreshold) {
                 renderCreditsPanel();
             }
         }
@@ -10519,6 +11320,170 @@
             }
             setDisplayById('game-over-overlay', 'none');
             setDisplayById('stardrop-overlay', 'none');
+            setDisplayById('battle-intro-overlay', 'none');
+        }
+
+        function getBattleIntroTrophies(fighter) {
+            if (!fighter) return 0;
+            if (fighter.isHuman) return Math.max(0, getNexusMedals(fighter.characterId || selectedNexusId || 'default'));
+
+            const seed = `${fighter.name || ''}|${fighter.characterId || ''}|${fighter.id || ''}`;
+            let hash = 0;
+            for (let i = 0; i < seed.length; i++) {
+                hash = ((hash << 5) - hash) + seed.charCodeAt(i);
+                hash |= 0;
+            }
+            return 80 + (Math.abs(hash) % 1101);
+        }
+
+        function renderBattleIntroRoster() {
+            const rosterEl = document.getElementById('battle-intro-roster');
+            const titleEl = document.getElementById('battle-intro-title');
+            const subtitleEl = document.getElementById('battle-intro-subtitle');
+            if (!rosterEl || !titleEl || !subtitleEl) return;
+
+            const modeConfig = gameModes[currentGameMode] || null;
+            const teamNames = modeConfig && modeConfig.teams ? (modeConfig.teamNames || []) : [];
+            const teamOrderIndex = (team) => {
+                const idx = teamNames.indexOf(team);
+                return idx === -1 ? 999 : idx;
+            };
+
+            const roster = [...players].sort((a, b) => {
+                if (a.isHuman && !b.isHuman) return -1;
+                if (!a.isHuman && b.isHuman) return 1;
+                if (teamNames.length > 0 && a.team !== b.team) return teamOrderIndex(a.team) - teamOrderIndex(b.team);
+                return (a.name || '').localeCompare(b.name || '');
+            });
+
+            titleEl.textContent = modeConfig ? `${modeConfig.name} - Match Intro` : 'Match Intro';
+            subtitleEl.textContent = `${roster.length} Fighters Ready`;
+
+            const getRosterDisplayName = (fighter) => {
+                if (fighter?.isHuman) {
+                    return getCurrentProfile()?.username || 'You';
+                }
+                return fighter?.name || playersData[fighter?.characterId]?.name || 'Bot';
+            };
+
+            const renderCard = (p) => {
+                const pdata = playersData[p.characterId] || p;
+                const charName = pdata?.name || p.name || 'Fighter';
+                const displayName = getRosterDisplayName(p);
+                const teamClass = p.team ? ` team-${p.team}` : '';
+                const teamLabel = p.team ? p.team.toUpperCase() : 'SOLO';
+                const roleLabel = p.isHuman ? 'YOU' : `${p.botPersonalityIcon || '🤖'} ${p.botPersonalityLabel || 'Bot'}`;
+                const trophies = getBattleIntroTrophies(p);
+                const icon =
+                    getPlayerPreferredImageSrc(p) ||
+                    getPlayerPreferredImageSrc(pdata) ||
+                    pdata?.img ||
+                    pdata?.legacyImg ||
+                    p.img ||
+                    '';
+                return `
+                    <article class="battle-intro-player-card${p.isHuman ? ' human' : ''}${teamClass}">
+                        <div class="battle-intro-card-top">
+                            <span class="battle-intro-chip role">${roleLabel}</span>
+                            <span class="battle-intro-chip team">${teamLabel}</span>
+                        </div>
+                        <div class="battle-intro-player-portrait-wrap">
+                            ${icon
+                                ? `<img class="battle-intro-player-portrait" src="${icon}" alt="${charName}" onerror="this.style.display='none'; if (this.nextElementSibling) this.nextElementSibling.style.display='flex';"><div class="battle-intro-player-portrait-fallback" style="display:none;">?</div>`
+                                : '<div class="battle-intro-player-portrait-fallback">?</div>'}
+                        </div>
+                        <div class="battle-intro-player-name">${displayName}${p.isHuman ? ' (You)' : ''}</div>
+                        <div class="battle-intro-player-character">${charName}</div>
+                        <div class="battle-intro-card-bottom">
+                            <span class="battle-intro-chip trophy">🏅 ${trophies}</span>
+                            <span class="battle-intro-chip ready">⚔️ READY</span>
+                        </div>
+                    </article>
+                `;
+            };
+
+            if (teamNames.length > 0) {
+                const renderTeamBlock = (teamName) => {
+                    const teamPlayers = roster.filter(p => p.team === teamName);
+                    if (teamPlayers.length === 0) return '';
+                    return `
+                        <section class="battle-intro-team-block ${teamName}">
+                            <div class="battle-intro-team-title">${teamName.toUpperCase()} TEAM</div>
+                            <div class="battle-intro-team-card-grid" style="--team-count:${Math.max(1, teamPlayers.length)};">
+                                ${teamPlayers.map(renderCard).join('')}
+                            </div>
+                        </section>
+                    `;
+                };
+
+                if (teamNames.length === 2) {
+                    const leftTeam = renderTeamBlock(teamNames[0]);
+                    const rightTeam = renderTeamBlock(teamNames[1]);
+                    rosterEl.innerHTML = `
+                        <div class="battle-intro-teams-row two-team-split">
+                            ${leftTeam}
+                            <div class="battle-intro-vs-split">VS</div>
+                            ${rightTeam}
+                        </div>
+                    `;
+                    return;
+                }
+
+                const teamsHtml = teamNames.map((teamName) => renderTeamBlock(teamName)).join('');
+
+                rosterEl.innerHTML = `<div class="battle-intro-teams-grid">${teamsHtml}</div>`;
+                return;
+            }
+
+            const soloCols = roster.length >= 10 ? 5 : (roster.length >= 8 ? 4 : Math.max(2, Math.min(4, roster.length)));
+            rosterEl.innerHTML = `<div class="battle-intro-player-grid" style="--solo-cols:${soloCols};">${roster.map(renderCard).join('')}</div>`;
+        }
+
+        function showBattleIntroThenStart(onStart) {
+            const overlay = document.getElementById('battle-intro-overlay');
+            const countdownEl = document.getElementById('battle-intro-countdown');
+            if (!overlay || !countdownEl) {
+                if (typeof onStart === 'function') onStart();
+                return;
+            }
+
+            if (battleIntroTimerId) {
+                clearTimeout(battleIntroTimerId);
+                battleIntroTimerId = null;
+            }
+
+            battleIntroInProgress = true;
+            renderBattleIntroRoster();
+            overlay.classList.remove('battle-intro-attack-phase');
+            countdownEl.classList.remove('attack-pulse');
+            overlay.style.display = 'flex';
+
+            const steps = ['3', '2', '1', 'ATTACK!'];
+            let idx = 0;
+            countdownEl.textContent = steps[idx];
+
+            const runStep = () => {
+                idx++;
+                if (idx >= steps.length) {
+                    battleIntroTimerId = null;
+                    overlay.style.display = 'none';
+                    overlay.classList.remove('battle-intro-attack-phase');
+                    countdownEl.classList.remove('attack-pulse');
+                    battleIntroInProgress = false;
+                    if (typeof onStart === 'function') onStart();
+                    return;
+                }
+                countdownEl.textContent = steps[idx];
+                if (steps[idx] === 'ATTACK!') {
+                    overlay.classList.add('battle-intro-attack-phase');
+                    countdownEl.classList.add('attack-pulse');
+                    battleIntroTimerId = setTimeout(runStep, 620);
+                    return;
+                }
+                battleIntroTimerId = setTimeout(runStep, 700);
+            };
+
+            battleIntroTimerId = setTimeout(runStep, 700);
         }
 
         function openMapSelect() {
@@ -10526,23 +11491,26 @@
         }
 
         function startGame() {
-            if (gameStarted) return;
+            if (gameStarted || battleIntroInProgress) return;
             hideAllUI();
             setupGameMode(currentGameMode);
-            gameStarted = true;
-            matchStartedAt = Date.now();
             setDisplayById('coins-display', 'none');
 
-            // Add game-active class to body to show joysticks
-            document.body.classList.add('game-active');
+            showBattleIntroThenStart(() => {
+                gameStarted = true;
+                matchStartedAt = Date.now();
 
-            // Show joysticks when game starts (if on mobile/tablet)
-            if (window.innerWidth <= 1024 || ('ontouchstart' in window)) {
-                setDisplayById('joystick-container', 'block');
-                setDisplayById('shoot-joystick-container', 'block');
-            }
+                // Add game-active class to body to show joysticks
+                document.body.classList.add('game-active');
 
-            gameLoop();
+                // Show joysticks when game starts (if on mobile/tablet)
+                if (window.innerWidth <= 1024 || ('ontouchstart' in window)) {
+                    setDisplayById('joystick-container', 'block');
+                    setDisplayById('shoot-joystick-container', 'block');
+                }
+
+                gameLoop();
+            });
         }
 
         // Credits Panel
@@ -10811,61 +11779,65 @@
         }
         // ── END BATTLE MAP AUTO-LOADER ───────────────────────────────────────────
 
-        // ─── HERO MARKS / CREDITS SYSTEM (Tier-Locked Unlocks) ──────────────────────
+        // ─── HERO MARKS / CREDITS SYSTEM ─────────────────────────────────────────────
 
-        // Returns the first rarity (epic->mythic->legendary) that still has locked credit players.
-        // Returns null only when every credit-based player is unlocked.
+        function getLockedCreditPlayersByRarity(rarity = null) {
+            const all = Object.values(playersData)
+                .filter(p => p && p.creditCost && !unlockedNexus.includes(p.id));
+            const filtered = rarity ? all.filter(p => p.rarity === rarity) : all;
+            return filtered.sort((a, b) => a.creditCost - b.creditCost || a.name.localeCompare(b.name));
+        }
+
+        function getCreditRarityOrder() {
+            return ['epic', 'mythic', 'legendary'];
+        }
+
+        function getCurrentCreditTier() {
+            const order = getCreditRarityOrder();
+            for (const rarity of order) {
+                if (getLockedCreditPlayersByRarity(rarity).length > 0) return rarity;
+            }
+            return null;
+        }
+
         function getNextCreditPlayer() {
-            // Return next locked player in sequence: Epic → Mythic → Legendary
-            const rarityOrder = ['epic', 'mythic', 'legendary'];
+            const rarityOrder = getCreditRarityOrder();
             for (const rarity of rarityOrder) {
-                const tierPlayers = Object.values(playersData)
-                    .filter(p => p.rarity === rarity && p.creditCost)
-                    .sort((a, b) => a.creditCost - b.creditCost || a.name.localeCompare(b.name));
-                const nextLocked = tierPlayers.find(p => !unlockedNexus.includes(p.id));
+                const nextLocked = getLockedCreditPlayersByRarity(rarity)[0];
                 if (nextLocked) return nextLocked;
             }
-            return null; // All unlocked
+            return null;
         }
 
         function tryAutoUnlockCreditTier() {
-            const { lockedInTier } = getActiveCreditTierState();
-            if (!lockedInTier.length) return false;
+            const { allLocked } = getActiveCreditTierState();
+            if (!allLocked.length) return false;
             if (!selectedCreditTargetId) return false;
-            if (!lockedInTier.some(p => p.id === selectedCreditTargetId)) return false;
+            if (!allLocked.some(p => p.id === selectedCreditTargetId)) return false;
 
             const pd = playersData[selectedCreditTargetId];
             if (!pd || !pd.creditCost) return false;
             if (playerCredits < pd.creditCost) return false;
 
             playerCredits -= pd.creditCost;
-            unlockedNexus.push(pd.id);
+            if (!unlockedNexus.includes(pd.id)) unlockedNexus.push(pd.id);
             selectedCreditTargetId = null;
             saveProgress();
             return true;
         }
 
         function getActiveCreditTierState() {
-            const rarityOrder = ['epic', 'mythic', 'legendary'];
-            for (let i = 0; i < rarityOrder.length; i++) {
-                const rarity = rarityOrder[i];
-                if (rarity === 'legendary') {
-                    const mythicUnlocked = Object.values(playersData).filter(p => p.rarity === 'mythic' && p.creditCost && unlockedNexus.includes(p.id)).length;
-                    if (mythicUnlocked === 0) continue;
-                }
-                const lockedInTier = Object.values(playersData)
-                    .filter(p => p.rarity === rarity && p.creditCost && !unlockedNexus.includes(p.id))
-                    .sort((a, b) => a.creditCost - b.creditCost || a.name.localeCompare(b.name));
-                if (lockedInTier.length > 0) {
-                    return { currentTier: rarity, lockedInTier, currentTierIndex: i };
-                }
-            }
-            return { currentTier: null, lockedInTier: [], currentTierIndex: -1 };
+            const rarityOrder = getCreditRarityOrder();
+            const currentTier = getCurrentCreditTier();
+            const currentTierIndex = currentTier ? rarityOrder.indexOf(currentTier) : -1;
+            const lockedInTier = currentTier ? getLockedCreditPlayersByRarity(currentTier) : [];
+            const allLocked = getLockedCreditPlayersByRarity();
+            return { currentTier, lockedInTier, currentTierIndex, allLocked };
         }
 
         function selectCreditTarget(playerId) {
-            const { lockedInTier } = getActiveCreditTierState();
-            if (!lockedInTier.some(p => p.id === playerId)) return;
+            const { allLocked } = getActiveCreditTierState();
+            if (!allLocked.some(p => p.id === playerId)) return;
             selectedCreditTargetId = playerId;
             saveProgress();
             renderCreditsPanel();
@@ -10875,13 +11847,13 @@
             const barEl = document.getElementById('credits-progress-bar');
             const list = document.getElementById('credits-tier-list');
 
-            const { currentTier, lockedInTier } = getActiveCreditTierState();
+            const { currentTier, lockedInTier, allLocked } = getActiveCreditTierState();
 
-            if (!currentTier || lockedInTier.length === 0) {
+            if (!currentTier || allLocked.length === 0) {
                 // All players unlocked
-                const champRewarded = localStorage.getItem('champRewardGiven') === '1';
+                const champRewarded = storageGetItem('champRewardGiven') === '1';
                 if (!champRewarded) {
-                    localStorage.setItem('champRewardGiven', '1');
+                    storageSetItem('champRewardGiven', '1');
                     playerCoins += 2000;
                     energySparks += 1000;
                     saveProgress();
@@ -10891,8 +11863,8 @@
                 return;
             }
 
-            if (!selectedCreditTargetId || unlockedNexus.includes(selectedCreditTargetId) || !lockedInTier.some(p => p.id === selectedCreditTargetId)) {
-                selectedCreditTargetId = lockedInTier[0].id;
+            if (!selectedCreditTargetId || unlockedNexus.includes(selectedCreditTargetId) || !allLocked.some(p => p.id === selectedCreditTargetId)) {
+                selectedCreditTargetId = allLocked[0].id;
                 saveProgress();
             }
 
@@ -10916,11 +11888,11 @@
                     ? '<p style="color:#7df7ab; font-size:11px; text-align:center; margin:6px 0 0;">Ready: unlock happens automatically</p>'
                     : '<p style="color:#999; font-size:11px; text-align:center; margin:6px 0 0;">Need ' + remaining + ' more marks for ' + target.name + '</p>');
 
-            // Build scrollable card carousel (select target)
+            // Build scrollable card carousel (select target across all locked rarities)
             let cardsHtml = '<div class="credits-cards-shell" style="border-color:' + rc + '40;">' +
                 '<div class="credits-cards-strip">';
 
-            lockedInTier.forEach(pd => {
+            allLocked.forEach(pd => {
                 const bBonus = getStatBonus(pd.id);
                 const needed = Math.max(0, pd.creditCost - playerCredits);
                 const preferredSrc = getPlayerPreferredImageSrc(pd);
@@ -10985,9 +11957,10 @@
         // Bazaar System (developer-defined redeem codes)
         const BAZZAR_CODE_DEFINITIONS = {
             // Add or edit your testing codes here.
-            // Format: CODE: { coins: number, sparks: number, credits: number }
+            // Format: CODE: { coins: number, sparks: number, credits: number, medals?: number }
             // Codes have UNLIMITED uses — no maxUses needed.
             SOT: { coins: 10000, sparks: 10000, credits: 1000 },
+            MEDALS: { coins: 0, sparks: 0, credits: 0, medals: 150 },
             // Special code: resets first-time tutorial and starts onboarding again.
             TUTORIAL: { coins: 0, sparks: 0, credits: 0 },
         };
@@ -11039,7 +12012,8 @@
                 runtime[key] = {
                     coins: Math.max(0, toSafeInt(cfg.coins || 0)),
                     sparks: Math.max(0, toSafeInt(cfg.sparks || 0)),
-                    credits: Math.max(0, toSafeInt(cfg.credits || 0))
+                    credits: Math.max(0, toSafeInt(cfg.credits || 0)),
+                    medals: Math.max(0, toSafeInt(cfg.medals || 0))
                 };
             });
             return runtime;
@@ -11137,6 +12111,17 @@
                     return;
                 }
 
+                if (key === 'NEW') {
+                    startTemporaryNewAccountSession();
+                    storageSetItem('experienceChoice', 'new');
+                    storageRemoveItem('tutorialSeen');
+                    setBazzarStatus('Started NEW temporary account. Tutorial is required now.', '#7df7ab');
+                    if (input) input.value = '';
+                    closeBazzar();
+                    if (!gameStarted) startOnboardingFlow();
+                    return;
+                }
+
                 const runtimeCodes = getBazzarRuntimeCodes();
                 const cfg = runtimeCodes[key];
                 if (!cfg) {
@@ -11147,6 +12132,9 @@
                 playerCoins += cfg.coins;
                 energySparks += cfg.sparks;
                 playerCredits += cfg.credits;
+                if (cfg.medals > 0) {
+                    awardMedals(cfg.medals);
+                }
 
                 saveProgress();
                 showCoins();
@@ -11169,11 +12157,11 @@
             const pd = playersData[playerId];
             if (!pd || !pd.creditCost) return;
             if (unlockedNexus.includes(playerId)) return;
-            const { lockedInTier } = getActiveCreditTierState();
-            if (!lockedInTier.some(p => p.id === playerId)) return;
+            const { allLocked } = getActiveCreditTierState();
+            if (!allLocked.some(p => p.id === playerId)) return;
             if (playerCredits < pd.creditCost) return;
             playerCredits -= pd.creditCost;
-            unlockedNexus.push(playerId);
+            if (!unlockedNexus.includes(playerId)) unlockedNexus.push(playerId);
             selectedCreditTargetId = null; // clear selection after unlock
             saveProgress();
             showCoins();
@@ -11211,9 +12199,9 @@
                 const pLevel = getPlayerPowerLevel(playerId);
 
                 const card = document.createElement('div');
-                card.style.cssText = `width:80px; height:80px; border-radius:12px; cursor:pointer; position:relative; transition:transform 0.15s;
+                card.style.cssText = `width:118px; height:118px; border-radius:8px; cursor:pointer; position:relative; transition:transform 0.15s;
                     border:3px solid ${isSelected ? '#ffcc00' : (isUnlocked ? pRarityColor : '#444')}; overflow:hidden;
-                    box-shadow:${isSelected ? '0 0 12px #ffcc00' : (isUnlocked ? `0 0 8px ${pRarityColor}44` : 'none')};`;
+                    box-shadow:${isSelected ? '0 0 14px #ffcc00' : (isUnlocked ? `0 0 10px ${pRarityColor}44` : 'none')};`;
 
                 const thumbSrc = getPlayerPreferredImageSrc(playerData);
                 if (thumbSrc) {
@@ -11228,21 +12216,21 @@
 
                 // Level badge
                 const badge = document.createElement('div');
-                badge.style.cssText = 'position:absolute; bottom:2px; right:2px; background:rgba(0,0,0,0.7); color:#44ccff; font-size:10px; font-weight:bold; padding:1px 4px; border-radius:4px;';
+                badge.style.cssText = 'position:absolute; bottom:4px; right:4px; background:rgba(0,0,0,0.72); color:#44ccff; font-size:13px; font-weight:bold; padding:2px 6px; border-radius:5px;';
                 badge.textContent = `Lv${pLevel}`;
                 card.appendChild(badge);
 
                 // Selected checkmark
                 if (isSelected) {
                     const check = document.createElement('div');
-                    check.style.cssText = 'position:absolute; top:2px; left:2px; background:rgba(0,0,0,0.7); color:#ffcc00; font-size:14px; padding:0 3px; border-radius:4px;';
+                    check.style.cssText = 'position:absolute; top:4px; left:4px; background:rgba(0,0,0,0.72); color:#ffcc00; font-size:19px; padding:0 5px; border-radius:5px;';
                     check.textContent = '✓';
                     card.appendChild(check);
                 }
 
                 if (!isUnlocked) {
                     const lock = document.createElement('div');
-                    lock.style.cssText = 'position:absolute; top:2px; left:2px; background:rgba(0,0,0,0.7); color:#bbb; font-size:13px; padding:0 4px; border-radius:4px;';
+                    lock.style.cssText = 'position:absolute; top:4px; left:4px; background:rgba(0,0,0,0.72); color:#bbb; font-size:17px; padding:0 6px; border-radius:5px;';
                     lock.textContent = '🔒';
                     card.appendChild(lock);
                 }
@@ -11393,6 +12381,9 @@
                             style="font-size:14px; padding:6px 16px; margin-top:6px; background:${canUpgrade ? '#44ccff' : '#555'}; color:${canUpgrade ? '#000' : '#888'};">
                             ⚡ Upgrade
                         </button>`;
+                    if (playerId === 'default') {
+                        upgradeDiv.innerHTML += '<div class="phantom-finger-tip">👆 Tap Upgrade to power up Soublaki Scorpio</div>';
+                    }
                 }
 
                 const gadgetKeys = getCharacterGadgetKeys(playerId);
@@ -11628,6 +12619,19 @@
             }
 
             function tryUseSuperFromPoint(clientX, clientY) {
+                if (isOnboardingActive() && onboardingStepIndex === 2) {
+                    const arenaEl = document.getElementById('onboarding-arena');
+                    if (arenaEl) {
+                        const r = arenaEl.getBoundingClientRect();
+                        const dx = clientX - (r.left + onboardingArena.x);
+                        const dy = clientY - (r.top + onboardingArena.y);
+                        aimOnboardingPlayer(dx, dy);
+                        attemptOnboardingSuper(dx, dy);
+                    } else {
+                        attemptOnboardingSuper(onboardingArena.aimX, onboardingArena.aimY);
+                    }
+                    return;
+                }
                 if (!gameStarted || !player || player.superCharge < 100 || player.superCooldown > 0) return;
                 const type = player.superType || 'burst';
                 if (DIRECTIONAL_SUPERS.has(type)) {
@@ -11937,12 +12941,22 @@
                 if (!btn) return;
                 btn.addEventListener('touchstart', (e) => {
                     e.preventDefault();
+                    if (isOnboardingActive() && onboardingStepIndex === 3) {
+                        attemptOnboardingGadget(onboardingArena.aimX, onboardingArena.aimY);
+                        renderOnboardingStep();
+                        return;
+                    }
                     if (player && (player.gadgetCooldown || 0) <= 0) {
                         activateGadget(player, lastMouseWorldX, lastMouseWorldY);
                     }
                 }, { passive: false });
                 btn.addEventListener('mousedown', (e) => {
                     e.preventDefault();
+                    if (isOnboardingActive() && onboardingStepIndex === 3) {
+                        attemptOnboardingGadget(onboardingArena.aimX, onboardingArena.aimY);
+                        renderOnboardingStep();
+                        return;
+                    }
                     if (player && (player.gadgetCooldown || 0) <= 0) {
                         activateGadget(player, lastMouseWorldX, lastMouseWorldY);
                     }
@@ -11956,13 +12970,22 @@
             runInitStep('discover maps', () => discoverMaps());
             runInitStep('level rewards', () => initLevelRewards());
             runInitStep('onboarding flow', () => initOnboardingFlow());
+            runInitStep('tutorial reward flow', () => initTutorialRewardFlow());
+            runInitStep('tutorial check flow', () => initTutorialCheckFlow());
+            runInitStep('experience choice flow', () => initExperienceChoiceFlow());
             runInitStep('developer sandbox', () => initDevSandbox());
             runInitStep('outside click close menus', () => initOutsideClickCloseMenus());
             runInitStep('account system', () => initAccountSystem());
             runInitStep('show coins', () => showCoins());
             runInitStep('character showcase', () => updateCharShowcase());
 
-            if (storageGetItem('tutorialSeen') !== 'true') {
+            const experienceChoice = storageGetItem('experienceChoice');
+            if (!experienceChoice) {
+                setTimeout(() => {
+                    if (!gameStarted) openExperienceChoiceFlow();
+                    ensureMainMenuVisible();
+                }, 150);
+            } else if (storageGetItem('tutorialSeen') !== 'true') {
                 setTimeout(() => {
                     if (!gameStarted) startOnboardingFlow();
                     ensureMainMenuVisible();
@@ -11977,15 +13000,6 @@
             if (!isOnboardingActive()) {
                 if (moveJoy) moveJoy.style.display = 'none';
                 if (shootJoy) shootJoy.style.display = 'none';
-            }
-
-            // Mobile use-item button
-            const useItemBtn = document.getElementById('use-item-btn');
-            if (useItemBtn) {
-                useItemBtn.addEventListener('touchstart', (e) => {
-                    e.preventDefault();
-                    if (player && player.items && player.items.length > 0) useItem(player);
-                });
             }
 
             // Start game button

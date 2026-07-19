@@ -1,6 +1,37 @@
 # Cyprus Brainrots Game — TODO
 
-Last reviewed: 2026-05-10 (session 11)
+Last reviewed: 2026-07-12 (session 13)
+
+## Session 13 Priorities (2026-07-12)
+
+### Done in this onboarding pass
+- [x] Added phantom joystick + aim/super/gadget guidance visuals for tutorial clarity
+- [x] Added a dedicated gadget tutorial step/page in onboarding
+- [x] Added post-tutorial understanding checkpoint that can launch a battle directly
+- [x] Added `NEW` redeem flow for temporary fresh account session (no local save)
+- [x] Forced tutorial completion for `NEW` session before normal progression
+- [x] Increased first-battle spawn separation and tuned easy intro battle behavior
+- [x] Added tutorial completion reward popup before tutorial-check prompt
+- [x] Added contextual onboarding hints that react to player progress per step
+- [x] Added visible bot personality presets in match intro cards
+- [x] Improved spawn safety zone visuals (aura + pulse rings while shield is active)
+
+### Must do next
+- [x] Expand Medal Road to full long-form progression up to 5000 medals (define milestone cadence and segment rewards by early/mid/late game)
+- [x] Add complete reward table to Medal Road milestones: coins, sparks, cosmetics, unlock tokens, and chest drops
+- [x] Add chest rewards into Medal Road (small chest, big chest, mega chest) with weighted drop pools and duplicate-protection rules
+- [x] Add Rare and Super Rare player unlock coverage across Medal Road so all intended roster unlocks are represented in progression
+- [x] Medal Road balance pass: normalize reward scaling by milestone difficulty and player progression from 0 to 5000 medals
+- [x] Medal Road UX pass: clearer claim states, next-reward preview, and progress-to-next marker
+- [x] Hero Marks system fix pass: verify per-player purchase behavior, remove stale tier-lock assumptions, and patch edge-case unlock failures
+- [x] Hero Marks economy rebalance: rarity pricing sanity check against current coin/medal gain rates
+
+### Other high-impact improvements to schedule
+- [ ] Bazaar quality pass: filter by rarity/owned status and add quick search for large roster
+- [ ] First 3 matches protection rules: softer bots, safer spawns, and boosted reward floor for retention
+- [ ] Daily wins + roadmap integration: ensure daily/seasonal rewards feed into Medal Road progression cleanly
+- [ ] Add lightweight telemetry counters (local): tutorial completion rate, first-battle win rate, and drop-off step
+- [ ] Add regression checklist for onboarding/account/bazaar flows before each release
 
 ## Session 11 Closeout (2026-05-10)
 
