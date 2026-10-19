@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+    <title>Atackers Battle Game - Restart Prototype</title>
+    <link rel="stylesheet" href="restart-style.css">
+</head>
+<body class="restart-mode">
+    <main id="restart-root" aria-label="Atackers game">
+        <section class="restart-panel">
+            <p class="restart-kicker">Atackers</p>
+            <h1>Enter the map.</h1>
+            <p class="restart-copy">Pick your hero, open the bazaar, and step into the map.</p>
+            <div class="restart-menu-buttons">
+                <button id="restart-play-button" type="button">Play</button>
+                <button id="restart-players-button" type="button">Players</button>
+                <button id="restart-bazaar-button" type="button">Bazaar</button>
+            </div>
+            <p id="restart-status" class="restart-status">Selected hero: ScorpiosSouvlak</p>
+            <p id="restart-position" class="restart-position">Position: 72, 72</p>
+            <div class="restart-instructions">
+                <span>Move with WASD or Arrow Keys</span>
+                <span>Press R to reset position</span>
+            </div>
+        </section>
+
+        <section id="restart-stage" class="restart-stage" hidden>
+            <div class="restart-stage-toolbar">
+                <button id="restart-end-button" type="button">End battle</button>
+            </div>
+            <canvas id="restart-canvas" width="960" height="600" aria-label="Game canvas" tabindex="0"></canvas>
+        </section>
+    </main>
+
+    <section id="restart-players-panel" class="restart-overlay-panel" aria-label="Players panel" hidden>
+        <div class="restart-overlay-card">
+            <div class="restart-overlay-head">
+                <p class="restart-overlay-kicker">Players</p>
+                <button class="restart-overlay-close" data-close-panel="restart-players-panel" type="button" aria-label="Close players panel">Close</button>
+            </div>
+            <h2>Choose your player</h2>
+            <div class="restart-player-card">
+                <img src="images/ScorpiosSouvlak.png" alt="ScorpiosSouvlak" />
+                <div>
+                    <strong>ScorpiosSouvlak</strong>
+                    <p>Fast enough to feel responsive, slow enough to control around walls and water.</p>
+                    <div class="restart-card-actions">
+                        <button id="restart-select-scorpios" class="restart-action-button" type="button">Use This Hero</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="restart-bazaar-panel" class="restart-overlay-panel" aria-label="Bazaar panel" hidden>
+        <div class="restart-overlay-card">
+            <div class="restart-overlay-head">
+                <p class="restart-overlay-kicker">Bazaar</p>
+                <button class="restart-overlay-close" data-close-panel="restart-bazaar-panel" type="button" aria-label="Close bazaar panel">Close</button>
+            </div>
+            <h2>Bazaar</h2>
+            <p>Browse a few goods and inspect what is on offer.</p>
+            <div class="restart-bazaar-grid">
+                <article class="restart-bazaar-card">
+                    <strong>Dust Boots</strong>
+                    <p>Light travel gear for cleaner movement around the map.</p>
+                    <button class="restart-action-button restart-bazaar-item" data-item-name="Dust Boots" type="button">Inspect</button>
+                </article>
+                <article class="restart-bazaar-card">
+                    <strong>Sun Cape</strong>
+                    <p>A clean gold look for the next cosmetic pass.</p>
+                    <button class="restart-action-button restart-bazaar-item" data-item-name="Sun Cape" type="button">Inspect</button>
+                </article>
+                <article class="restart-bazaar-card">
+                    <strong>Map Compass</strong>
+                    <p>A future utility slot item for navigation and scouting.</p>
+                    <button class="restart-action-button restart-bazaar-item" data-item-name="Map Compass" type="button">Inspect</button>
+                </article>
+            </div>
+        </div>
+    </section>
+
+    <script src="restart-game.js"></script>
+</body>
+</html>

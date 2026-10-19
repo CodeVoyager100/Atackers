@@ -544,6 +544,10 @@
             cursor: pointer;
             font-weight: 700;
             font-size: 16px;
+            line-height: 1.2;
+            min-height: 42px;
+            white-space: normal;
+            text-align: center;
             font-family: 'Rajdhani', Arial, sans-serif;
             transition: transform 0.24s ease, border-color 0.24s ease, box-shadow 0.24s ease, background 0.24s ease;
         }
@@ -1155,6 +1159,8 @@
         .account-chip-stat.sparks .v { color: #66f4e3; }
         .account-chip-stat.medals .v { color: #ffbf4d; }
         .account-chip-stat.marks .v { color: #caa8ff; }
+        .account-chip-stat.diamonds { grid-column: 1 / -1; }
+        .account-chip-stat.diamonds .v { color: #8defff; }
 
             .btn:disabled {
                 background-color: #777;
@@ -1273,7 +1279,8 @@
                 height: 100vh !important;
                 max-height: none !important;
                 padding: 62px 26px 18px;
-                overflow: hidden;
+                overflow-y: auto;
+                overflow-x: hidden;
             }
 
             #medal-road-panel > h2 {
@@ -1290,12 +1297,37 @@
                 background: linear-gradient(170deg, rgba(7, 18, 32, 0.96), rgba(8, 14, 26, 0.93)) !important;
                 border: 1px solid rgba(95, 186, 255, 0.42) !important;
                 border-radius: 14px !important;
-                max-height: calc(100vh - 172px);
+                max-height: min(68vh, calc(100vh - 250px));
                 overflow-y: auto;
                 width: min(1800px, 100%);
                 margin: 10px auto 0;
                 padding: 18px;
                 box-sizing: border-box;
+            }
+
+            #medal-road-actions {
+                width: min(1800px, 100%);
+                margin: 10px auto 0;
+                display: flex;
+                flex-wrap: wrap;
+                gap: 10px;
+                justify-content: center;
+                align-items: center;
+                position: sticky;
+                bottom: 0;
+                padding: 8px 0 4px;
+                background: linear-gradient(180deg, rgba(9, 16, 31, 0), rgba(9, 16, 31, 0.92) 36%);
+                z-index: 2;
+            }
+
+            #medal-road-actions .btn {
+                flex: 1 1 220px;
+                max-width: 320px;
+                margin: 0;
+            }
+
+            #medal-road-claim-all-btn {
+                background: #2d9c5f;
             }
 
             #medal-road-timeline {
@@ -1775,8 +1807,20 @@
                 }
 
                 #medal-road-container {
-                    max-height: calc(100vh - 162px);
+                    max-height: min(64vh, calc(100vh - 240px));
                     padding: 10px;
+                }
+
+                #medal-road-actions {
+                    gap: 8px;
+                    padding-top: 10px;
+                }
+
+                #medal-road-actions .btn {
+                    flex: 1 1 100%;
+                    max-width: none;
+                    font-size: 14px;
+                    min-height: 44px;
                 }
 
                 .medal-road-summary {
@@ -2026,6 +2070,8 @@
             .menu .btn {
                 padding: 9px 10px;
                 font-size: 13px;
+                flex: 1 1 160px;
+                min-width: 140px;
             }
 
             .game-modes-grid {
@@ -2057,6 +2103,22 @@
                 padding: 10px 12px !important;
                 top: 50%;
                 pointer-events: none;
+            }
+        }
+
+        @media (max-width: 520px) {
+            .menu {
+                width: min(96vw, 420px);
+                gap: 6px;
+                padding: 8px;
+            }
+
+            .menu .btn {
+                flex: 1 1 calc(50% - 8px);
+                min-width: 120px;
+                font-size: 12px;
+                padding: 8px 8px;
+                min-height: 40px;
             }
         }
 
@@ -2338,6 +2400,341 @@
             animation: onboardingGhostTap 1s ease-out infinite 0.24s;
         }
 
+        :root {
+            --adaptive-ui-font: clamp(12px, calc(0.45vw + 10px), 18px);
+            --adaptive-ui-gap: clamp(6px, 0.8vw, 14px);
+        }
+
+        body {
+            font-size: clamp(13px, calc(0.35vw + 12px), 18px);
+        }
+
+        button,
+        .btn {
+            max-width: 100%;
+            min-height: clamp(38px, 4.6vh, 48px);
+            padding: clamp(7px, 0.65vw + 4px, 13px) clamp(10px, 0.7vw + 7px, 20px);
+            font-size: var(--adaptive-ui-font) !important;
+            line-height: 1.15;
+            overflow-wrap: anywhere;
+        }
+
+        .modal-panel {
+            padding: clamp(58px, 8vh, 76px) clamp(12px, 2vw, 26px) clamp(12px, 3vh, 26px);
+            min-height: 0;
+        }
+
+        .modal-panel h2 {
+            font-size: clamp(25px, calc(1.2vw + 18px), 46px);
+            line-height: 1.05;
+            overflow-wrap: anywhere;
+        }
+
+        .modal-panel p,
+        .modal-panel label,
+        .modal-panel input,
+        .modal-panel select {
+            font-size: clamp(12px, calc(0.35vw + 10px), 16px) !important;
+            line-height: 1.35;
+        }
+
+        .menu {
+            gap: var(--adaptive-ui-gap);
+            max-width: min(96vw, 920px);
+            box-sizing: border-box;
+        }
+
+        #coins-display,
+        #daily-btn,
+        #history-btn,
+        #medal-road-btn,
+        #leaderboard-btn,
+        .guide {
+            font-size: clamp(12px, calc(0.35vw + 10px), 17px) !important;
+            line-height: 1.3;
+        }
+
+        #medal-road-panel {
+            height: 100dvh !important;
+            padding: clamp(56px, 8vh, 72px) clamp(10px, 2vw, 26px) 14px;
+            overflow: hidden auto;
+        }
+
+        #medal-road-panel > h2 {
+            font-size: clamp(30px, calc(2.2vw + 18px), 58px);
+            margin-bottom: 4px;
+        }
+
+        #medal-road-container {
+            max-height: min(68dvh, calc(100dvh - 220px)) !important;
+            padding: clamp(8px, 1.3vw, 18px);
+            overscroll-behavior: contain;
+            scrollbar-color: #f2c84b #163b43;
+        }
+
+        #medal-road-timeline {
+            gap: clamp(12px, 1.8vh, 22px);
+        }
+
+        .medal-road-bs-summary {
+            position: sticky;
+            top: 0;
+            z-index: 3;
+            grid-template-columns: minmax(0, 1fr) auto;
+            padding: clamp(10px, 1.2vw, 16px);
+            border: 2px solid rgba(255, 218, 103, 0.82);
+            background: linear-gradient(145deg, rgba(24, 91, 81, 0.98), rgba(14, 55, 61, 0.98));
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+        }
+
+        .medal-road-bs-summary-label,
+        .medal-road-bs-summary-sub,
+        .medal-road-bs-summary-right,
+        .medal-road-bs-claim-status {
+            font-size: clamp(11px, calc(0.3vw + 10px), 15px);
+            line-height: 1.3;
+        }
+
+        .medal-road-bs-summary-title {
+            font-size: clamp(20px, calc(1vw + 16px), 32px);
+            overflow-wrap: anywhere;
+        }
+
+        .medal-road-bs-progress {
+            height: clamp(10px, 1.2vh, 16px);
+        }
+
+        .medal-road-bs-shell {
+            overflow: visible;
+            padding: 0 0 14px;
+        }
+
+        .medal-road-bs-track {
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            align-items: stretch;
+            gap: clamp(12px, 1.6vh, 20px);
+            width: min(920px, 100%);
+            margin: 0 auto;
+            padding: 14px 0 24px;
+            box-sizing: border-box;
+        }
+
+        .medal-road-bs-track::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            left: 50%;
+            width: 12px;
+            transform: translateX(-50%);
+            border: 2px solid rgba(255, 232, 153, 0.8);
+            border-radius: 999px;
+            background: linear-gradient(180deg, #61d8b0, #f2d15b 48%, #54bde0);
+            box-shadow: 0 0 14px rgba(91, 218, 194, 0.36);
+        }
+
+        .medal-road-bs-card {
+            position: relative;
+            display: grid;
+            grid-template-columns: clamp(56px, 7vw, 76px) minmax(0, 1fr);
+            grid-template-rows: auto auto 1fr auto;
+            align-content: center;
+            column-gap: clamp(8px, 1.1vw, 14px);
+            row-gap: 3px;
+            width: min(460px, calc(50% - 34px));
+            min-height: clamp(142px, 19vh, 194px);
+            padding: clamp(9px, 1.1vw, 14px);
+            border: 2px solid rgba(109, 215, 199, 0.64);
+            border-radius: 16px;
+            background: linear-gradient(150deg, rgba(29, 91, 80, 0.98), rgba(18, 56, 60, 0.98));
+            box-shadow: 0 8px 18px rgba(0, 0, 0, 0.28);
+            flex-shrink: 0;
+        }
+
+        .medal-road-bs-card:nth-of-type(odd) {
+            align-self: flex-start;
+        }
+
+        .medal-road-bs-card:nth-of-type(even) {
+            align-self: flex-end;
+        }
+
+        .medal-road-bs-card::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            width: clamp(14px, 1.7vw, 22px);
+            height: clamp(14px, 1.7vw, 22px);
+            transform: translateY(-50%);
+            border: 3px solid #fff0af;
+            border-radius: 50%;
+            background: #e4b83d;
+            box-shadow: 0 0 0 4px rgba(15, 53, 59, 0.85), 0 0 12px rgba(255, 222, 114, 0.5);
+        }
+
+        .medal-road-bs-card:nth-of-type(odd)::after {
+            right: calc(clamp(14px, 1.7vw, 22px) * -1 - 7px);
+        }
+
+        .medal-road-bs-card:nth-of-type(even)::after {
+            left: calc(clamp(14px, 1.7vw, 22px) * -1 - 7px);
+        }
+
+        .medal-road-bs-card.ready {
+            border-color: #ffe17b;
+            background: linear-gradient(150deg, rgba(132, 94, 28, 0.98), rgba(74, 63, 31, 0.98));
+            box-shadow: 0 0 0 2px rgba(255, 221, 110, 0.28), 0 10px 22px rgba(0, 0, 0, 0.3);
+        }
+
+        .medal-road-bs-card.claimed {
+            border-color: rgba(126, 239, 174, 0.85);
+            background: linear-gradient(150deg, rgba(25, 92, 64, 0.96), rgba(16, 58, 50, 0.98));
+        }
+
+        .medal-road-bs-card.next {
+            box-shadow: 0 0 0 3px rgba(255, 226, 125, 0.45), 0 10px 22px rgba(0, 0, 0, 0.3);
+        }
+
+        .medal-road-bs-level {
+            grid-column: 1;
+            grid-row: 1;
+            color: #fff4c8;
+            font-size: clamp(14px, calc(0.45vw + 12px), 19px);
+            line-height: 1.1;
+        }
+
+        .medal-road-bs-medals {
+            grid-column: 1;
+            grid-row: 2;
+            margin: 0;
+            color: #d8f6e8;
+            font-size: clamp(10px, calc(0.3vw + 9px), 13px);
+        }
+
+        .medal-road-bs-media {
+            grid-column: 1;
+            grid-row: 3 / 5;
+            align-self: center;
+            width: clamp(54px, 7vw, 76px);
+            height: clamp(54px, 7vw, 76px);
+            margin: 4px 0 0;
+            border: 2px solid rgba(255, 238, 172, 0.58);
+            background: rgba(8, 41, 48, 0.7);
+        }
+
+        .medal-road-bs-icon {
+            font-size: clamp(28px, 3.5vw, 42px);
+        }
+
+        .medal-road-bs-hero {
+            width: 90%;
+            height: 90%;
+            object-fit: contain;
+        }
+
+        .medal-road-bs-name {
+            grid-column: 2;
+            grid-row: 1;
+            align-self: end;
+            margin: 0;
+            color: #fff9e4;
+            font-size: clamp(13px, calc(0.45vw + 11px), 18px);
+            line-height: 1.12;
+            overflow-wrap: anywhere;
+        }
+
+        .medal-road-bs-rarity {
+            grid-column: 2;
+            grid-row: 2;
+            align-self: start;
+            margin: 1px 0 0;
+            color: #c7ecd9;
+            font-size: clamp(10px, calc(0.3vw + 9px), 13px);
+            line-height: 1.15;
+        }
+
+        .medal-road-bs-status {
+            grid-column: 2;
+            grid-row: 3;
+            justify-self: start;
+            align-self: start;
+            margin: 5px 0 0;
+            padding: 4px 9px;
+            border-color: rgba(255, 237, 179, 0.58);
+            color: #fff0b7;
+            background: rgba(9, 47, 48, 0.75);
+            font-size: clamp(10px, calc(0.3vw + 9px), 13px);
+        }
+
+        .medal-road-bs-link {
+            display: none;
+        }
+
+        @media (max-width: 700px) {
+            #medal-road-panel {
+                padding: 58px 10px 10px;
+            }
+
+            #medal-road-container {
+                max-height: min(66dvh, calc(100dvh - 205px)) !important;
+            }
+
+            .medal-road-bs-summary {
+                grid-template-columns: minmax(0, 1fr);
+            }
+
+            .medal-road-bs-summary-right {
+                display: flex;
+                justify-content: space-between;
+                gap: 8px;
+            }
+
+            .medal-road-bs-track {
+                width: 100%;
+                gap: 12px;
+                padding-left: 30px;
+            }
+
+            .medal-road-bs-track::before {
+                left: 10px;
+                width: 10px;
+            }
+
+            .medal-road-bs-card,
+            .medal-road-bs-card:nth-of-type(odd),
+            .medal-road-bs-card:nth-of-type(even) {
+                align-self: stretch;
+                width: 100%;
+                min-height: 132px;
+            }
+
+            .medal-road-bs-card::after,
+            .medal-road-bs-card:nth-of-type(odd)::after,
+            .medal-road-bs-card:nth-of-type(even)::after {
+                left: -30px;
+                right: auto;
+                width: 15px;
+                height: 15px;
+            }
+        }
+
+        @media (max-height: 560px) {
+            .modal-panel {
+                padding-top: 52px;
+                padding-bottom: 8px;
+            }
+
+            #medal-road-container {
+                max-height: calc(100dvh - 270px) !important;
+            }
+
+            .medal-road-bs-card {
+                min-height: 124px;
+            }
+        }
+
         @keyframes onboardingGhostMove {
             0% {
                 opacity: 0;
@@ -2460,6 +2857,300 @@
             color: white;
             font-size: 24px;
             text-align: center;
+        }
+
+        #stardrop-overlay {
+            z-index: 1505;
+        }
+
+        .game-over-character-stage {
+            display: flex;
+            justify-content: center;
+            margin: 8px 0 16px;
+            min-height: 180px;
+            perspective: 720px;
+        }
+
+        .game-over-character-card {
+            width: min(250px, 70vw);
+            height: 196px;
+            border-radius: 16px;
+            border: 2px solid rgba(255, 255, 255, 0.28);
+            background:
+                radial-gradient(circle at 50% 22%, rgba(255, 255, 255, 0.2), transparent 55%),
+                linear-gradient(170deg, rgba(16, 28, 44, 0.96), rgba(8, 14, 24, 0.94));
+            box-shadow: 0 18px 36px rgba(0, 0, 0, 0.5);
+            overflow: hidden;
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transform-style: preserve-3d;
+        }
+
+        .game-over-character-card::before,
+        .game-over-character-card::after {
+            content: '';
+            position: absolute;
+            inset: -25%;
+            pointer-events: none;
+            opacity: 0;
+            transition: opacity 0.35s ease;
+        }
+
+        .game-over-character-card::before {
+            background:
+                conic-gradient(from 0deg at 50% 50%, rgba(255, 255, 255, 0.28), transparent 40%, rgba(255, 255, 255, 0.12) 70%, transparent 100%);
+            filter: blur(8px);
+        }
+
+        .game-over-character-card::after {
+            background:
+                radial-gradient(circle at 50% 84%, rgba(255, 255, 255, 0.2), transparent 52%),
+                repeating-linear-gradient(100deg, rgba(255, 255, 255, 0.06) 0 2px, transparent 2px 16px);
+            mix-blend-mode: screen;
+        }
+
+        #game-over-character-img {
+            width: 88%;
+            height: 88%;
+            object-fit: contain;
+            transform-origin: 50% 80%;
+            filter: drop-shadow(0 10px 12px rgba(0, 0, 0, 0.45));
+            z-index: 2;
+        }
+
+        .game-over-spark {
+            position: absolute;
+            width: 11px;
+            height: 11px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.7);
+            box-shadow: 0 0 14px rgba(255, 255, 255, 0.7);
+            opacity: 0;
+            z-index: 1;
+        }
+
+        .game-over-spark-a { top: 30%; left: 18%; }
+        .game-over-spark-b { top: 18%; right: 22%; }
+        .game-over-spark-c { top: 58%; right: 16%; }
+
+        .game-over-character-stage.anim-ready.result-win .game-over-spark {
+            opacity: 0;
+            animation: none;
+        }
+
+        .game-over-character-stage.anim-ready.result-lose .game-over-spark {
+            animation: gameOverDustFall 1.25s ease-in infinite;
+        }
+
+        .game-over-character-stage.anim-ready.result-lose .game-over-spark-b { animation-delay: 0.16s; }
+        .game-over-character-stage.anim-ready.result-lose .game-over-spark-c { animation-delay: 0.32s; }
+
+        .game-over-character-flair {
+            position: absolute;
+            left: 50%;
+            bottom: 8px;
+            transform: translateX(-50%);
+            font-size: 12px;
+            letter-spacing: 0.5px;
+            color: #d6e7ff;
+            background: rgba(0, 0, 0, 0.45);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 999px;
+            padding: 4px 10px;
+            white-space: nowrap;
+            z-index: 3;
+        }
+
+        .game-over-character-stage.result-win .game-over-character-card {
+            border-color: rgba(255, 214, 112, 0.82);
+            box-shadow: 0 0 46px rgba(255, 196, 71, 0.36), 0 18px 36px rgba(0, 0, 0, 0.5);
+        }
+
+        .game-over-character-stage.result-lose .game-over-character-card {
+            border-color: rgba(255, 120, 120, 0.8);
+            box-shadow: 0 0 28px rgba(255, 88, 88, 0.28), 0 18px 36px rgba(0, 0, 0, 0.5);
+        }
+
+        .game-over-character-stage.anim-ready.result-win .game-over-character-card::before,
+        .game-over-character-stage.anim-ready.result-win .game-over-character-card::after {
+            opacity: 0.38;
+            animation: none;
+        }
+
+        .game-over-character-stage.anim-ready.result-lose .game-over-character-card::before,
+        .game-over-character-stage.anim-ready.result-lose .game-over-character-card::after {
+            opacity: 0.7;
+            animation: gameOverLoseFlicker 1.3s ease-in-out infinite;
+        }
+
+        .game-over-character-stage.anim-ready.result-lose #game-over-character-img {
+            filter: grayscale(0.28) saturate(0.72) drop-shadow(0 10px 12px rgba(0, 0, 0, 0.45));
+        }
+
+        .game-over-character-stage.anim-ready.result-win.pose-balanced #game-over-character-img {
+            animation: gameOverWinPose 0.62s ease-out, gameOverWinIdle 2.1s ease-in-out 0.62s infinite;
+        }
+
+        .game-over-character-stage.anim-ready.result-win.pose-agile #game-over-character-img {
+            animation: gameOverWinAgilePose 0.58s cubic-bezier(.2,.8,.1,1), gameOverWinAgileIdle 1.6s ease-in-out 0.58s infinite;
+        }
+
+        .game-over-character-stage.anim-ready.result-win.pose-tank #game-over-character-img {
+            animation: gameOverWinTankPose 0.68s ease-out, gameOverWinTankIdle 2.6s ease-in-out 0.68s infinite;
+        }
+
+        .game-over-character-stage.anim-ready.result-win.pose-power #game-over-character-img {
+            animation: gameOverWinPowerPose 0.64s ease-out, gameOverWinPowerIdle 1.9s ease-in-out 0.64s infinite;
+        }
+
+        .game-over-character-stage.anim-ready.result-lose.pose-balanced #game-over-character-img {
+            animation: gameOverLosePose 0.92s ease-out, gameOverLoseIdle 1.8s ease-in-out 0.92s infinite;
+        }
+
+        .game-over-character-stage.anim-ready.result-lose.pose-agile #game-over-character-img {
+            animation: gameOverLoseAgilePose 0.86s ease-out, gameOverLoseAgileIdle 1.4s ease-in-out 0.86s infinite;
+        }
+
+        .game-over-character-stage.anim-ready.result-lose.pose-tank #game-over-character-img {
+            animation: gameOverLoseTankPose 1.05s ease-out, gameOverLoseTankIdle 2.1s ease-in-out 1.05s infinite;
+        }
+
+        .game-over-character-stage.anim-ready.result-lose.pose-power #game-over-character-img {
+            animation: gameOverLosePowerPose 0.95s ease-out, gameOverLosePowerIdle 1.7s ease-in-out 0.95s infinite;
+        }
+
+        .game-over-character-stage.result-win .game-over-character-flair {
+            color: #ffe29d;
+            border-color: rgba(255, 214, 112, 0.6);
+        }
+
+        .game-over-character-stage.result-lose .game-over-character-flair {
+            color: #ffb0b0;
+            border-color: rgba(255, 130, 130, 0.54);
+        }
+
+        @keyframes gameOverWinPose {
+            0% { transform: translateY(0) rotate(0deg) scale(1); }
+            45% { transform: translateY(-12px) rotate(-2deg) scale(1.04); }
+            75% { transform: translateY(-4px) rotate(2deg) scale(1.02); }
+            100% { transform: translateY(0) rotate(0deg) scale(1); }
+        }
+
+        @keyframes gameOverWinIdle {
+            0%, 100% { transform: translateY(0) rotate(-1deg) scale(1); }
+            50% { transform: translateY(-4px) rotate(1deg) scale(1.01); }
+        }
+
+        @keyframes gameOverWinAgilePose {
+            0% { transform: translateY(0) rotate(0deg) scale(1); }
+            40% { transform: translateY(-16px) rotate(-5deg) scale(1.06); }
+            72% { transform: translateY(-6px) rotate(5deg) scale(1.03); }
+            100% { transform: translateY(0) rotate(0deg) scale(1); }
+        }
+
+        @keyframes gameOverWinAgileIdle {
+            0%, 100% { transform: translateY(0) rotate(-2deg) scale(1.01); }
+            50% { transform: translateY(-5px) rotate(2deg) scale(1.02); }
+        }
+
+        @keyframes gameOverWinTankPose {
+            0% { transform: translateY(0) rotate(0deg) scale(1); }
+            48% { transform: translateY(-8px) rotate(-1deg) scale(1.03); }
+            76% { transform: translateY(-3px) rotate(1deg) scale(1.01); }
+            100% { transform: translateY(0) rotate(0deg) scale(1); }
+        }
+
+        @keyframes gameOverWinTankIdle {
+            0%, 100% { transform: translateY(0) rotate(-0.5deg) scale(1); }
+            50% { transform: translateY(-3px) rotate(0.5deg) scale(1.01); }
+        }
+
+        @keyframes gameOverWinPowerPose {
+            0% { transform: translateY(0) rotate(0deg) scale(1); }
+            44% { transform: translateY(-14px) rotate(-3deg) scale(1.07); }
+            74% { transform: translateY(-5px) rotate(3deg) scale(1.03); }
+            100% { transform: translateY(0) rotate(0deg) scale(1); }
+        }
+
+        @keyframes gameOverWinPowerIdle {
+            0%, 100% { transform: translateY(0) rotate(-1deg) scale(1.02); }
+            50% { transform: translateY(-4px) rotate(1deg) scale(1.03); }
+        }
+
+        @keyframes gameOverLosePose {
+            0% { transform: translateY(0) rotate(0deg) scale(1); }
+            22% { transform: translateY(-6px) rotate(-5deg) scale(1.02); }
+            52% { transform: translateY(10px) rotate(15deg) scale(0.95); }
+            72% { transform: translateY(7px) rotate(11deg) scale(0.95); }
+            100% { transform: translateY(8px) rotate(12deg) scale(0.95); }
+        }
+
+        @keyframes gameOverLoseAgilePose {
+            0% { transform: translateY(0) rotate(0deg) scale(1); }
+            20% { transform: translateY(-10px) rotate(-7deg) scale(1.02); }
+            45% { transform: translateY(13px) rotate(20deg) scale(0.91); }
+            70% { transform: translateY(8px) rotate(15deg) scale(0.92); }
+            100% { transform: translateY(9px) rotate(14deg) scale(0.92); }
+        }
+
+        @keyframes gameOverLoseAgileIdle {
+            0%, 100% { transform: translateY(9px) rotate(14deg) scale(0.92); }
+            50% { transform: translateY(11px) rotate(16deg) scale(0.91); }
+        }
+
+        @keyframes gameOverLoseTankPose {
+            0% { transform: translateY(0) rotate(0deg) scale(1); }
+            24% { transform: translateY(-3px) rotate(-2deg) scale(1.01); }
+            54% { transform: translateY(12px) rotate(8deg) scale(0.95); }
+            100% { transform: translateY(10px) rotate(8deg) scale(0.95); }
+        }
+
+        @keyframes gameOverLoseTankIdle {
+            0%, 100% { transform: translateY(10px) rotate(8deg) scale(0.95); }
+            50% { transform: translateY(11px) rotate(9deg) scale(0.945); }
+        }
+
+        @keyframes gameOverLosePowerPose {
+            0% { transform: translateY(0) rotate(0deg) scale(1); }
+            28% { transform: translateY(-8px) rotate(-5deg) scale(1.03); }
+            56% { transform: translateY(12px) rotate(16deg) scale(0.93); }
+            100% { transform: translateY(9px) rotate(13deg) scale(0.94); }
+        }
+
+        @keyframes gameOverLosePowerIdle {
+            0%, 100% { transform: translateY(9px) rotate(13deg) scale(0.94); }
+            50% { transform: translateY(11px) rotate(15deg) scale(0.93); }
+        }
+
+        @keyframes gameOverLoseIdle {
+            0%, 100% { transform: translateY(8px) rotate(12deg) scale(0.95); }
+            50% { transform: translateY(10px) rotate(14deg) scale(0.94); }
+        }
+
+        @keyframes gameOverWinAura {
+            0%, 100% { transform: rotate(0deg) scale(1); opacity: 0.75; }
+            50% { transform: rotate(22deg) scale(1.08); opacity: 1; }
+        }
+
+        @keyframes gameOverLoseFlicker {
+            0%, 100% { opacity: 0.62; transform: translateX(0) scale(1); }
+            25% { opacity: 0.8; transform: translateX(2px) scale(1.01); }
+            50% { opacity: 0.48; transform: translateX(-2px) scale(0.99); }
+            75% { opacity: 0.7; transform: translateX(1px) scale(1.01); }
+        }
+
+        @keyframes gameOverSparkFloat {
+            0% { opacity: 0; transform: translateY(14px) scale(0.5); }
+            30% { opacity: 1; transform: translateY(2px) scale(1); }
+            100% { opacity: 0; transform: translateY(-20px) scale(0.6); }
+        }
+
+        @keyframes gameOverDustFall {
+            0% { opacity: 0; transform: translateY(-10px) scale(0.45); }
+            30% { opacity: 0.72; transform: translateY(2px) scale(0.7); }
+            100% { opacity: 0; transform: translateY(18px) scale(0.4); }
         }
 
         #battle-intro-overlay {
@@ -3039,4 +3730,506 @@
         @keyframes showcasePulse {
             0%, 100% { transform: scale(1); filter: brightness(1); }
             50% { transform: scale(1.04); filter: brightness(1.15); }
+        }
+
+        @media (max-width: 900px) {
+            body:not(.game-active) {
+                display: grid;
+                grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+                grid-template-rows: auto minmax(0, 1fr) auto auto;
+                grid-template-areas: "account daily" "hero hero" "history road" "menu menu";
+                gap: 8px;
+                height: 100dvh;
+                padding: 10px;
+                box-sizing: border-box;
+            }
+
+            body:not(.game-active) #account-chip,
+            body:not(.game-active) #daily-btn,
+            body:not(.game-active) #history-btn,
+            body:not(.game-active) #medal-road-btn,
+            body:not(.game-active) #char-showcase,
+            body:not(.game-active) .menu {
+                position: static !important;
+                transform: none !important;
+                width: 100%;
+                min-width: 0 !important;
+                max-width: none;
+                margin: 0;
+                box-sizing: border-box;
+            }
+
+            body:not(.game-active) > #gameCanvas {
+                position: fixed;
+                inset: 0;
+                z-index: 0;
+            }
+
+            body:not(.game-active) #account-chip {
+                grid-area: account;
+                padding: 8px;
+            }
+
+            body:not(.game-active) #account-chip-name {
+                font-size: 16px !important;
+                overflow-wrap: anywhere;
+            }
+
+            body:not(.game-active) #daily-btn {
+                grid-area: daily;
+                align-self: start;
+            }
+
+            body:not(.game-active) #history-btn { grid-area: history; }
+            body:not(.game-active) #medal-road-btn { grid-area: road; }
+
+            body:not(.game-active) #char-showcase {
+                grid-area: hero;
+                min-height: 0;
+                overflow-y: auto;
+                gap: 6px !important;
+                padding: 10px !important;
+                justify-content: safe center;
+            }
+
+            body:not(.game-active) #char-showcase-img-wrap {
+                width: 76px !important;
+                height: 76px !important;
+            }
+
+            body:not(.game-active) #char-showcase-name {
+                font-size: 22px !important;
+                overflow-wrap: anywhere;
+            }
+
+            body:not(.game-active) #char-showcase-stats {
+                font-size: 12px !important;
+                line-height: 1.3 !important;
+            }
+
+            body:not(.game-active) .menu {
+                grid-area: menu;
+                display: grid;
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+                gap: 6px;
+                padding: 8px;
+                max-height: none;
+                overflow: visible;
+            }
+
+            body:not(.game-active) .menu .btn {
+                min-width: 0;
+                padding: 8px;
+                font-size: 14px !important;
+                min-height: 40px;
+            }
+
+            body:not(.game-active) #daily-wins-tracker {
+                max-width: 100%;
+                box-sizing: border-box;
+            }
+
+            body:not(.game-active) .daily-win-slot {
+                width: auto;
+                min-width: 0;
+                flex: 1;
+            }
+        }
+
+        @media (max-width: 900px) and (max-height: 650px) {
+            body:not(.game-active) {
+                gap: 5px;
+                padding: 6px;
+            }
+
+            body:not(.game-active) #char-showcase-img-wrap {
+                width: 52px !important;
+                height: 52px !important;
+            }
+
+            body:not(.game-active) #char-showcase {
+                gap: 3px !important;
+                padding: 6px !important;
+            }
+
+            body:not(.game-active) #char-showcase-name {
+                font-size: 18px !important;
+            }
+        }
+
+        @media (orientation: landscape) and (max-height: 760px) {
+            body:not(.game-active) {
+                display: grid;
+                grid-template-columns: minmax(140px, 1fr) minmax(260px, 3fr) minmax(100px, 1fr);
+                grid-template-rows: auto auto minmax(0, 1fr) auto;
+                grid-template-areas: "account hero daily" "history hero ." "road hero ." "menu menu menu";
+                gap: 8px;
+                height: 100dvh;
+                padding: 8px;
+                box-sizing: border-box;
+            }
+
+            body:not(.game-active) > #gameCanvas {
+                position: fixed;
+                inset: 0;
+                z-index: 0;
+            }
+
+            body:not(.game-active) #account-chip,
+            body:not(.game-active) #daily-btn,
+            body:not(.game-active) #history-btn,
+            body:not(.game-active) #medal-road-btn,
+            body:not(.game-active) #char-showcase,
+            body:not(.game-active) .menu {
+                position: static !important;
+                transform: none !important;
+                width: 100%;
+                min-width: 0 !important;
+                max-width: none;
+                margin: 0;
+                box-sizing: border-box;
+            }
+
+            body:not(.game-active) #account-chip { grid-area: account; padding: 8px; }
+            body:not(.game-active) #daily-btn { grid-area: daily; align-self: start; }
+            body:not(.game-active) #history-btn { grid-area: history; }
+            body:not(.game-active) #medal-road-btn { grid-area: road; align-self: start; }
+
+            body:not(.game-active) #account-chip-name {
+                font-size: 16px !important;
+                overflow-wrap: anywhere;
+            }
+
+            body:not(.game-active) #char-showcase {
+                grid-area: hero;
+                min-height: 0;
+                overflow-y: auto;
+                justify-content: safe center;
+                gap: 4px !important;
+                padding: 8px !important;
+            }
+
+            body:not(.game-active) #char-showcase-img-wrap {
+                width: 64px !important;
+                height: 64px !important;
+            }
+
+            body:not(.game-active) #daily-wins-tracker {
+                width: 100%;
+                max-width: 340px;
+                box-sizing: border-box;
+            }
+
+            body:not(.game-active) .daily-win-slot { width: auto; min-width: 0; flex: 1; }
+
+            body:not(.game-active) .menu {
+                grid-area: menu;
+                display: grid;
+                grid-template-columns: repeat(5, minmax(0, 1fr));
+                gap: 8px;
+                padding: 6px;
+                max-height: none;
+            }
+
+            body:not(.game-active) .menu .btn {
+                min-width: 0;
+                min-height: 40px;
+                padding: 8px;
+                font-size: 14px !important;
+            }
+
+            #medal-road-panel {
+                padding: 52px 12px 8px;
+            }
+
+            #medal-road-panel > h2 {
+                font-size: 30px;
+            }
+
+            #medal-road-panel > p {
+                font-size: 13px !important;
+                margin-bottom: 6px;
+            }
+
+            #medal-road-container {
+                max-height: calc(100dvh - 190px) !important;
+                padding: 8px !important;
+            }
+
+            #medal-road-timeline {
+                display: grid !important;
+                grid-template-columns: minmax(140px, 200px) minmax(0, 1fr);
+                gap: 12px !important;
+                align-items: start;
+            }
+
+            .medal-road-bs-summary {
+                position: static;
+                grid-template-columns: minmax(0, 1fr);
+                gap: 6px;
+                padding: 10px;
+            }
+
+            .medal-road-bs-summary-title { font-size: 20px; }
+
+            .medal-road-bs-shell {
+                min-width: 0;
+                overflow-x: auto;
+                overflow-y: hidden;
+            }
+
+            .medal-road-bs-track {
+                flex-direction: row;
+                align-items: stretch;
+                width: max-content;
+                min-width: 100%;
+                gap: 14px;
+                margin: 0;
+                padding: 4px 4px 14px;
+            }
+
+            .medal-road-bs-track::before,
+            .medal-road-bs-card::after {
+                display: none;
+            }
+
+            .medal-road-bs-card,
+            .medal-road-bs-card:nth-of-type(odd),
+            .medal-road-bs-card:nth-of-type(even) {
+                align-self: stretch;
+                width: 220px;
+                min-height: 150px;
+                grid-template-columns: 62px minmax(0, 1fr);
+                padding: 10px;
+            }
+
+            .medal-road-bs-media { width: 58px; height: 58px; }
+
+            #close-medal-road-panel {
+                margin-top: 8px;
+            }
+        }
+
+        .lan-room-actions {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(min(100%, 180px), 1fr));
+            align-items: end;
+            gap: 12px;
+        }
+
+        .lan-room-actions label {
+            display: grid;
+            gap: 6px;
+        }
+
+        #lan-code {
+            box-sizing: border-box;
+            width: 100%;
+            min-height: 42px;
+            border: 1px solid #64e6ff;
+            border-radius: 6px;
+            padding: 8px;
+            background: #101726;
+            color: white;
+            font: inherit;
+        }
+
+        #lan-room-label,
+        #lan-status {
+            overflow-wrap: anywhere;
+        }
+
+        #lan-live-room {
+            position: fixed;
+            top: 8px;
+            right: 8px;
+            z-index: 100;
+        }
+
+        #lan-live-room[hidden] {
+            display: none;
+        }
+
+        #lan-panel {
+            --team-accent: #ff747e;
+            background: repeating-linear-gradient(125deg, transparent 0 40px, #ffffff03 40px 42px), #0b1420;
+            padding-top: 68px;
+        }
+
+        #lan-panel > .modal-nav-back {
+            width: auto;
+            margin: 0;
+            min-width: 0;
+        }
+
+        .lan-team-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: start;
+            gap: 16px;
+            margin-bottom: 20px;
+        }
+
+        #lan-panel .lan-team-header h2 {
+            margin: 8px 0 4px;
+            text-align: left;
+            font-size: 36px;
+            letter-spacing: 0;
+            color: #f3f6fb;
+        }
+
+        #lan-panel #lan-room-label {
+            margin: 0;
+            color: #a9bed0;
+        }
+
+        .lan-connection {
+            color: #b4c3d2;
+            font-size: 13px;
+            font-weight: 700;
+        }
+
+        .lan-connection::before {
+            content: '';
+            display: inline-block;
+            width: 8px;
+            height: 8px;
+            margin-right: 6px;
+            border-radius: 50%;
+            background: #7f8d9d;
+        }
+
+        .lan-connection.connected::before { background: #65e0b0; }
+
+        .lan-code-area {
+            flex: 0 0 172px;
+            text-align: center;
+        }
+
+        #lan-copy-code {
+            display: grid;
+            width: 100%;
+            gap: 4px;
+            border: 1px solid #58cce8;
+            border-radius: 8px;
+            background: #102d3b;
+            color: #c1f4ff;
+            padding: 10px 14px;
+            cursor: pointer;
+        }
+
+        #lan-copy-code:disabled { opacity: 0.55; cursor: default; }
+        #lan-copy-code span { font-size: 11px; }
+        #lan-code-display { font: 700 26px 'Rajdhani', sans-serif; letter-spacing: 0; }
+        #lan-copy-status { display: block; min-height: 18px; font-size: 12px; color: #65e0b0; }
+
+        .lan-team-heading {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 12px;
+        }
+
+        .lan-team-heading h3 { margin: 0; color: var(--team-accent); font-size: 20px; }
+        #lan-team-count { color: #a9bed0; font-size: 14px; }
+
+        .lan-team-slots {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 12px;
+        }
+
+        .lan-team-member {
+            display: grid;
+            grid-template-columns: 60px minmax(0, 1fr);
+            align-items: center;
+            gap: 8px 12px;
+            min-width: 0;
+            padding: 14px;
+            border: 1px solid #ff747e65;
+            border-top: 3px solid var(--team-accent);
+            border-radius: 8px;
+            background: #171f2b;
+        }
+
+        .lan-member-avatar {
+            position: relative;
+            display: grid;
+            place-items: center;
+            width: 60px;
+            height: 60px;
+            border-radius: 6px;
+            overflow: hidden;
+            background: #2b3e4f;
+            color: #b4dcf1;
+            font-size: 22px;
+            font-weight: 700;
+        }
+
+        .lan-member-avatar img {
+            position: absolute;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            background: #20313d;
+        }
+
+        .lan-member-info { display: grid; gap: 4px; min-width: 0; }
+        .lan-member-info strong { font-size: 18px; color: #f0f4f8; overflow-wrap: anywhere; line-height: 1.2; }
+        .lan-member-info span { font-size: 13px; color: #a9bed0; overflow-wrap: anywhere; }
+        .lan-member-role { grid-column: 1 / -1; font-size: 11px; color: #ffb2b8; font-weight: 700; }
+        .lan-member-empty { border-style: dashed; background: #ffffff03; }
+        .lan-team-bot { border-color: #50667a; }
+        .lan-team-bot .lan-member-role { color: #a9bed0; }
+
+        .lan-match-info {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px 24px;
+            padding: 14px 0;
+            color: #a9bed0;
+            font-size: 13px;
+            border-bottom: 1px solid #ffffff18;
+        }
+
+        #lan-status { min-height: 20px; color: #c1d7e8; }
+        #lan-panel .lan-room-actions { margin-top: 16px; }
+        #lan-panel [hidden] { display: none !important; }
+        #lan-start { background: #276f55; border-color: #65e0b0; }
+        #lan-start:disabled { background: #263740; border-color: #53616c; color: #a9bed0; }
+        #lan-leave { background: #3b202b; border-color: #b26575; }
+        #lan-live-room { display: flex; align-items: center; gap: 10px; background: #102d3b; border-color: #58cce8; }
+        #lan-live-code { color: #c1f4ff; }
+
+        @media (max-width: 600px) {
+            .lan-code-area { flex-basis: 138px; }
+            #lan-panel .lan-team-header h2 { font-size: 28px; }
+            .lan-team-slots { grid-template-columns: minmax(0, 1fr); gap: 8px; }
+            .lan-team-member { grid-template-columns: 52px minmax(0, 1fr) auto; padding: 10px; }
+            .lan-member-avatar { width: 52px; height: 52px; }
+            .lan-member-role { grid-column: 3; font-size: 10px; }
+            .lan-member-info strong { font-size: 16px; }
+            .lan-team-header { gap: 10px; margin-bottom: 12px; }
+        }
+
+        @media (orientation: landscape) and (max-height: 600px) {
+            #lan-panel { padding: 52px 16px 12px; }
+            .lan-team-header { margin-bottom: 8px; }
+            #lan-panel .lan-team-header h2 { font-size: 28px; margin-top: 4px; }
+            .lan-code-area { flex-basis: 172px; }
+            #lan-copy-code { grid-template-columns: 1fr auto; align-items: center; padding: 6px 10px; }
+            #lan-code-display { grid-column: 1; font-size: 22px; }
+            #lan-copy-label { grid-column: 2; grid-row: 1 / 3; }
+            .lan-team-slots { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; }
+            .lan-team-member { grid-template-columns: 42px minmax(0, 1fr); padding: 8px; gap: 4px 8px; }
+            .lan-member-avatar { width: 42px; height: 42px; }
+            .lan-member-info strong { font-size: 15px; }
+            .lan-member-info span { font-size: 12px; }
+            .lan-member-role { grid-column: 1 / -1; }
+            .lan-team-heading { margin-bottom: 6px; }
+            .lan-match-info { padding: 8px 0; }
+            #lan-status { margin-top: 8px; margin-bottom: 8px; }
+            #lan-panel .lan-room-actions { margin-top: 8px; grid-template-columns: repeat(3, minmax(0, 1fr)); }
         }
